@@ -1,0 +1,28 @@
+/* @import './base.css'; */
+@import "./_bootstrapVariables.scss";
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+html,body {
+  margin: 0;
+  padding: 0;
+  color: #673EE6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ height:100% ;
+ background-color: var(--surface-100);
+
+
+ 
+}
+body{
+  position: relative;
+  .confirmation {
+    font-size: clamp(18px, 5vw, 20px);
+    font-weight: 600;
+    padding-top: 10px;
+    display: block;
+}
+
+}
+
+
