@@ -41,6 +41,8 @@ import FMStatestics from "../components/pages/NUR/FMStatestics.vue";
 import ModificationsByDates from "../components/pages/Modifications/ModificationsByDates.vue";
 import PreQuotation from "../components/pages/Modifications/PreQuotation.vue";
 import ViewModification from "../components/pages/Modifications/ViewModification.vue";
+import InsertMailPrices from "../components/pages/Modifications/InsertMailPrices.vue";
+import PreQuotationUpdate from "../components/pages/Modifications/PreQuotationUpdate.vue";
 
 const routes = [
   {
@@ -110,6 +112,20 @@ const routes = [
   {
     path: "/modifications/sitemodifications/:site_code/:site_name",
     component: SiteModifications,
+    props: true,
+    meta: { requiresAuth: true },
+   
+  },
+  {
+    path: "/quotation/mailprices/index/:modification_id/:quotation_id",
+    component: InsertMailPrices,
+    props: true,
+    meta: { requiresAuth: true },
+   
+  },
+  {
+    path: "/quotation/update/:modification_id/:quotation_id",
+    component: PreQuotationUpdate,
     props: true,
     meta: { requiresAuth: true },
    

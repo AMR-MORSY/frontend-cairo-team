@@ -112,6 +112,7 @@ import { useRouter } from "vue-router";
 import exportFromJSON from "export-from-json";
 import { onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
+import * as XLSX from "xlsx";
 
 const confirm = useConfirm();
 const toast=useToast();
@@ -246,11 +247,13 @@ const downloadModfications = () => {
       element.reported_at = "";
     }
   });
-  const data = modifications.value;
-  const fileName = "Modifications";
-  const exportType = exportFromJSON.types.csv;
-
-  if (data) exportFromJSON({ data, fileName, exportType });
+  const modificationsSheet = XLSX.utils.json_to_sheet(modifications.value);
+ 
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, modificationsSheet, "modifications");
+ 
+  XLSX.writeFile(workbook, "Modifications.xlsx", { compression: true });
+ 
 };
 const onRowSelect = () => {
   isRowSelected.value = true;

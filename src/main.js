@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 
 import modal from "./components/helpers/modal.vue"; ////declared globally
+import KeyFilter from 'primevue/keyfilter';
+
 import Ripple from 'primevue/ripple';
 import spinnerButton from "./components/helpers/spinnerButton.vue";
 import helperTable from "./components/helpers/helperTable.vue";
@@ -59,6 +61,7 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import Menubar from 'primevue/menubar';
 import RadioButton from 'primevue/radiobutton';
+
 
 import DatePicker from 'primevue/datepicker';
 
@@ -147,6 +150,7 @@ app
   })
   .directive("tooltip", Tooltip)
   .directive("ripple", Ripple)
+   .directive('keyfilter', KeyFilter)
   .component("Datepicker",DatePicker)
   .component("ConfirmDialog", ConfirmDialog)
   .component("Toast", Toast)

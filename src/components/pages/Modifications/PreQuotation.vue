@@ -1,19 +1,18 @@
 <template>
-  <div class="w-screen-2xl px-10 py-20" v-if="!isQuotationFound">
-
-    <Card class="max-w-sm md:max-w-screen-sm mx-auto"  >
+  <div class="w-screen-2xl px-10 py-20" v-if="isQuotationNotFound">
+    <Card class="max-w-sm md:max-w-screen-sm mx-auto">
       <template #content>
         <h2
           class="font-Signika text-center text-red-500 text-2xl font-extrabold uppercase"
         >
           No Quotation
-      </h2>
+        </h2>
         <div class="w-full">
           <p
-            class="font-Signika font-bold text-font-main-color uppercase text-center pt-5  mb-5"
+            class="font-Signika font-bold text-font-main-color uppercase text-center pt-5 mb-5"
           >
             Search Price List
-        </p>
+          </p>
         </div>
         <form @submit.prevent="submitPriceListSearchForm">
           <div class="w-1/2 mx-auto">
@@ -59,7 +58,11 @@
           </div>
         </form>
 
-        <p class=" text-center uppercase font-Signika font-bold text-font-main-color mt-10 ">upload quotation</p>
+        <p
+          class="text-center uppercase font-Signika font-bold text-font-main-color mt-10"
+        >
+          upload quotation
+        </p>
 
         <form @submit.prevent="submitQuotationSheet">
           <div class="flex flex-col justify-center items-center mt-10">
@@ -117,35 +120,75 @@
         </div>
       </template>
     </Card>
- 
   </div>
-   
 
   <div class="w-screen-2xl px-10 py-20" v-if="isQuotationFound">
     <Card class="max-w-screen-xl px-5 mx-auto">
       <template #content>
-        <DataTable
-          :value="quotation"
-          scrollable
-          :paginator="true"
-          :rows="5"
-          paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          :rowsPerPageOptions="[5, 10, 15]"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-          class="text-sm"
-          tableStyle="min-width: 50rem"
-          @row-select="onRowSelect"
-          v-model:selection="selectedItem"
-        >
-          <Column selectionMode="single"></Column>
-          <Column field="item" header="#"></Column>
-          <Column field="description" header="Description"></Column>
-          <Column field="unit" header="Unit"></Column>
-          <Column field="supply" header="Supply"></Column>
-          <Column field="installation" header="Installation"></Column>
-          <Column field="sup_inst" header="S&I"></Column>
-          <Column field="type" header="Type"></Column>
-        </DataTable>
+        <div v-if="isPriceQuotationFound">
+          <DataTable
+            :value="totalItems"
+            scrollable
+            :paginator="true"
+            :rows="5"
+            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            :rowsPerPageOptions="[5, 10, 15]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+            class="text-sm"
+            tableStyle="min-width: 50rem"
+          >
+            <Column field="item" header="#"></Column>
+            <Column field="description" header="Description"></Column>
+            <Column field="unit" header="Unit"></Column>
+            <Column field="supply_price" header="Supply"></Column>
+            <Column field="install_price" header="Installation"></Column>
+            <Column field="scope" header="Scope"></Column>
+            <Column field="quantity" header="Quantity"></Column>
+            <Column field="item_price" header="Price"></Column>
+            <template #footer>
+              <div
+                class="flex items-center justify-evenly w-100"
+                v-if="!isMailQuotationFound"
+              >
+                <p
+                  class="text-font-main-color text-xl font-Signika font-semibold underline underline-offset-1"
+                >
+                  No Confirmed By mail items
+                </p>
+                <Button
+                  label="Add items"
+                  severity=" danger"
+                  :raised="true"
+                  class="block"
+                  @click.prevent="goToMailPrices()"
+                />
+              </div>
+
+              <div
+                class="text-font-main-color text-xl font-semibold font-Signika"
+              >
+                Total Cost {{ totalCost }} LE.
+              </div>
+            </template>
+          </DataTable>
+        </div>
+
+        <div class="w-100 flex justify-evenly flex-nowrap items-center mt-3">
+          <Button
+            label="Update"
+            severity="danger"
+            :raised="true"
+            class="block"
+            @click.prevent="goToUpdateQuotation"
+          />
+          <Button
+            label="Download"
+            severity="info"
+            :raised="true"
+            class="block"
+            @click.prevent="downloadQuotation"
+          />
+        </div>
       </template>
     </Card>
   </div>
@@ -162,12 +205,22 @@ import { useToast } from "primevue/usetoast";
 import { useDialog } from "primevue/usedialog";
 import PriceListTable from "../../helpers/Modification/PriceListTable.vue";
 import Quotation from "../../../../src/apis/Quotation.js";
+import { useRouter } from "vue-router";
+import exportFromJSON from "export-from-json";
+import * as XLSX from "xlsx";
 
 const props = defineProps(["id"]); /////////////modification id
 
 const quotation = ref();
 
-const selectedItem=ref();
+const priceQuotation = ref([]);
+
+const totalItems = computed(() => {
+  return gatheringPricesMailPrices(priceQuotation.value, mailQuotation.value);
+});
+
+const router = useRouter();
+const selectedItem = ref();
 
 const searchPriceList = ref();
 
@@ -179,9 +232,49 @@ const dialog = useDialog();
 
 const quotationSheet = ref();
 
+const isQuotationNotFound = ref(false);
+
 const isQuotationFound = ref(false);
 
 const sheet_errors = ref();
+
+const mailQuotation = ref([]);
+
+const isMailQuotationFound = computed(() => {
+  if (mailQuotation.value.length > 0) {
+    return true;
+  }
+  return false;
+});
+
+const isPriceQuotationFound = computed(() => {
+  if (priceQuotation.value.length > 0) {
+    return true;
+  }
+  return false;
+});
+
+const totalCost = computed(() => {
+  if (!priceQuotation.value && !mailQuotation.value.length == 0) {
+    return 0;
+  } else if (priceQuotation.value && mailQuotation.value.length > 0) {
+    let sumQuotation = priceQuotation.value.reduce(function (sum, current) {
+      return sum + Number(current.item_price);
+    }, 0);
+    let sumMailQuotation = mailQuotation.value.reduce(function (sum, current) {
+      return sum + Number(current.item_price);
+    }, 0);
+    return sumMailQuotation + sumQuotation;
+  } else if (priceQuotation.value && mailQuotation.value.length == 0) {
+    return priceQuotation.value.reduce(function (sum, current) {
+      return sum + Number(current.item_price);
+    }, 0);
+  } else if (!priceQuotation.value && mailQuotation.value.length > 0) {
+    return mailQuotation.value.reduce(function (sum, current) {
+      return sum + Number(current.item_price);
+    }, 0);
+  }
+});
 
 const mustIncludeFile = (value) => {
   if (value.files[0]) {
@@ -190,9 +283,7 @@ const mustIncludeFile = (value) => {
   return false;
 };
 const searchPriceListRegex = helpers.regex(/^.{1,50}$/);
-const onRowSelect=()=>{
-
-}
+const onRowSelect = () => {};
 
 const searchPriceListRules = computed(() => ({
   searchPriceList: {
@@ -226,11 +317,9 @@ const submitQuotationSheet = async () => {
     quotation: quotationSheet.value.files[0],
     id: props.id,
   };
- 
+
   Quotation.uploadQuotationSheet(data)
-    .then((response) => {
-      
-    })
+    .then((response) => {})
     .catch((error) => {
       if (error.response) {
         if ((error.response.status = 422)) {
@@ -302,17 +391,84 @@ onMounted(() => {
   getModificationQuotation();
 });
 
+const gatheringPricesMailPrices = (prices, mailPrices) => {
+  let totalItems = [];
+  if (mailPrices.length > 0 && prices.length > 0) {
+    let newMailPrices = [];
+    mailPrices.forEach((element) => {
+      element.item = "Mail";
+      newMailPrices.push(element);
+    });
+    prices.forEach((element) => {
+      totalItems.push(element);
+    });
+    newMailPrices.forEach((element) => {
+      totalItems.push(element);
+    });
+
+    return totalItems;
+  } else if (mailPrices.length == 0 && prices.length > 0) {
+    return prices;
+  } else if (mailPrices.length > 0 && prices.length == 0) {
+    let newMailPrices = [];
+    mailPrices.forEach((element) => {
+      element.item = "Mail";
+      newMailPrices.push(element);
+    });
+    return newMailPrices;
+  }
+};
+
 const getModificationQuotation = () => {
   Modifications.getModificationQuotation(props.id).then((response) => {
-   
     console.log(response);
-      if (response.data.message != "No quotation") {
-        quotation.value = response.data.quotation.prices;
-        isQuotationFound.value = true;
-      
-      } else {
-        isQuotationFound.value=false
-      }
+    if (response.data.message != "No quotation") {
+      quotation.value = response.data.quotation;
+      priceQuotation.value = response.data.quotation.prices;
+      mailQuotation.value = response.data.quotation.mail_prices;
+      // totalItems.value=gatheringPricesMailPrices(response.data.quotation.prices,response.data.quotation.mail_prices)
+      isQuotationFound.value = true;
+      isQuotationNotFound.value = false;
+    } else {
+      isQuotationFound.value = false;
+      isQuotationNotFound.value = true;
+    }
   });
+};
+
+const goToMailPrices = () => {
+  return router.push(
+    `/quotation/mailprices/index/${props.id}/${quotation.value.id}`
+  );
+};
+
+const goToUpdateQuotation = () => {
+  return router.push(`/quotation/update/${props.id}/${quotation.value.id}`);
+};
+
+const downloadQuotation = () => {
+  console.log(quotation.value);
+  let modifications = [];
+  let modification = quotation.value.modification;
+  modification.action_owner = modification.action_owner.name;
+  modification.site = modification.site.site_name;
+  modifications.push(modification);
+  let total = [];
+  total.push(modifications);
+  // // total.push(quotation.value.prices)
+  total.push(totalItems.value);
+
+  const modificationsSheet = XLSX.utils.json_to_sheet(modifications);
+  const quotationSheet=XLSX.utils.json_to_sheet(totalItems.value);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, modificationsSheet, "modification");
+  XLSX.utils.book_append_sheet(workbook, quotationSheet,"Quotation");
+  XLSX.writeFile(workbook, "Quotation.xlsx", { compression: true });
+  // const data =total;
+  // const fileName = "quotation";
+  // const exportType = exportFromJSON.types.csv;
+
+  // if (data) exportFromJSON({ data, fileName, exportType });
+  console.log(total);
 };
 </script>
