@@ -69,7 +69,7 @@
                 raised
                 :disabled="!thereIsMod"
                 severity="info"
-                @click="downloadModfications"
+                @click="downloadModifications"
               >
                 Download
               </Button>
@@ -228,7 +228,7 @@ const rowClass = (data) => {
   return [{ "!bg-slate-100": data.reported === "No" }];
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const downloadModfications = () => {
+const downloadModifications = () => {
   modifications.value = modifications.value.forEach((element) => {
     element.action_owner = element.action_owner.name;
     if (element.cw_date == null) {

@@ -28,6 +28,7 @@
       class="block"
       severity="danger"
       @click="addItem"
+      :disabled="!isItemsSelected"
     />
   </div>
 </template>
@@ -39,9 +40,16 @@ import { inject } from "vue";
 
 const dialogRef = inject("dialogRef");
 
-const selectedItems = ref();
+const selectedItems = ref([]);
 const listItems = ref();
 
+const isItemsSelected=computed(()=>{
+  if(selectedItems.value.length>0)
+{
+  return true
+}
+return false;
+})
 onMounted(() => {
   listItems.value = dialogRef.value.data.priceListItems;
 });

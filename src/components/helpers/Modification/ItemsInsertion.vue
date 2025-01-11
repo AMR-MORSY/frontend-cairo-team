@@ -88,6 +88,7 @@ import { onUpdated } from "vue";
 const props = defineProps([
   "action",
   "items",
+  "backRoute",
   "modification_id",
   "quotation_id",
 ]);
@@ -139,37 +140,18 @@ const onCellEditComplete = (event) => {
       break;
     case "scope":
       data[field] = newValue;
+      if (selectedItems.value.length > 0) {
+        selectedItems.value.forEach((element) => {
+          if (element.id == data["id"]) {
+            element.scope == newValue;
+          }
+        });
+      }
       break;
 
-    // default:
-    //   if (newValue.trim().length > 0) {
-    //     data[field] = newValue;
-    //     if (selectedItems.value.length > 0) {
-    //       selectedItems.value.forEach((element) => {
-    //         if (element.id == data["id"]) {
-    //           element.quantity == newValue;
-    //         }
-    //       });
-    //     }
-    //   } else event.preventDefault();
-    //   break;
+   
   }
 };
-
-// const getMailPrices = () => {
-//   Quotation.getAllMailPrices().then((response) => {
-//     console.log(response);
-//     let prices = [];
-//     prices = response.data;
-
-//     prices.forEach((element) => {
-//       element.quantity = 0;
-//       element.scope = "s&i";
-//       mailprices.value.push(element);
-//     });
-//     console.log(mailprices.value);
-//   });
-// };
 
 const onRowSelect = () => {
   //   console.log(selectedItems.value);
@@ -206,7 +188,7 @@ const insertMailPricesItems = () => {
     let data = {
       mail_prices: selectedItems.value,
     };
-    console.log(data);
+  
     Quotation.insertQuotationMailPricesItems(
       data,
       props.modification_id,
@@ -214,10 +196,14 @@ const insertMailPricesItems = () => {
     ).then((response) => {
       console.log(response);
       if (response.data.message == "success") {
-        if (props.action == "mailItemsInsertion") {
-            router.push(`/quotation/update/${props.modification_id}/${props.quotation_id}`);
+        if (props.quotation_id) {
+            router.push(
+            `/quotation/update/${props.modification_id}/${props.quotation_id}`
+          );
+         
         } else {
-          router.push(`/quotation/modification/${props.modification_id}`);
+            router.push(`/quotation/modification/${props.modification_id}`);
+         
         }
       }
     });
@@ -233,20 +219,33 @@ const insertPriceListItems = () => {
       life: 3000,
     });
   } else {
-    let data = {
-      priceListItems: selectedItems.value,
-    };
-    console.log(data);
-    Quotation.insertQuotationPriceListItems(
-      data,
-      props.modification_id,
-      props.quotation_id
-    ).then((response) => {
-      console.log(response);
-      if (response.message == "success") {
-        router.push(`/quotation/modification/${props.modification_id}`);
-      }
-    });
+   
+      let data = {
+        priceListItems: selectedItems.value,
+      };
+      console.log(data);
+      Quotation.insertQuotationPriceListItems(
+        data,
+        props.modification_id,
+        props.quotation_id
+      ).then((response) => {
+        console.log(response);
+        if (response.data.message == "success") {
+          if (props.action == "priceListItemsInsertion") {
+            toast.add({
+              severity: "success",
+              detail: "Inserted Successfully",
+              life: 3000,
+              summary: "Success Message",
+            });
+            //   router.push(`/quotation/update/${props.modification_id}/${props.quotation_id}`);
+            window.location.reload();
+          } else {
+            router.push(`/quotation/modification/${props.modification_id}`);
+          }
+        }
+      });
+  
   }
 };
 </script>

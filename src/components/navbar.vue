@@ -180,18 +180,20 @@ const updateUserAbility = () => {
                       : []),
                     ...(computed(() => store.getters.isLogin)
                       ? [
-                          {
-                            label: "Sites",
-                            icon: "pi pi-server",
-                            shortcut: "⌘+S",
-                            to: "/sites",
-                          },
+                        ...(can("read_Site_data")?[ {
+                          label: "Sites",
+                          icon: "pi pi-server",
+                          shortcut: "⌘+S",
+                          to: "/sites",
+                        }]:[])
+                         ,
+                         ...(can("read_ENERGY_data")?[
                           {
                             label: "Energy",
                             icon: "pi pi-bolt",
                             shortcut: "⌘+S",
                             to: "/energy",
-                          },
+                          }]:[]),
                           ...(can("read_CS_modifications") ||
                           can("read_CN_modifications") ||
                           can("read_CE_modifications") ||

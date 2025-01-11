@@ -117,7 +117,7 @@ const routes = [
    
   },
   {
-    path: "/quotation/mailprices/index/:modification_id/:quotation_id",
+    path: "/quotation/mailprices/index/:modification_id/:quotation_id?",
     component: InsertMailPrices,
     props: true,
     meta: { requiresAuth: true },

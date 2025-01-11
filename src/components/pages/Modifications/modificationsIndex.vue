@@ -1,7 +1,7 @@
-
-
 <template>
-  <FilteredModificationsTable :modificationsData="modifications" />>
+  <div v-if="isThereModifications">
+    <FilteredModificationsTable :modificationsData="modifications" />
+  </div>
 </template>
 
 <script setup>
@@ -10,14 +10,24 @@ import FilteredModificationsTable from "../../helpers/Modification/FilteredModif
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { onMounted } from "vue";
+import { computed } from "vue";
+import { useConfirm } from "primevue/useconfirm";
+import { useRouter } from "vue-router";
 
 const modifications = ref([]);
-const toast=useToast();
+const toast = useToast();
 const props = defineProps(["columnName", "columnValue"]);
-
-onMounted(()=>{
+const router = useRouter();
+const confirm=useConfirm();
+const isThereModifications = computed(() => {
+  if (modifications.value.length > 0) {
+    return true;
+  }
+  return false;
+});
+onMounted(() => {
   getModificationsIndex();
-})
+});
 
 const getModificationsIndex = () => {
   let data = {
@@ -28,10 +38,27 @@ const getModificationsIndex = () => {
   Modifications.getModificationIndex(data)
 
     .then((response) => {
-      console.log(response)
-    
+      console.log(response);
+
       modifications.value = response.data.modifications;
-      
+      if (modifications.value.length == 0) {
+        confirm.require({
+          group: "info",
+          message: "There are no Modifications, go Back?",
+          header: "Confirmation",
+          icon: "pi pi-exclamation-triangle",
+          position: "top",
+
+          acceptProps: {
+            label: "Ok",
+            severity: "success",
+          },
+          accept: () => {
+            router.go(-1);
+            confirm.close();
+          },
+        });
+      }
     })
     .catch((error) => {
       if (error.response.status == 422) {
@@ -59,8 +86,6 @@ const getModificationsIndex = () => {
     })
     .finally(() => {});
 };
-
-
 </script>
 
 <style lang="scss" scoped>

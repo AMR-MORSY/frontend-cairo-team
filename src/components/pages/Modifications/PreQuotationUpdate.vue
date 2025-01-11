@@ -5,7 +5,7 @@
         <div v-if="isPriceQuotationFound">
           <div class="flex w-100 items-center justify-center">
             <p
-              class="text-center font-Signika text-font-main-color font-semibold"
+              class="text-center font-Signika text-font-main-color font-semibold underline underline-offset-1"
             >
               Price List items
             </p>
@@ -52,6 +52,27 @@
               </div>
             </template>
           </DataTable>
+        </div>
+
+        <div v-else>
+          <p
+            class="text-center font-Signika text-font-main-color font-semibold underline underline-offset-1"
+          >
+            Price List items
+          </p>
+          <div class="flex justify-evenly items-center">
+            <p
+              class="text-start font-Signika text-font-main-color font-semibold"
+            >
+              No Price List items
+            </p>
+            <Button
+              label="Add New Item"
+              security="info"
+              class="block"
+              @click="AddNewPriceListItem"
+            />
+          </div>
         </div>
 
         <div v-if="isMailQuotationFound" class="mt-10">
@@ -105,6 +126,26 @@
             </template>
           </DataTable>
         </div>
+        <div v-else>
+          <p
+            class="text-center font-Signika text-font-main-color font-semibold underline underline-offset-1 py-8"
+          >
+            Mail items
+          </p>
+          <div class="flex justify-evenly items-center">
+            <p
+              class="text-start font-Signika text-font-main-color font-semibold"
+            >
+              No Mail items
+            </p>
+            <Button
+              label="Add New Item"
+              security="info"
+              class="block"
+              @click="AddNewMailListItem"
+            />
+          </div>
+        </div>
         <div class="flex items-center justify-end w-100">
           <div class="text-font-main-color text-xl font-semibold font-Signika">
             Total Cost {{ totalCost }} LE.
@@ -123,9 +164,10 @@ import { useDialog } from "primevue/usedialog";
 import Quotation from "../../../../src/apis/Quotation.js";
 import Modifications from "../../../apis/Modifications";
 import PriceListSearchForm from "../../helpers/Modification/PriceListSearchForm.vue";
+import { useConfirm } from "primevue/useconfirm";
 
 const props = defineProps(["modification_id", "quotation_id"]);
-
+const confirm = useConfirm();
 const onRowSelect = () => {
   console.log(selectedPriceQuotationItems.value);
 };
@@ -209,12 +251,11 @@ const AddNewPriceListItem = () => {
   });
 };
 
-const AddNewMailListItem=()=>{
-    return router.push(
+const AddNewMailListItem = () => {
+  return router.push(
     `/quotation/mailprices/index/${props.modification_id}/${props.quotation_id}`
   );
-
-}
+};
 const isMailQuotationFound = computed(() => {
   if (mailQuotation.value.length > 0) {
     return true;
@@ -252,45 +293,93 @@ const getModificationQuotation = () => {
 };
 
 const deletePriceListItems = () => {
-  let data = {
-    priceListItems: selectedPriceQuotationItems.value,
-  };
-  Quotation.deletePriceListItems(
-    data,
-    props.modification_id,
-    props.quotation_id
-  ).then((response) => {
-    if (response.data.message == "deleted Successfully") {
-      toast.add({
-        severity: "success",
-        life: 3000,
-        summary: "Success Message",
-        detail: "deleted Successfully",
+  confirm.require({
+    group: "yesNo",
+    message: "This will going to delete the item, Are you sure?",
+    header: "Confirmation",
+    icon: "pi pi-exclamation-triangle",
+    position: "top",
+
+    rejectProps: {
+      label: "No",
+      severity: "success",
+    },
+    acceptProps: {
+      label: "Yes",
+      severity: "danger",
+    },
+    accept: () => {
+      confirm.close();
+      let data = {
+        priceListItems: selectedPriceQuotationItems.value,
+      };
+      Quotation.deletePriceListItems(
+        data,
+        props.modification_id,
+        props.quotation_id
+      ).then((response) => {
+        if (response.data.message == "deleted Successfully") {
+          toast.add({
+            severity: "success",
+            life: 3000,
+            summary: "Success Message",
+            detail: "deleted Successfully",
+          });
+          window.location.reload();
+        } else if (response.data.message == "No quotation") {
+          router.push(`/quotation/modification/${props.modification_id}`);
+        }
       });
-      window.location.reload();
-    }
+    },
+    reject: () => {
+      confirm.close();
+    },
   });
 };
 
 const deleteMailListItems = () => {
-  let data = {
-    mail_prices_items: selectedMailQuotationItems.value,
-  };
-  console.log(data)
-  Quotation.deleteMailListItems(
-    data,
-    props.modification_id,
-    props.quotation_id
-  ).then((response) => {
-    if (response.data.message == "deleted Successfully") {
-      toast.add({
-        severity: "success",
-        life: 3000,
-        summary: "Success Message",
-        detail: "deleted Successfully",
+  confirm.require({
+    group: "yesNo",
+    message: "This will going to delete the item, Are you sure?",
+    header: "Confirmation",
+    icon: "pi pi-exclamation-triangle",
+    position: "top",
+
+    rejectProps: {
+      label: "No",
+      severity: "success",
+    },
+    acceptProps: {
+      label: "Yes",
+      severity: "danger",
+    },
+    accept: () => {
+      confirm.close();
+      let data = {
+        mail_prices_items: selectedMailQuotationItems.value,
+      };
+
+      Quotation.deleteMailListItems(
+        data,
+        props.modification_id,
+        props.quotation_id
+      ).then((response) => {
+        if (response.data.message == "deleted Successfully") {
+          toast.add({
+            severity: "success",
+            life: 3000,
+            summary: "Success Message",
+            detail: "deleted Successfully",
+          });
+          window.location.reload();
+        } else if (response.data.message == "No quotation") {
+          router.push(`/quotation/modification/${props.modification_id}`);
+        }
       });
-      window.location.reload();
-    }
+    },
+    reject: () => {
+      confirm.close();
+    },
   });
 };
 </script>

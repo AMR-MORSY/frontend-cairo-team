@@ -634,7 +634,7 @@ import TransmissionDetails from "../../helpers/Transmission/TransmissionDetails.
 import SearchTxIssuesForm from "../../helpers/Transmission/SearchTxIssuesForm.vue";
 import SiteBatteriesTable from "../../helpers/Sites/SiteBatteriesTable.vue";
 import BatteriesUpdate from "../../helpers/Sites/BatteriesUpdate.vue";
-import { watch,ref } from "vue";
+import { watch, ref } from "vue";
 import { computed } from "vue";
 import { onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
@@ -643,11 +643,12 @@ import store from "../../../vuex/store";
 import { useRouter } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
 import { useAbility } from "@casl/vue";
-const {can}=useAbility();
+import { watchEffect } from "vue";
+const { can } = useAbility();
 const toast = useToast();
 const dialog = useDialog();
 const router = useRouter();
-const confirm=useConfirm();
+const confirm = useConfirm();
 
 const props = defineProps(["site_code"]);
 const siteName = ref(null);
@@ -711,9 +712,9 @@ const items = [
   },
 ];
 
-// watch(props.site_code, (newValue, oldValue) => {
-//   getSiteDetails();
-// });
+// const site_code=computed(()=> props.site_code)
+
+
 
 const countCascades = computed(() => {
   if (cascades.value == null || cascades.value.length == 0) {
@@ -731,9 +732,7 @@ const countIndirectCascades = computed(() => {
 });
 
 const displayModifications = computed(() => {
- 
   if (can("read_CS_modifications") && operationZone.value == "Cairo South") {
-  
     return true;
   } else if (
     can("read_CN_modifications") &&
@@ -844,6 +843,9 @@ const getSiteDetails = () => {
     };
   });
 };
+
+watch(()=>props.site_code,()=> getSiteDetails());/////////////////////////the right way of writing watch
+
 const openDialog = () => {
   dialog.open(SiteAlarmsTable, {
     props: {
@@ -904,7 +906,7 @@ const getSitePowerAlarms = () => {
         if (error.response.data.errors.site_code) {
           let site_codeErrors = error.response.data.errors.site_code;
           site_codeErrors.forEach((element) => {
-           toast.add({
+            toast.add({
               severity: "error",
               summary: "Invalid Code",
               detail: `${element}`,
@@ -1273,7 +1275,7 @@ const getSiteData = () => {
       };
       siteData.push(site);
 
-     dialog.open(EquipmentDetails, {
+      dialog.open(EquipmentDetails, {
         props: {
           style: {
             width: "90vw",
@@ -1291,7 +1293,7 @@ const getSiteData = () => {
         },
       });
     } else {
-     dialog.open(EquipmentDetails, {
+      dialog.open(EquipmentDetails, {
         props: {
           style: {
             width: "50vw",
@@ -1370,7 +1372,7 @@ const getRectifierData = () => {
           "Net ECO Activation": response.data.net_eco_activation,
         };
         rectifierData.push(rectifier);
-       dialog.open(EquipmentDetails, {
+        dialog.open(EquipmentDetails, {
           props: {
             style: {
               width: "75vw",
@@ -1412,8 +1414,8 @@ const getRectifierData = () => {
           },
 
           accept: () => {
-           confirm.close();
-          dialog.open(EquipmentDetails, {
+            confirm.close();
+            dialog.open(EquipmentDetails, {
               props: {
                 style: {
                   width: "75vw",
@@ -1484,7 +1486,7 @@ const getMWData = () => {
         };
 
         MWData.push(MW);
-       dialog.open(EquipmentDetails, {
+        dialog.open(EquipmentDetails, {
           props: {
             style: {
               width: "50vw",
@@ -1506,7 +1508,7 @@ const getMWData = () => {
           },
         });
       } else {
-       confirm.require({
+        confirm.require({
           group: "yesNo",
           header: "Confirmation",
           message: "There is no Microwave data. Add new Data?",
@@ -1525,8 +1527,8 @@ const getMWData = () => {
           },
 
           accept: () => {
-           confirm.close();
-           dialog.open(EquipmentDetails, {
+            confirm.close();
+            dialog.open(EquipmentDetails, {
               props: {
                 style: {
                   width: "75vw",
@@ -1586,7 +1588,7 @@ const getBTSData = () => {
         };
 
         BTSData.push(BTS);
-       dialog.open(EquipmentDetails, {
+        dialog.open(EquipmentDetails, {
           props: {
             style: {
               width: "50vw",
@@ -1608,7 +1610,7 @@ const getBTSData = () => {
           },
         });
       } else {
-       confirm.require({
+        confirm.require({
           group: "yesNo",
           header: "Confirmation",
           message: "There is no BTS data. Add new Data?",
@@ -1627,7 +1629,7 @@ const getBTSData = () => {
           },
 
           accept: () => {
-           confirm.close();
+            confirm.close();
             dialog.open(EquipmentDetails, {
               props: {
                 style: {

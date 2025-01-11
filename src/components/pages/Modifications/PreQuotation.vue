@@ -1,5 +1,5 @@
 <template>
-  <div class="w-screen-2xl px-10 py-20" v-if="isQuotationNotFound">
+  <div class="w-screen-2xl px-10 pt-52" v-if="isQuotationNotFound">
     <Card class="max-w-sm md:max-w-screen-sm mx-auto">
       <template #content>
         <h2
@@ -7,87 +7,84 @@
         >
           No Quotation
         </h2>
-        <div class="w-full">
-          <p
-            class="font-Signika font-bold text-font-main-color uppercase text-center pt-5 mb-5"
-          >
-            Search Price List
+
+        <div class="flex flex-wrap gap-4 mt-3">
+          <p class="text-font-main-color font-extrabold uppercase font-Signika">
+            Import items From:
           </p>
-        </div>
-        <form @submit.prevent="submitPriceListSearchForm">
-          <div class="w-1/2 mx-auto">
-            <InputGroup>
-              <Button label="Search" type="submit" severity="success" />
-              <InputText
-                placeholder="Keyword/item No."
-                v-model.trim="searchPriceList"
-                :invalid="val$.searchPriceList.$errors.length > 0"
-              />
-            </InputGroup>
-            <div v-if="val$.searchPriceList.$error">
-              <validationErrorMessage :errors="val$.searchPriceList.$errors" />
-            </div>
-            <div class="flex flex-wrap gap-4 mt-3">
-              <div class="flex items-center gap-2">
-                <RadioButton
-                  v-model="searchBy"
-                  inputId="ingredient1"
-                  name="pizza"
-                  value="item"
-                />
-                <label
-                  for="ingredient1"
-                  class="text-font-main-color font-medium text-sm uppercase font-Signika"
-                  >Item No.</label
-                >
-              </div>
-              <div class="flex items-center gap-2">
-                <RadioButton
-                  v-model="searchBy"
-                  inputId="ingredient2"
-                  name="pizza"
-                  value="description"
-                />
-                <label
-                  for="ingredient2"
-                  class="text-font-main-color font-medium text-sm uppercase font-Signika"
-                  >Item Description</label
-                >
-              </div>
-            </div>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="searchBy"
+              inputId="ingredient1"
+              name="pizza"
+              value="priceList"
+            />
+            <label
+              for="ingredient1"
+              class="text-font-main-color font-medium text-sm uppercase font-Signika"
+              >Modifications Price List</label
+            >
           </div>
-        </form>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="searchBy"
+              inputId="ingredient2"
+              name="pizza"
+              value="mailList"
+            />
+            <label
+              for="ingredient2"
+              class="text-font-main-color font-medium text-sm uppercase font-Signika"
+              >Approved By Mail</label
+            >
+          </div>
+          <Button
+            class="block"
+            label="Import"
+            @click="getSearchByChoice"
+            severity=" secondary"
+            :raised="true"
+          />
+        </div>
 
         <p
-          class="text-center uppercase font-Signika font-bold text-font-main-color mt-10"
+          class="w-100 text-center font-extrabold text-xl font-Signika text-red-500"
         >
-          upload quotation
+          OR
         </p>
 
-        <form @submit.prevent="submitQuotationSheet">
-          <div class="flex flex-col justify-center items-center mt-10">
-            <div class="flex justify-start">
-              <FileUpload
-                ref="quotationSheet"
-                mode="basic"
-                accept=".xlsx,.csv,.xlsm"
-                :maxFileSize="1000000"
+        <!-- <div class="flex flex-wrap gap-4 mt-3"> -->
+          <p
+            class="text-center uppercase font-Signika font-extrabold text-font-main-color mt-10"
+          >
+            upload quotation
+          </p>
+
+          <!-- <form @submit.prevent="submitQuotationSheet"> -->
+            <div class="flex flex-col justify-center gap-6 items-center mt-10">
+              <div class="flex justify-start">
+                <FileUpload
+                  ref="quotationSheet"
+                  mode="basic"
+                  accept=".xlsx,.csv,.xlsm"
+                  :maxFileSize="1000000"
+                />
+              </div>
+              <div v-if="v$.quotationSheet.$error">
+                <validationErrorMessage :errors="v$.quotationSheet.$errors" />
+              </div>
+              <Button
+               @click="submitQuotationSheet"
+                raised
+                severity="secondary"
+                class="block"
+                label="Upload"
               />
             </div>
-            <div v-if="v$.quotationSheet.$error">
-              <validationErrorMessage :errors="v$.quotationSheet.$errors" />
-            </div>
-          </div>
+          <!-- </form> -->
+        <!-- </div> -->
 
-          <Button
-            type="submit"
-            raised
-            severity="danger"
-            class="block"
-            label="Submit"
-          />
-        </form>
-        <div class="helper-table-container">
+        <div class="w-100">
           <helper-table v-if="sheet_errors">
             <template #header>
               <th scope="col">Row</th>
@@ -125,70 +122,51 @@
   <div class="w-screen-2xl px-10 py-20" v-if="isQuotationFound">
     <Card class="max-w-screen-xl px-5 mx-auto">
       <template #content>
-        <div v-if="isPriceQuotationFound">
-          <DataTable
-            :value="totalItems"
-            scrollable
-            :paginator="true"
-            :rows="5"
-            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-            :rowsPerPageOptions="[5, 10, 15]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-            class="text-sm"
-            tableStyle="min-width: 50rem"
-          >
-            <Column field="item" header="#"></Column>
-            <Column field="description" header="Description"></Column>
-            <Column field="unit" header="Unit"></Column>
-            <Column field="supply_price" header="Supply"></Column>
-            <Column field="install_price" header="Installation"></Column>
-            <Column field="scope" header="Scope"></Column>
-            <Column field="quantity" header="Quantity"></Column>
-            <Column field="item_price" header="Price"></Column>
-            <template #footer>
-              <div
-                class="flex items-center justify-evenly w-100"
-                v-if="!isMailQuotationFound"
-              >
-                <p
-                  class="text-font-main-color text-xl font-Signika font-semibold underline underline-offset-1"
-                >
-                  No Confirmed By mail items
-                </p>
-                <Button
-                  label="Add items"
-                  severity=" danger"
-                  :raised="true"
-                  class="block"
-                  @click.prevent="goToMailPrices()"
-                />
-              </div>
-
-              <div
-                class="text-font-main-color text-xl font-semibold font-Signika"
-              >
-                Total Cost {{ totalCost }} LE.
-              </div>
-            </template>
-          </DataTable>
-        </div>
-
-        <div class="w-100 flex justify-evenly flex-nowrap items-center mt-3">
-          <Button
-            label="Update"
-            severity="danger"
-            :raised="true"
-            class="block"
-            @click.prevent="goToUpdateQuotation"
-          />
-          <Button
-            label="Download"
-            severity="info"
-            :raised="true"
-            class="block"
-            @click.prevent="downloadQuotation"
-          />
-        </div>
+        <DataTable
+          :value="totalItems"
+          scrollable
+          :paginator="true"
+          :rows="5"
+          paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+          :rowsPerPageOptions="[5, 10, 15]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+          class="text-sm"
+          tableStyle="min-width: 50rem"
+        >
+          <Column field="item" header="#"></Column>
+          <Column field="description" header="Description"></Column>
+          <Column field="unit" header="Unit"></Column>
+          <Column field="supply_price" header="Supply"></Column>
+          <Column field="install_price" header="Installation"></Column>
+          <Column field="scope" header="Scope"></Column>
+          <Column field="quantity" header="Quantity"></Column>
+          <Column field="item_price" header="Price"></Column>
+          <template #footer>
+            <div
+              class="text-font-main-color text-xl font-semibold font-Signika"
+            >
+              Total Cost {{ totalCost }} LE.
+            </div>
+            <div
+              class="w-100 flex justify-evenly flex-nowrap items-center mt-3"
+            >
+              <Button
+                label="Update"
+                severity="danger"
+                :raised="true"
+                class="block"
+                @click.prevent="goToUpdateQuotation"
+              />
+              <Button
+                label="Download"
+                severity="info"
+                :raised="true"
+                class="block"
+                @click.prevent="downloadQuotation"
+              />
+            </div>
+          </template>
+        </DataTable>
       </template>
     </Card>
   </div>
@@ -209,22 +187,20 @@ import { useRouter } from "vue-router";
 import exportFromJSON from "export-from-json";
 import * as XLSX from "xlsx";
 
+import PriceListSearchForm from "../../helpers/Modification/PriceListSearchForm.vue";
+
 const props = defineProps(["id"]); /////////////modification id
 
 const quotation = ref();
 
 const priceQuotation = ref([]);
+const searchBy = ref("priceList");
 
 const totalItems = computed(() => {
   return gatheringPricesMailPrices(priceQuotation.value, mailQuotation.value);
 });
 
 const router = useRouter();
-const selectedItem = ref();
-
-const searchPriceList = ref();
-
-const searchBy = ref("item");
 
 const toast = useToast();
 
@@ -240,40 +216,13 @@ const sheet_errors = ref();
 
 const mailQuotation = ref([]);
 
-const isMailQuotationFound = computed(() => {
-  if (mailQuotation.value.length > 0) {
-    return true;
-  }
-  return false;
-});
-
-const isPriceQuotationFound = computed(() => {
-  if (priceQuotation.value.length > 0) {
-    return true;
-  }
-  return false;
-});
-
 const totalCost = computed(() => {
-  if (!priceQuotation.value && !mailQuotation.value.length == 0) {
-    return 0;
-  } else if (priceQuotation.value && mailQuotation.value.length > 0) {
-    let sumQuotation = priceQuotation.value.reduce(function (sum, current) {
-      return sum + Number(current.item_price);
-    }, 0);
-    let sumMailQuotation = mailQuotation.value.reduce(function (sum, current) {
-      return sum + Number(current.item_price);
-    }, 0);
-    return sumMailQuotation + sumQuotation;
-  } else if (priceQuotation.value && mailQuotation.value.length == 0) {
-    return priceQuotation.value.reduce(function (sum, current) {
-      return sum + Number(current.item_price);
-    }, 0);
-  } else if (!priceQuotation.value && mailQuotation.value.length > 0) {
-    return mailQuotation.value.reduce(function (sum, current) {
+  if (totalItems.value.length > 0) {
+    return totalItems.value.reduce(function (sum, current) {
       return sum + Number(current.item_price);
     }, 0);
   }
+  return 0;
 });
 
 const mustIncludeFile = (value) => {
@@ -282,18 +231,16 @@ const mustIncludeFile = (value) => {
   }
   return false;
 };
-const searchPriceListRegex = helpers.regex(/^.{1,50}$/);
+
 const onRowSelect = () => {};
 
-const searchPriceListRules = computed(() => ({
-  searchPriceList: {
-    required: helpers.withMessage(" item No. or keyword is required", required),
-    searchPriceListRegex: helpers.withMessage(
-      "invalid search format",
-      searchPriceListRegex
-    ),
-  },
-}));
+const getSearchByChoice = () => {
+  if (searchBy.value == "priceList") {
+    addItemsFromPriceList();
+  } else {
+    AddNewMailListItem();
+  }
+};
 
 const rules = computed(() => ({
   quotationSheet: {
@@ -301,13 +248,13 @@ const rules = computed(() => ({
       "Quotation sheet is required",
       mustIncludeFile
     ),
-    // fileTypeRegex:helpers.withMessage("xlx,xlsx,csv file type only",fileTypeRegex)
   },
 }));
 
 const v$ = useVuelidate(rules, { quotationSheet });
 
 const submitQuotationSheet = async () => {
+  console.log(quotationSheet.value);
   const isFormCorrect = await v$.value.$validate();
   if (!isFormCorrect) {
     return;
@@ -319,7 +266,17 @@ const submitQuotationSheet = async () => {
   };
 
   Quotation.uploadQuotationSheet(data)
-    .then((response) => {})
+    .then((response) => {
+      if (response.data.message == "inserted Successfully") {
+        toast.add({
+          severity: "success",
+          summary: "Success Message",
+          detail: "inserted Successfully",
+          life: 3000,
+        });
+        getModificationQuotation();
+      }
+    })
     .catch((error) => {
       if (error.response) {
         if ((error.response.status = 422)) {
@@ -342,49 +299,29 @@ const submitQuotationSheet = async () => {
     });
 };
 
-const val$ = useVuelidate(searchPriceListRules, {
-  searchPriceList,
-});
+const addItemsFromPriceList = () => {
+  dialog.open(PriceListSearchForm, {
+    props: {
+      style: {
+        width: "50vw",
+      },
+      breakpoints: {
+        "960px": "75vw",
+        "640px": "90vw",
+      },
 
-const submitPriceListSearchForm = async () => {
-  const isFormCorrect = await val$.value.$validate();
-  if (!isFormCorrect) {
-    return;
-  }
-  let data = {
-    search: searchPriceList.value,
-    searchBy: searchBy.value,
-  };
-  console.log(data);
-  Modifications.searchPriceList(data).then((response) => {
-    console.log(response.data);
-    if (response.data.message == "No data found") {
-      toast.add({
-        severity: "error",
-        summary: "Error Message",
-        detail: "No data Found",
-        life: 3000,
-      });
-    } else {
-      dialog.open(PriceListTable, {
-        props: {
-          style: {
-            width: "50vw",
-          },
-          breakpoints: {
-            "960px": "75vw",
-            "640px": "90vw",
-          },
-
-          modal: true,
-        },
-
-        data: {
-          priceListItems: response.data.priceList,
-        },
-      });
-    }
+      modal: true,
+      position: "top",
+    },
+    data: {
+      modification_id: props.id,
+      quotation_id: "",
+    },
   });
+};
+
+const AddNewMailListItem = () => {
+  return router.push(`/quotation/mailprices/index/${props.id}`);
 };
 
 onMounted(() => {
@@ -421,12 +358,10 @@ const gatheringPricesMailPrices = (prices, mailPrices) => {
 
 const getModificationQuotation = () => {
   Modifications.getModificationQuotation(props.id).then((response) => {
-    console.log(response);
     if (response.data.message != "No quotation") {
       quotation.value = response.data.quotation;
       priceQuotation.value = response.data.quotation.prices;
       mailQuotation.value = response.data.quotation.mail_prices;
-      // totalItems.value=gatheringPricesMailPrices(response.data.quotation.prices,response.data.quotation.mail_prices)
       isQuotationFound.value = true;
       isQuotationNotFound.value = false;
     } else {
@@ -436,39 +371,22 @@ const getModificationQuotation = () => {
   });
 };
 
-const goToMailPrices = () => {
-  return router.push(
-    `/quotation/mailprices/index/${props.id}/${quotation.value.id}`
-  );
-};
-
 const goToUpdateQuotation = () => {
   return router.push(`/quotation/update/${props.id}/${quotation.value.id}`);
 };
 
 const downloadQuotation = () => {
-  console.log(quotation.value);
   let modifications = [];
   let modification = quotation.value.modification;
   modification.action_owner = modification.action_owner.name;
   modification.site = modification.site.site_name;
   modifications.push(modification);
-  let total = [];
-  total.push(modifications);
-  // // total.push(quotation.value.prices)
-  total.push(totalItems.value);
 
   const modificationsSheet = XLSX.utils.json_to_sheet(modifications);
-  const quotationSheet=XLSX.utils.json_to_sheet(totalItems.value);
+  const quotationSheet = XLSX.utils.json_to_sheet(totalItems.value);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, modificationsSheet, "modification");
-  XLSX.utils.book_append_sheet(workbook, quotationSheet,"Quotation");
+  XLSX.utils.book_append_sheet(workbook, quotationSheet, "Quotation");
   XLSX.writeFile(workbook, "Quotation.xlsx", { compression: true });
-  // const data =total;
-  // const fileName = "quotation";
-  // const exportType = exportFromJSON.types.csv;
-
-  // if (data) exportFromJSON({ data, fileName, exportType });
-  console.log(total);
 };
 </script>
