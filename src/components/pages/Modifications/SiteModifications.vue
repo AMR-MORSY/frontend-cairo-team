@@ -164,50 +164,6 @@ const insertNewModification = () => {
   router.push(`/modifications/new/${props.site_code}/${props.site_name}`);
 };
 
-// const deleteModification = () => {
-//   confirm.require({
-//     group: "yesNo",
-//     message: "Are you sure you want to proceed?",
-//     header: "Confirmation",
-//     icon: "pi pi-exclamation-triangle",
-//     position: "center",
-//     rejectProps: {
-//       label: "No",
-//       severity: "danger",
-//     },
-//     acceptProps: {
-//       label: "Yes",
-//       severity: "success",
-//     },
-//     accept: () => {
-//       confirm.close();
-
-//       let data = {
-//         id: selectedModification.value.id,
-//       };
-
-     
-
-//       Modifications.deleteModification(data)
-//         .then((response) => {
-//           if (response.data.message == "Deleted Successfully") {
-//             toast.add({
-//               severity: "success",
-//               summary: "Success Message",
-//               detail: "Deleted Successfully",
-//               life: 3000,
-//             });
-//             getSiteModifications();
-//           }
-        
-//         })
-//         .catch((error) => {});
-//     },
-//     reject: () => {
-//       confirm.close();
-//     },
-//   });
-// };
 
 const gotToModificationView = () => {
   router.push(

@@ -54,66 +54,87 @@
         </p>
 
         <!-- <div class="flex flex-wrap gap-4 mt-3"> -->
-          <p
-            class="text-center uppercase font-Signika font-extrabold text-font-main-color mt-10"
-          >
-            upload quotation
-          </p>
+        <p
+          class="text-center uppercase font-Signika font-extrabold text-font-main-color mt-10"
+        >
+          upload quotation
+        </p>
 
-          <!-- <form @submit.prevent="submitQuotationSheet"> -->
-            <div class="flex flex-col justify-center gap-6 items-center mt-10">
-              <div class="flex justify-start">
-                <FileUpload
-                  ref="quotationSheet"
-                  mode="basic"
-                  accept=".xlsx,.csv,.xlsm"
-                  :maxFileSize="1000000"
-                />
-              </div>
-              <div v-if="v$.quotationSheet.$error">
-                <validationErrorMessage :errors="v$.quotationSheet.$errors" />
-              </div>
-              <Button
-               @click="submitQuotationSheet"
-                raised
-                severity="secondary"
-                class="block"
-                label="Upload"
-              />
-            </div>
-          <!-- </form> -->
+        <!-- <form @submit.prevent="submitQuotationSheet"> -->
+        <div class="flex flex-col justify-center gap-6 items-center mt-10">
+          <div class="flex justify-start">
+            <FileUpload
+              ref="quotationSheet"
+              mode="basic"
+              accept=".xlsx,.csv,.xlsm"
+              :maxFileSize="1000000"
+            />
+          </div>
+          <div v-if="v$.quotationSheet.$error">
+            <validationErrorMessage :errors="v$.quotationSheet.$errors" />
+          </div>
+          <Button
+            @click="submitQuotationSheet"
+            raised
+            severity="secondary"
+            class="block"
+            label="Upload"
+          />
+        </div>
+        <!-- </form> -->
         <!-- </div> -->
 
-        <div class="w-100">
-          <helper-table v-if="sheet_errors">
-            <template #header>
-              <th scope="col">Row</th>
-              <th scope="col">Attribute</th>
-              <th scope="col">Errors</th>
-              <th scope="col">Values</th>
-            </template>
-            <template #body>
-              <tr
-                style="background-color: white; color: red"
-                v-for="error in sheet_errors"
-                :key="error"
-              >
-                <td class="text-left align-middle">{{ error.row }}</td>
-                <td class="text-left align-middle">{{ error.attribute }}</td>
-                <td class="text-left align-middle">
-                  <ul v-for="rowError in error.errors" :key="rowError">
-                    <li>{{ rowError }}</li>
-                  </ul>
-                </td>
-                <td class="text-left align-middle">
-                  <ul>
-                    <li>Item:{{ error.values["item"] }}</li>
-                    <li>Quantity:{{ error.values["quantity"] }}</li>
-                  </ul>
-                </td>
-              </tr>
-            </template>
-          </helper-table>
+        <div class="w-100" v-if="sheet_errors.length>0">
+          <DataTable
+            :value="sheet_errors"
+            scrollable
+            :paginator="true"
+            :rows="5"
+            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            :rowsPerPageOptions="[5, 10, 15]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+            class="text-sm"
+            tableStyle="min-width: 50rem"
+          >
+            <Column field="row" header="Row"></Column>
+            <Column field="attribute" header="Attribute"></Column>
+            <Column field="errors" header="Errors">
+              <template #body="slotProps">
+                <strong
+                  class="font-Signika text-font-main-color"
+                  v-for="error in slotProps.data.errors"
+                  :key="error"
+                >
+                  {{ error }}
+                </strong>
+              </template>
+            </Column>
+            <Column field="values" header="Values">
+              <template #body="slotProps">
+                <p>
+                  <strong
+                    class="font-Signika text-font-main-color font-semibold"
+                    >Item:</strong
+                  >
+                  {{ slotProps.data.values.item.value }}
+                </p>
+                <p>
+                  <strong
+                    class="font-Signika text-font-main-color font-semibold"
+                    >Quantity:</strong
+                  >
+                  {{ slotProps.data.values.quantity }}
+                </p>
+                <p>
+                  <strong
+                    class="font-Signika text-font-main-color font-semibold"
+                    >Scope:</strong
+                  >
+                  {{ slotProps.data.values.scope }}
+                </p>
+              </template>
+            </Column>
+          </DataTable>
         </div>
       </template>
     </Card>
@@ -212,7 +233,7 @@ const isQuotationNotFound = ref(false);
 
 const isQuotationFound = ref(false);
 
-const sheet_errors = ref();
+const sheet_errors = ref([]);
 
 const mailQuotation = ref([]);
 
@@ -264,7 +285,7 @@ const submitQuotationSheet = async () => {
     quotation: quotationSheet.value.files[0],
     id: props.id,
   };
-
+  sheet_errors.value = [];
   Quotation.uploadQuotationSheet(data)
     .then((response) => {
       if (response.data.message == "inserted Successfully") {
@@ -282,6 +303,7 @@ const submitQuotationSheet = async () => {
         if ((error.response.status = 422)) {
           if (error.response.data.sheet_errors) {
             sheet_errors.value = error.response.data.sheet_errors;
+            console.log(sheet_errors.value);
           } else if (error.response.data.errors) {
             var errors = [];
             errors = error.response.data.errors;
@@ -303,7 +325,7 @@ const addItemsFromPriceList = () => {
   dialog.open(PriceListSearchForm, {
     props: {
       style: {
-        width: "50vw",
+        width: "75vw",
       },
       breakpoints: {
         "960px": "75vw",
@@ -315,13 +337,13 @@ const addItemsFromPriceList = () => {
     },
     data: {
       modification_id: props.id,
-      quotation_id: "",
+      quotation_id: null,
     },
   });
 };
 
 const AddNewMailListItem = () => {
-  return router.push(`/quotation/mailprices/index/${props.id}`);
+  router.push(`/quotation/mailprices/index/${props.id}`);
 };
 
 onMounted(() => {
@@ -354,10 +376,15 @@ const gatheringPricesMailPrices = (prices, mailPrices) => {
     });
     return newMailPrices;
   }
+  else if(mailPrices.length == 0 && prices.length == 0)
+  {
+    return [];
+  }
 };
 
 const getModificationQuotation = () => {
   Modifications.getModificationQuotation(props.id).then((response) => {
+    console.log(response.data)
     if (response.data.message != "No quotation") {
       quotation.value = response.data.quotation;
       priceQuotation.value = response.data.quotation.prices;

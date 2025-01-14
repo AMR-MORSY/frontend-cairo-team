@@ -33,6 +33,7 @@
             <Column field="description" sortable header="Description"></Column>
             <Column field="cw_date" sortable header="C.W Date"></Column>
             <Column field="d6_date" sortable header="D6 Date"></Column>
+            <Column field="est_cost" sortable header="Estimated Cost"></Column>
             <Column field="final_cost" header="Final Cost" sortable></Column>
             <Column
               field="action_owner.name"
@@ -82,7 +83,7 @@
                 :disabled="!isRowSelected"
               />
             </div>
-          
+
             <div class="my-3">
               <Button
                 label="Report Modifications"
@@ -115,7 +116,7 @@ import { useToast } from "primevue/usetoast";
 import * as XLSX from "xlsx";
 
 const confirm = useConfirm();
-const toast=useToast();
+const toast = useToast();
 const router = useRouter();
 const props = defineProps(["modificationsData"]);
 
@@ -140,6 +141,16 @@ const thereAreUnreportedModifications = computed(
   () => unReportedModifications.value.length > 0
 );
 
+const zeroEstCost = () => {
+  let thereAreModificationsWithoutEstCost = false;
+  unReportedModifications.value.forEach((element) => {
+    if (element.est_cost == 0) {
+      thereAreModificationsWithoutEstCost = true;
+    }
+  });
+  return thereAreModificationsWithoutEstCost;
+};
+
 const prepareUnreportedArray = () => {
   var modifications = [];
 
@@ -150,67 +161,65 @@ const prepareUnreportedArray = () => {
 };
 
 const reportModifications = () => {
-  confirm.require({
-    group: "yesNo",
-    message:
-      "This will add 'today's date' to all unreported modifications, Are you sure you want to proceed?",
-    header: "Confirmation",
-    icon: "pi pi-exclamation-triangle",
-    rejectProps: {
-      label: "No",
-      severity: "danger",
-    },
-    acceptProps: {
-      label: "Yes",
-      severity: "success",
-    },
-    accept: () => {
-      confirm.close();
+  if (!zeroEstCost()) {
+    confirm.require({
+      group: "yesNo",
+      message:
+        "This will add 'today's date' to all unreported modifications, Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      rejectProps: {
+        label: "No",
+        severity: "danger",
+      },
+      acceptProps: {
+        label: "Yes",
+        severity: "success",
+      },
+      accept: () => {
+        confirm.close();
 
-      var data = {
-        modifications: prepareUnreportedArray(),
-      };
+        var data = {
+          modifications: prepareUnreportedArray(),
+        };
 
-      Modifications.reportModifications(data).then((response) => {
-        console.log(response);
-        if (response.data.message == "reported Successfully") {
-          toast.add({
-            severity: "success",
-            summary: "Success Message",
-            detail: "Reported Successfully",
-            life: 3000,
-          });
-          window.location.reload();
-        }
-      });
+        Modifications.reportModifications(data).then((response) => {
+          console.log(response);
+          if (response.data.message == "reported Successfully") {
+            toast.add({
+              severity: "success",
+              summary: "Success Message",
+              detail: "Reported Successfully",
+              life: 3000,
+            });
+            window.location.reload();
+          }
+        });
+      },
+      reject: () => {
+        confirm.close();
+      },
+    });
+  }
+  else{
+    confirm.require({
+      group: "info",
+      message:
+        "One or more modifications has no estimated cost",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      position:"top",
+      acceptProps: {
+        label: "OK",
+        severity: "danger",
+      },
+      accept: () => {
+        confirm.close();
+      },
+    
+    });
 
-      // isRowSelected.value = false;
-
-      // let data = {
-      //   id: selectedModification.value.id,
-      // };
-
-      // Modifications.deleteModification(data)
-
-      //   .then((response) => {
-      //     if (response.data.message == "Deleted Successfully") {
-      //       toast.add({
-      //         severity: "success",
-      //         summary: "Success Message",
-      //         detail: "Deleted Successfully",
-      //         life: 3000,
-      //       });
-      //       window.location.reload();
-      //     }
-      //   })
-      //   .catch((error) => {});
-    },
-    reject: () => {
-      confirm.close();
-      // isRowSelected.value = false;
-      //callback to execute when user rejects the action
-    },
-  });
+  }
 };
 
 const totalCost = computed(() => {
@@ -231,6 +240,7 @@ const rowClass = (data) => {
 const downloadModifications = () => {
   modifications.value = modifications.value.forEach((element) => {
     element.action_owner = element.action_owner.name;
+    element.site = element.site.site_name;
     if (element.cw_date == null) {
       element.cw_date = "";
     }
@@ -248,12 +258,11 @@ const downloadModifications = () => {
     }
   });
   const modificationsSheet = XLSX.utils.json_to_sheet(modifications.value);
- 
+
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, modificationsSheet, "modifications");
- 
+
   XLSX.writeFile(workbook, "Modifications.xlsx", { compression: true });
- 
 };
 const onRowSelect = () => {
   isRowSelected.value = true;
@@ -264,8 +273,7 @@ const onRowSelect = () => {
 //   );
 // };
 
-const goToViewModification=()=>{
-  router.push(`/modification/view/${selectedModification.value.id}`)
-}
-
+const goToViewModification = () => {
+  router.push(`/modification/view/${selectedModification.value.id}`);
+};
 </script>

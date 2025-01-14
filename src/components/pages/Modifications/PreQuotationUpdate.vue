@@ -146,10 +146,12 @@
             />
           </div>
         </div>
-        <div class="flex items-center justify-end w-100">
+        <div class="flex items-center justify-between flex-wrap w-100 mt-3">
+            <Button label="View Total Quotation" @click="goToQuotation" class=" block" :raised=true severity="secondary"/>
           <div class="text-font-main-color text-xl font-semibold font-Signika">
             Total Cost {{ totalCost }} LE.
           </div>
+        
         </div>
       </template>
     </Card>
@@ -230,11 +232,14 @@ const totalCost = computed(() => {
   }
 });
 
+const goToQuotation=()=>{
+    router.push(`/quotation/modification/${props.modification_id}`)
+}
 const AddNewPriceListItem = () => {
   dialog.open(PriceListSearchForm, {
     props: {
       style: {
-        width: "50vw",
+        width: "75vw",
       },
       breakpoints: {
         "960px": "75vw",
@@ -247,6 +252,7 @@ const AddNewPriceListItem = () => {
     data: {
       modification_id: props.modification_id,
       quotation_id: props.quotation_id,
+    
     },
   });
 };

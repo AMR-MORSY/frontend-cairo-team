@@ -85,17 +85,19 @@ import { computed } from "vue";
 import { useToast } from "primevue/usetoast";
 import router from "../../../router";
 import { onUpdated } from "vue";
+import { useConfirm } from "primevue/useconfirm";
+import { watch, watchEffect } from "vue";
 const props = defineProps([
   "action",
   "items",
-  "backRoute",
+
   "modification_id",
   "quotation_id",
 ]);
 const toast = useToast();
+const confirm = useConfirm();
 
-const items = computed(() => props.items);
-
+const items = ref([]);
 const selectedItems = ref([]);
 
 const scopeOptions = ref(["supply", "install", "s&i"]);
@@ -148,8 +150,6 @@ const onCellEditComplete = (event) => {
         });
       }
       break;
-
-   
   }
 };
 
@@ -157,12 +157,12 @@ const onRowSelect = () => {
   //   console.log(selectedItems.value);
 };
 
-onUpdated(() => {
-  items.value = items.value.forEach((element) => {
+watchEffect(() => {
+  items.value = props.items;
+  items.value.forEach((element) => {
     element.quantity = 0;
     element.scope = "s&i";
   });
-  console.log(items.value);
 });
 
 const checkSelectedItemsQuantity = () => {
@@ -176,6 +176,7 @@ const checkSelectedItemsQuantity = () => {
   });
   return isZeroQuantity;
 };
+
 const insertMailPricesItems = () => {
   if (checkSelectedItemsQuantity()) {
     return toast.add({
@@ -188,64 +189,117 @@ const insertMailPricesItems = () => {
     let data = {
       mail_prices: selectedItems.value,
     };
-  
+    console.log(props.quotation_id);
     Quotation.insertQuotationMailPricesItems(
       data,
       props.modification_id,
       props.quotation_id
-    ).then((response) => {
-      console.log(response);
-      if (response.data.message == "success") {
-        if (props.quotation_id) {
-            router.push(
-            `/quotation/update/${props.modification_id}/${props.quotation_id}`
-          );
-         
-        } else {
-            router.push(`/quotation/modification/${props.modification_id}`);
-         
-        }
-      }
-    });
-  }
-};
-
-const insertPriceListItems = () => {
-  if (checkSelectedItemsQuantity()) {
-    return toast.add({
-      severity: "error",
-      summary: "Error Message",
-      detail: "One or more items Quantity is zero ",
-      life: 3000,
-    });
-  } else {
-   
-      let data = {
-        priceListItems: selectedItems.value,
-      };
-      console.log(data);
-      Quotation.insertQuotationPriceListItems(
-        data,
-        props.modification_id,
-        props.quotation_id
-      ).then((response) => {
-        console.log(response);
+    )
+      .then((response) => {
         if (response.data.message == "success") {
-          if (props.action == "priceListItemsInsertion") {
-            toast.add({
-              severity: "success",
-              detail: "Inserted Successfully",
-              life: 3000,
-              summary: "Success Message",
-            });
-            //   router.push(`/quotation/update/${props.modification_id}/${props.quotation_id}`);
-            window.location.reload();
+          if (props.quotation_id) {
+            router.push(
+              `/quotation/update/${props.modification_id}/${props.quotation_id}`
+            );
           } else {
             router.push(`/quotation/modification/${props.modification_id}`);
           }
         }
+      })
+      .catch((error) => {
+        if (error.response.status == 422) {
+          let errors = error.response.data.errors;
+          if (errors.quantity) {
+            errors.quantity.forEach((element) => {
+              toast.add({
+                severity: "error",
+                summary: "Failed",
+                detail: element,
+                life: 3000,
+              });
+            });
+          }
+        }
       });
-  
+  }
+};
+
+const theFinalPriceListItemsSubmission = () => {
+  let data = {
+    priceListItems: selectedItems.value,
+  };
+  console.log(data);
+  Quotation.insertQuotationPriceListItems(
+    data,
+    props.modification_id,
+    props.quotation_id
+  )
+    .then((response) => {
+      console.log(response);
+      if (response.data.message == "success") {
+        if (props.action == "priceListItemsInsertion") {
+          toast.add({
+            severity: "success",
+            detail: "Inserted Successfully",
+            life: 3000,
+            summary: "Success Message",
+          });
+          //   router.push(`/quotation/update/${props.modification_id}/${props.quotation_id}`);
+          window.location.reload();
+        } else {
+          router.push(`/quotation/modification/${props.modification_id}`);
+        }
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.status == 422) {
+        let errorsKeys = Object.keys(error.response.data.errors);
+        let errorsValues = Object.values(error.response.data.errors);
+        console.log(errorsValues)
+        for (var i = 0; i <= errorsKeys.length; i++) {
+
+          toast.add({
+              severity: "error",
+              summary: "Failed",
+              detail: errorsKeys[i]+"==>"+errorsValues[i][0],
+              life: 5000,
+            });
+
+        }
+      
+         
+      }
+    });
+};
+const insertPriceListItems = () => {
+  if (checkSelectedItemsQuantity()) {
+    confirm.require({
+      group: "yesNo",
+      message:
+        "One or more items Quantity is zero, proceed if the items un-priced?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      position: "top",
+
+      rejectProps: {
+        label: "No",
+        severity: "success",
+      },
+      acceptProps: {
+        label: "Yes",
+        severity: "danger",
+      },
+      accept: () => {
+        confirm.close();
+        theFinalPriceListItemsSubmission();
+      },
+      reject: () => {
+        confirm.close();
+      },
+    });
+  } else {
+    theFinalPriceListItemsSubmission();
   }
 };
 </script>

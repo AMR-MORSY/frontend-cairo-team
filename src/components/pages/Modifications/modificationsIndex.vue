@@ -18,7 +18,7 @@ const modifications = ref([]);
 const toast = useToast();
 const props = defineProps(["columnName", "columnValue"]);
 const router = useRouter();
-const confirm=useConfirm();
+const confirm = useConfirm();
 const isThereModifications = computed(() => {
   if (modifications.value.length > 0) {
     return true;
@@ -35,10 +35,20 @@ const getModificationsIndex = () => {
     columnValue: props.columnValue,
   };
 
+  if (data.columnName == "reported") {
+    if (data.columnValue == "Yes") {
+      data.columnValue = 1;
+    } else if ((data.columnValue = "No")) {
+      data.columnValue=0;
+    }
+  }
+
+
+
   Modifications.getModificationIndex(data)
 
     .then((response) => {
-      console.log(response);
+    
 
       modifications.value = response.data.modifications;
       if (modifications.value.length == 0) {

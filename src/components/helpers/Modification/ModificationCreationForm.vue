@@ -49,7 +49,7 @@
                     v-model="subcontractor"
                     :invalid="v$.subcontractor.$errors.length > 0"
                     :options="subcontractors"
-                    :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -67,7 +67,7 @@
                     :options="status_options"
                     v-model="status"
                     :invalid="v$.status.$errors.length > 0"
-                     :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -84,7 +84,7 @@
                     fluid
                     :invalid="v$.requester.$errors.length > 0"
                     :options="requester_options"
-                     :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -103,7 +103,7 @@
                     v-model="project"
                     id="Projects"
                     :invalid="v$.project.$errors.length > 0"
-                     :disabled=" needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -123,7 +123,7 @@
                   dateFormat="yy-mm-dd"
                   showIcon
                   :showOnFocus="false"
-                   :disabled=" needed_action=='view'"
+                  :disabled="needed_action == 'view'"
                 />
                 <div v-if="v$.request_date.$error">
                   <validationErrorMessage :errors="v$.request_date.$errors" />
@@ -141,7 +141,7 @@
                   dateFormat="yy-mm-dd"
                   showIcon
                   :showOnFocus="false"
-                   :disabled="needed_action=='view'"
+                  :disabled="needed_action == 'view'"
                 />
                 <div v-if="v$.cw_date.$error">
                   <validationErrorMessage :errors="v$.cw_date.$errors" />
@@ -159,7 +159,7 @@
                   dateFormat="yy-mm-dd"
                   showIcon
                   :showOnFocus="false"
-                   :disabled="needed_action=='view'"
+                  :disabled="needed_action == 'view'"
                 />
                 <div v-if="v$.d6_date.$error">
                   <validationErrorMessage :errors="v$.d6_date.$errors" />
@@ -173,12 +173,13 @@
                     v-model="est_cost"
                     :min="0"
                     id="est_cost"
-                     :disabled=" needed_action=='view'"
+                      :invalid="v$.est_cost.$errors.length > 0"
+                    :disabled="needed_action == 'view'"
                   />
                 </div>
-                <!-- <div v-if="v$.est_cost.$error">
+                <div v-if="v$.est_cost.$error">
                   <validationErrorMessage :errors="v$.est_cost.$errors" />
-                </div> -->
+                </div>
               </div>
               <div class="col-span-4 md:col-span-2 lg:col-span-1">
                 <div class="flex-auto">
@@ -189,7 +190,7 @@
                     :invalid="v$.final_cost.$errors.length > 0"
                     :min="0"
                     id="final_cost"
-                     :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   />
                 </div>
                 <div v-if="v$.final_cost.$error">
@@ -214,7 +215,7 @@
                     v-model="actions"
                     :invalid="v$.actions.$errors.length > 0"
                     :options="actions_options"
-                     :disabled=" needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -231,7 +232,7 @@
                     v-model="reported"
                     :options="reported_options"
                     :invalid="v$.reported.$errors.length > 0"
-                     :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   >
                   </Select>
                 </div>
@@ -251,7 +252,7 @@
                   showIcon
                   :showOnFocus="false"
                   fluid
-                   :disabled="needed_action=='view'"
+                  :disabled="needed_action == 'view'"
                 />
                 <div v-if="v$.reported_at.$error">
                   <validationErrorMessage :errors="v$.reported_at.$errors" />
@@ -267,7 +268,7 @@
                     :invalid="v$.description.$errors.length > 0"
                     rows="5"
                     cols="40"
-                     :disabled="needed_action=='view'"
+                    :disabled="needed_action == 'view'"
                   ></Textarea>
                 </div>
                 <div v-if="v$.description.$error">
@@ -303,11 +304,10 @@
               <Button
                 label="Delete"
                 @click.prevent="deleteModification"
-               severity="danger"
-                v-if="needed_action=='view'"
+                severity="danger"
+                v-if="needed_action == 'view'"
                 raised
                 class="block"
-                
               />
               <template v-if="needed_action == 'update'">
                 <Button
@@ -431,7 +431,7 @@ const d6_date = ref(null);
 
 const actions = ref(null);
 const description = ref("");
-const reported = ref(null);
+const reported = ref("No");
 const reported_at = ref(null);
 const operation_zone = ref(null);
 const action_owner = ref(null);
@@ -444,6 +444,21 @@ const mustBeYes = (value) => {
   }
   return true;
 };
+
+const greaterThanZeroWhenStatusDone = (value) => {
+  if (value == 0 && status.value == "done") {
+    return false;
+  }
+  return true;
+};
+
+const greaterThanZeroWhenReported=(value)=>{
+  if (value == 0 && reported.value == "Yes") {
+    return false;
+  }
+  return true;
+
+}
 
 const actions_options = [
   "Retrofitting",
@@ -521,8 +536,13 @@ const rules = computed(() => ({
     ),
     minValue: helpers.withMessage(
       "must be after request date",
-      minValue(request_date.value)
+      minValue(request_date.value && cw_date.value)
     ),
+    minValue: helpers.withMessage(
+      "must be after Civil work date",
+      minValue( cw_date.value)
+    ),
+    
   },
   requester: {
     required: helpers.withMessage("Requester is required", required),
@@ -543,9 +563,15 @@ const rules = computed(() => ({
     ),
   },
   final_cost: {
-    requiredIf: helpers.withMessage(
+   greaterThanZeroWhenStatusDone: helpers.withMessage(
       "Cost is required",
-      requiredIf(status.value == "done")
+     greaterThanZeroWhenStatusDone
+    ),
+  },
+  est_cost: {
+   greaterThanZeroWhenReported: helpers.withMessage(
+      "Estimated Cost is required",
+     greaterThanZeroWhenReported
     ),
   },
   reported: {
@@ -604,6 +630,7 @@ const v$ = useVuelidate(rules, {
   d6_date,
   actions,
   final_cost,
+  est_cost,
   cw_date,
   description,
   reported_at,
@@ -628,8 +655,6 @@ const formData = () => {
   };
 };
 const updateModification = () => {
-  // console.log(props.modificationData);
-
   confirm.require({
     group: "yesNo",
     message: "Are you sure you want to proceed?",
@@ -684,28 +709,10 @@ const insertNewModification = async () => {
     return;
   }
 
-  // let data = {
-  //   site_code: props.siteCode,
-  //   subcontractor: subcontractor.value,
-  //   requester: requester.value,
-  //   request_date: convertDate(request_date.value),
-  //   cw_date: convertDate(cw_date.value),
-  //   d6_date: convertDate(d6_date.value),
-  //   est_cost: est_cost.value,
-  //   final_cost: final_cost.value,
-  //   project: project.value,
-  //   status: status.value,
-  //   actions: actions.value,
-  //   description: description.value,
-  //   reported: reported.value,
-  //   reported_at: convertDate(reported_at.value),
-  // };
-
   let data = formData();
 
   data.site_code = props.siteCode;
 
-  // console.log(data)
   Modifications.insertNewModification(data)
 
     .then((response) => {
@@ -881,7 +888,6 @@ const deleteModification = () => {
     },
     accept: () => {
       confirm.close();
-    
 
       let data = {
         id: props.modificationData.id,
@@ -897,7 +903,7 @@ const deleteModification = () => {
               detail: "Deleted Successfully",
               life: 3000,
             });
-           router.go(-1);
+            router.go(-1);
           }
         })
         .catch((error) => {});
@@ -910,9 +916,7 @@ const deleteModification = () => {
   });
 };
 const goToUpdate = () => {
-  router.push(
-    `/modification/update/${props.modificationData.id}`
-  );
+  router.push(`/modification/update/${props.modificationData.id}`);
 };
 </script>
 

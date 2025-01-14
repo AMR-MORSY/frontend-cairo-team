@@ -30,6 +30,7 @@ const mailprices = ref([]);
 
 onMounted(() => {
   getMailPrices();
+  console.log(props.quotation_id)
  
 });
 

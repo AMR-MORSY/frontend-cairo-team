@@ -55,6 +55,8 @@
     :items="selectedItems"
     :modification_id="modification_id"
     :quotation_id="quotation_id"
+
+    v-if="selectedItems.length>0"
   />
 </template>
 
@@ -74,6 +76,7 @@ import { inject } from "vue";
 const dialogRef = inject("dialogRef");
 
 const modification_id = dialogRef.value.data.modification_id;
+
 
 const quotation_id = dialogRef.value.data.quotation_id;
 
@@ -95,7 +98,7 @@ const searchPriceListRules = computed(() => ({
 
 const searchPriceList = ref();
 
-const selectedItems = ref();
+const selectedItems = ref([]);
 
 const val$ = useVuelidate(searchPriceListRules, {
   searchPriceList,
@@ -113,7 +116,7 @@ const submitPriceListSearchForm = async () => {
     searchBy: searchBy.value,
   };
   Modifications.searchPriceList(data).then((response) => {
-    console.log(response.data);
+ 
     if (response.data.message == "No data found") {
       toast.add({
         severity: "error",
@@ -139,7 +142,12 @@ const submitPriceListSearchForm = async () => {
           priceListItems: response.data.priceList,
         },
         onClose: (opt) => {
-          selectedItems.value = opt.data;
+            opt.data.forEach((element)=>{
+                selectedItems.value.push(element) 
+                
+            })
+         
+         
         },
       });
     }
