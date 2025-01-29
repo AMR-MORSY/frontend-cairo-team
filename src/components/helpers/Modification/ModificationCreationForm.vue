@@ -171,7 +171,7 @@
                   <InputNumber
                     fluid
                     v-model="est_cost"
-                    :min="0"
+                    :min=0
                     id="est_cost"
                       :invalid="v$.est_cost.$errors.length > 0"
                     :disabled="needed_action == 'view'"
@@ -188,7 +188,7 @@
                     fluid
                     v-model="final_cost"
                     :invalid="v$.final_cost.$errors.length > 0"
-                    :min="0"
+                    :min=0
                     id="final_cost"
                     :disabled="needed_action == 'view'"
                   />
@@ -357,9 +357,9 @@ const confirm = useConfirm();
 
 const subcontractor = ref(null);
 
-const est_cost = ref(null);
+const est_cost = ref(0);
 
-const final_cost = ref(null);
+const final_cost = ref(0);
 
 const subcontractors = [
   "OT",
@@ -445,8 +445,16 @@ const mustBeYes = (value) => {
   return true;
 };
 
+const greaterThanZeroWhenStatusDoneORWaiting = (value) => {
+  if ((value == 0 && status.value == "done") || (value == 0 && status.value == "waiting D6")) {
+    return false;
+  }
+  return true;
+};
+
+
 const greaterThanZeroWhenStatusDone = (value) => {
-  if (value == 0 && status.value == "done") {
+  if (value == 0 && status.value == "done")  {
     return false;
   }
   return true;
@@ -472,6 +480,12 @@ const actions_options = [
   "Extending Cables",
   "Concrete Works",
   "Cable Trays",
+  "RRUs Relocation",
+  "Site Dismantle",
+  "Cage Installation",
+  "Adding Mast",
+  "Dismantling Cabinets",
+  "Relocating Power Meter"
 ];
 
 const wo_code = ref(null);
@@ -522,7 +536,7 @@ const rules = computed(() => ({
   cw_date: {
     requiredIf: helpers.withMessage(
       "C.W date is required",
-      requiredIf(status.value == "done")
+      requiredIf(status.value == "done" || status.value=="waiting D6")
     ),
     minValue: helpers.withMessage(
       "must be after request date",
@@ -569,10 +583,11 @@ const rules = computed(() => ({
     ),
   },
   est_cost: {
-   greaterThanZeroWhenReported: helpers.withMessage(
+    greaterThanZeroWhenStatusDoneORWaiting: helpers.withMessage(
       "Estimated Cost is required",
-     greaterThanZeroWhenReported
+      greaterThanZeroWhenStatusDoneORWaiting
     ),
+  
   },
   reported: {
     mustBeYes: helpers.withMessage(

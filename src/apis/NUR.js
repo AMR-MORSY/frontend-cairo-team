@@ -29,18 +29,18 @@ export default {
         return allInstances.Api.post("/Nur/siteNUR", siteCode);
 
     },
-    download2GNUR(data)
-    {
-        return allInstances.downloadApi.post("/Nur/downloadNUR2G", data)
-    },
-    download3GNUR(data)
-    {
-        return allInstances.downloadApi.post("/Nur/downloadNUR3G", data)
-    },
-    download4GNUR(data)
-    {
-        return allInstances.downloadApi.post("/Nur/downloadNUR4G", data)
-    },
+    // download2GNUR(data)
+    // {
+    //     return allInstances.downloadApi.post("/Nur/downloadNUR2G", data)
+    // },
+    // download3GNUR(data)
+    // {
+    //     return allInstances.downloadApi.post("/Nur/downloadNUR3G", data)
+    // },
+    // download4GNUR(data)
+    // {
+    //     return allInstances.downloadApi.post("/Nur/downloadNUR4G", data)
+    // },
     getVipSitesWeeklyNUR(zone,week,year)
     {
         return allInstances.Api.get(`/Nur/vip/week/${zone}/${week}/${year}`);

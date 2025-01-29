@@ -1,5 +1,5 @@
 <template>
-  <div v-if="serverError">
+  <!-- <div v-if="serverError">
     <p style="color: red">{{ serverError }}</p>
   </div>
   <section id="analysis" class="w-screen-2xl px-10 py-20">
@@ -53,8 +53,8 @@
         </form>
       </template>
     </Card>
-  </section>
-
+  </section> -->
+<!-- 
   <section id="searchpricelist" class="w-screen-2xl px-10 py-20">
     <Card class="max-w-sm md:max-w-screen-sm mx-auto">
       <template #content>
@@ -110,8 +110,8 @@
         </form>
       </template>
     </Card>
-  </section>
-
+  </section> -->
+<!-- 
   <section id="dates" class="w-screen-2xl px-10 py-20">
     <Card class="max-w-sm md:max-w-screen-sm mx-auto">
       <template #content>
@@ -191,7 +191,9 @@
         </form>
       </template>
     </Card>
-  </section>
+  </section> -->
+
+  <TransitionCards :cards="cards" />
 </template>
 
 <script setup>
@@ -208,215 +210,223 @@ import validationErrorMessage from "../../helpers/validationErrorMessage.vue";
 import { useToast } from "primevue/usetoast";
 import { useDialog } from "primevue/usedialog";
 import PriceListTable from "../../helpers/Modification/PriceListTable.vue";
+import TransitionCards from "../../helpers/TransitionCards.vue";
 
 const dialog = useDialog();
 const toast = useToast();
 const router = useRouter();
 
-const column = ref(null);
-const columnValue = ref(null);
-const columns = ref(null);
-const columnValues = ref(null);
-const status = ref(null);
-const subcontractor = ref(null);
-const project = ref(null);
-const requester = ref(null);
-const serverError = ref(null);
-const actions = ref(null);
-const reported = ref(null);
+const cards = ref([
+  { id: 1, icon: "search", path: "Category" },
+  { id: 2, icon: "search", path: "Date" },
+  { id: 3, icon: "search", path: "Work Order" },
+  { id: 4, icon: "search", path: "Price List" },
+ ]);
 
-const date_from = ref(null);
-const date_to = ref(null);
+// const column = ref(null);
+// const columnValue = ref(null);
+// const columns = ref(null);
+// const columnValues = ref(null);
+// const status = ref(null);
+// const subcontractor = ref(null);
+// const project = ref(null);
+// const requester = ref(null);
+// const serverError = ref(null);
+// const actions = ref(null);
+// const reported = ref(null);
 
-const searchPriceList = ref();
+// const date_from = ref(null);
+// const date_to = ref(null);
 
-const dateType = ref(null);
-const searchBy = ref("item");
+// const searchPriceList = ref();
 
-const datesOptions = [
-  { name: "D6 Date", value: "d6_date" },
-  { name: "CW Date", value: "cw_date" },
-  { name: "Request Date", value: "request_date" },
-];
+// const dateType = ref(null);
+// const searchBy = ref("item");
 
-const datesRegex = helpers.regex(/^d6_date|cw_date|request_date$/);
-const searchPriceListRegex = helpers.regex(/^.{1,50}$/);
+// const datesOptions = [
+//   { name: "D6 Date", value: "d6_date" },
+//   { name: "CW Date", value: "cw_date" },
+//   { name: "Request Date", value: "request_date" },
+// ];
 
-const disabled = computed(() => {
-  if (!column.value || !columnValue.value) {
-    return true;
-  }
-  if (column.value && columnValue.value) {
-    return false;
-  }
-});
+// const datesRegex = helpers.regex(/^d6_date|cw_date|request_date$/);
+// const searchPriceListRegex = helpers.regex(/^.{1,50}$/);
 
-onMounted(() => {
-  getModificationAnalysis();
-});
+// const disabled = computed(() => {
+//   if (!column.value || !columnValue.value) {
+//     return true;
+//   }
+//   if (column.value && columnValue.value) {
+//     return false;
+//   }
+// });
 
-const submitColumn = (e) => {
-  column.value = e.value;
+// onMounted(() => {
+//   getModificationAnalysis();
+// });
 
-  if (column.value == "status") {
-    columnValues.value = status.value;
-  } else if (column.value == "subcontractor") {
-    columnValues.value = subcontractor.value;
-  } else if (column.value == "requester") {
-    columnValues.value = requester.value;
-  } else if (column.value == "project") {
-    columnValues.value = project.value;
-  } else if (column.value == "reported") {
-    columnValues.value = reported.value;
-  } else if (column.value == "actions") {
-    columnValues.value = actions.value;
-  }
-};
+// const submitColumn = (e) => {
+//   column.value = e.value;
 
-const getModificationAnalysis = () => {
-  Modifications.getModificationAnalysis()
+//   if (column.value == "status") {
+//     columnValues.value = status.value;
+//   } else if (column.value == "subcontractor") {
+//     columnValues.value = subcontractor.value;
+//   } else if (column.value == "requester") {
+//     columnValues.value = requester.value;
+//   } else if (column.value == "project") {
+//     columnValues.value = project.value;
+//   } else if (column.value == "reported") {
+//     columnValues.value = reported.value;
+//   } else if (column.value == "actions") {
+//     columnValues.value = actions.value;
+//   }
+// };
 
-    .then((response) => {
-      status.value = response.data.index.status;
-      subcontractor.value = response.data.index.subcontractor;
-      project.value = response.data.index.project;
-      requester.value = response.data.index.requester;
-      actions.value = response.data.index.actions;
-      reported.value = response.data.index.reported;
-      columns.value = [
-        "status",
-        "subcontractor",
-        "requester",
-        "project",
-        "actions",
-        "reported",
-      ];
-    })
-    .catch((error) => {
-      if (error.response.status == 500) {
-        serverError.value = error.response.data.message;
-      }
-    });
-};
+// const getModificationAnalysis = () => {
+//   Modifications.getModificationAnalysis()
 
-const submitFilterForm = () => {
-  router.push(`/modifications/index/${column.value}/${columnValue.value}`);
-};
+//     .then((response) => {
+//       status.value = response.data.index.status;
+//       subcontractor.value = response.data.index.subcontractor;
+//       project.value = response.data.index.project;
+//       requester.value = response.data.index.requester;
+//       actions.value = response.data.index.actions;
+//       reported.value = response.data.index.reported;
+//       columns.value = [
+//         "status",
+//         "subcontractor",
+//         "requester",
+//         "project",
+//         "actions",
+//         "reported",
+//       ];
+//     })
+//     .catch((error) => {
+//       if (error.response.status == 500) {
+//         serverError.value = error.response.data.message;
+//       }
+//     });
+// };
 
-const rules = computed(() => ({
-  date_from: {
-    requiredIf: helpers.withMessage(
-      " 'From' date is required",
-      requiredIf(date_to.value == "done")
-    ),
-  },
-  date_to: {
-    requiredIf: helpers.withMessage(
-      "'To' date is required",
-      requiredIf(date_from.value == null)
-    ),
-    minValue: helpers.withMessage(
-      '"To" date must be after "From" date',
-      minValue(new Date(date_from.value))
-    ),
-  },
-  dateType: {
-    required: helpers.withMessage("Date type is required", required),
-    datesRegex: helpers.withMessage("Date Type format is invalid", datesRegex),
-  },
-}));
+// const submitFilterForm = () => {
+//   router.push(`/modifications/index/${column.value}/${columnValue.value}`);
+// };
 
-const searchPriceListRules = computed(() => ({
-  searchPriceList: {
-    required: helpers.withMessage(" item No. or keyword is required", required),
-    searchPriceListRegex: helpers.withMessage(
-      "invalid search format",
-      searchPriceListRegex
-    ),
-  },
-}));
+// const rules = computed(() => ({
+//   date_from: {
+//     requiredIf: helpers.withMessage(
+//       " 'From' date is required",
+//       requiredIf(date_to.value == "done")
+//     ),
+//   },
+//   date_to: {
+//     requiredIf: helpers.withMessage(
+//       "'To' date is required",
+//       requiredIf(date_from.value == null)
+//     ),
+//     minValue: helpers.withMessage(
+//       '"To" date must be after "From" date',
+//       minValue(new Date(date_from.value))
+//     ),
+//   },
+//   dateType: {
+//     required: helpers.withMessage("Date type is required", required),
+//     datesRegex: helpers.withMessage("Date Type format is invalid", datesRegex),
+//   },
+// }));
 
-const v$ = useVuelidate(rules, {
-  date_from,
-  date_to,
-  dateType,
-});
+// const searchPriceListRules = computed(() => ({
+//   searchPriceList: {
+//     required: helpers.withMessage(" item No. or keyword is required", required),
+//     searchPriceListRegex: helpers.withMessage(
+//       "invalid search format",
+//       searchPriceListRegex
+//     ),
+//   },
+// }));
 
-const val$ = useVuelidate(searchPriceListRules, {
-  searchPriceList,
-});
+// const v$ = useVuelidate(rules, {
+//   date_from,
+//   date_to,
+//   dateType,
+// });
 
-const convertDate = (date) => {
-  if (date) {
-    var yyyy = date.getFullYear().toString();
-    var mm = (date.getMonth() + 1).toString();
-    var dd = date.getDate().toString();
+// const val$ = useVuelidate(searchPriceListRules, {
+//   searchPriceList,
+// });
 
-    var mmChars = mm.split("");
-    var ddChars = dd.split("");
+// const convertDate = (date) => {
+//   if (date) {
+//     var yyyy = date.getFullYear().toString();
+//     var mm = (date.getMonth() + 1).toString();
+//     var dd = date.getDate().toString();
 
-    return (
-      yyyy +
-      "-" +
-      (mmChars[1] ? mm : "0" + mmChars[0]) +
-      "-" +
-      (ddChars[1] ? dd : "0" + ddChars[0])
-    );
-  }
-  return "no date";
-};
+//     var mmChars = mm.split("");
+//     var ddChars = dd.split("");
 
-const submitDateForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-  if (!isFormCorrect) {
-    return;
-  }
+//     return (
+//       yyyy +
+//       "-" +
+//       (mmChars[1] ? mm : "0" + mmChars[0]) +
+//       "-" +
+//       (ddChars[1] ? dd : "0" + ddChars[0])
+//     );
+//   }
+//   return "no date";
+// };
 
-  date_from.value = convertDate(date_from.value);
-  date_to.value = convertDate(date_to.value);
-  router.push(
-    `/modifications/filterdates/${dateType.value}/${date_from.value}/${date_to.value}`
-  );
-};
-const submitPriceListSearchForm = async () => {
-  const isFormCorrect = await val$.value.$validate();
-  if (!isFormCorrect) {
-    return;
-  }
-  let data = {
-    search: searchPriceList.value,
-    searchBy: searchBy.value,
-  };
-  Modifications.searchPriceList(data).then((response) => {
-    console.log(response.data);
-    if (response.data.message == "No data found") {
-      toast.add({
-        severity: "error",
-        summary: "Error Message",
-        detail: "No data Found",
-        life: 3000,
-      });
-    } else {
-      dialog.open(PriceListTable, {
-        props: {
-          style: {
-            width: "50vw",
-          },
-          breakpoints: {
-            "960px": "75vw",
-            "640px": "90vw",
-          },
+// const submitDateForm = async () => {
+//   const isFormCorrect = await v$.value.$validate();
+//   if (!isFormCorrect) {
+//     return;
+//   }
 
-          modal: true,
-        },
+//   date_from.value = convertDate(date_from.value);
+//   date_to.value = convertDate(date_to.value);
+//   router.push(
+//     `/modifications/filterdates/${dateType.value}/${date_from.value}/${date_to.value}`
+//   );
+// };
+// const submitPriceListSearchForm = async () => {
+//   const isFormCorrect = await val$.value.$validate();
+//   if (!isFormCorrect) {
+//     return;
+//   }
+//   let data = {
+//     search: searchPriceList.value,
+//     searchBy: searchBy.value,
+//   };
+//   Modifications.searchPriceList(data).then((response) => {
+//     console.log(response.data);
+//     if (response.data.message == "No data found") {
+//       toast.add({
+//         severity: "error",
+//         summary: "Error Message",
+//         detail: "No data Found",
+//         life: 3000,
+//       });
+//     } else {
+//       dialog.open(PriceListTable, {
+//         props: {
+//           style: {
+//             width: "50vw",
+//           },
+//           breakpoints: {
+//             "960px": "75vw",
+//             "640px": "90vw",
+//           },
 
-        data: {
-          priceListItems: response.data.priceList
-        },
-      });
-    }
-  });
-};
+//           modal: true,
+//         },
+
+//         data: {
+//           priceListItems: response.data.priceList,
+//         },
+//       });
+//     }
+//   });
+// };
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full py-6">
+  <div class="w-full py-40">
     <p
       class="font-Signika font-bold text-font-main-color uppercase text-center pt-5 mb-5"
     >
@@ -55,8 +55,7 @@
     :items="selectedItems"
     :modification_id="modification_id"
     :quotation_id="quotation_id"
-
-    v-if="selectedItems.length>0"
+    v-if="selectedItems.length > 0"
   />
 </template>
 
@@ -73,16 +72,32 @@ import PriceListTable from "./PriceListTable.vue";
 import ItemsInsertion from "./ItemsInsertion.vue";
 import { inject } from "vue";
 
-const dialogRef = inject("dialogRef");
-
-const modification_id = dialogRef.value.data.modification_id;
-
-
-const quotation_id = dialogRef.value.data.quotation_id;
-
 const toast = useToast();
 
 const dialog = useDialog();
+let dialogRef = "";
+
+const props = defineProps(["action"]);
+
+const displayAddButton = ref();
+
+const modification_id = ref();
+
+const quotation_id = ref();
+
+onMounted(() => {
+  if (inject("dialogRef")) {
+    dialogRef = inject("dialogRef");
+
+    modification_id.value = dialogRef.value.data.modification_id;
+    quotation_id.value = dialogRef.value.data.quotation_id;
+    displayAddButton.value = dialogRef.value.data.displayAddButton;
+  }
+
+  if (props.displayAddButton) {
+    displayAddButton.value = props.displayAddButton;
+  }
+});
 
 const searchPriceListRegex = helpers.regex(/^.{1,50}$/);
 
@@ -116,7 +131,6 @@ const submitPriceListSearchForm = async () => {
     searchBy: searchBy.value,
   };
   Modifications.searchPriceList(data).then((response) => {
- 
     if (response.data.message == "No data found") {
       toast.add({
         severity: "error",
@@ -128,7 +142,7 @@ const submitPriceListSearchForm = async () => {
       dialog.open(PriceListTable, {
         props: {
           style: {
-            width: "50vw",
+            width: "60vw",
           },
           breakpoints: {
             "960px": "75vw",
@@ -140,14 +154,14 @@ const submitPriceListSearchForm = async () => {
 
         data: {
           priceListItems: response.data.priceList,
+          displayAddButton: displayAddButton.value,
         },
         onClose: (opt) => {
-            opt.data.forEach((element)=>{
-                selectedItems.value.push(element) 
-                
-            })
-         
-         
+          if (displayAddButton.value) {
+            opt.data.forEach((element) => {
+              selectedItems.value.push(element);
+            });
+          }
         },
       });
     }

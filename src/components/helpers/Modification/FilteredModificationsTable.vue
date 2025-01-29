@@ -155,7 +155,7 @@ const prepareUnreportedArray = () => {
   var modifications = [];
 
   unReportedModifications.value.forEach((element) => {
-    modifications.push(element.id);
+    modifications.push({id:element.id,est_cost:element.est_cost});
   });
   return modifications;
 };

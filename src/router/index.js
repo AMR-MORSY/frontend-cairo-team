@@ -43,6 +43,10 @@ import PreQuotation from "../components/pages/Modifications/PreQuotation.vue";
 import ViewModification from "../components/pages/Modifications/ViewModification.vue";
 import InsertMailPrices from "../components/pages/Modifications/InsertMailPrices.vue";
 import PreQuotationUpdate from "../components/pages/Modifications/PreQuotationUpdate.vue";
+import ModificationsSearchPriceList from "../components/pages/Modifications/ModificationsSearchPriceList.vue";
+import ModificationsSearchDate from "../components/pages/Modifications/ModificationsSearchDate.vue";
+import ModificationsSearchCategory from "../components/pages/Modifications/ModificationsSearchCategory.vue";
+import ModificationsSearchWorkOrder from "../components/pages/Modifications/ModificationsSearchWorkOrder.vue";
 
 const routes = [
   {
@@ -106,6 +110,30 @@ const routes = [
   {
     path: "/modifications",
     component: modifications,
+    meta: { requiresAuth: true},
+  
+  },
+  {
+    path: "/modifications/search/pricelist",
+    component: ModificationsSearchPriceList,
+    meta: { requiresAuth: true},
+  
+  },
+  {
+    path: "/modifications/search/date",
+    component: ModificationsSearchDate,
+    meta: { requiresAuth: true},
+  
+  },
+  {
+    path: "/modifications/search/category",
+    component: ModificationsSearchCategory,
+    meta: { requiresAuth: true},
+  
+  },
+  {
+    path: "/modifications/search/workorder",
+    component: ModificationsSearchWorkOrder,
     meta: { requiresAuth: true},
   
   },

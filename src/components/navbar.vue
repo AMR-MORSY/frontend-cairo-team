@@ -71,7 +71,7 @@
                 placeholder="Search"
                 type="text"
                 fluid
-                v-model="v$.search.$model"
+                v-model="search"
               />
               <Button
                 label="Search"
@@ -143,6 +143,7 @@ const updateUserAbility = () => {
         }
         console.log(rules);
         $ability.update(rules);
+        // store.dispatch("userPermissions",rules);
 
         items.value = [
           ...(computed(() => store.getters.isLogin)

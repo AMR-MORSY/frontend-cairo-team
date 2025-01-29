@@ -11,6 +11,7 @@ const store = createStore({
     displayDialog: false,
     dialogMessage: "",
     showUnauthenticatedToast: false,
+    permissions:[]
   },
   getters: {
     isLogin(state) {
@@ -26,6 +27,11 @@ const store = createStore({
 
         return userToken;
       }
+    },
+
+    userPermissions(state)
+    {
+      return state.permissions;
     },
 
     userName(state) {
@@ -85,14 +91,18 @@ const store = createStore({
     SHOW_UNAUTH_TOAST(state, status) {
       state.showUnauthenticatedToast = status;
     },
+    USER_PERMISSIONS(state,permissions)
+    {
+      state.permissions=permissions;
+    }
   },
   actions: {
     userData({ commit }, user) {
       commit("USER_DATA", user);
     },
-    // userPermissions({ commit }, permissions) {
-    //   commit("USER_PERMISSIONS", permissions);
-    // },
+    userPermissions({ commit }, permissions) {
+      commit("USER_PERMISSIONS", permissions);
+    },
     // userRoles({ commit }, roles) {
     //   commit("USER_Roles", roles);
     // },

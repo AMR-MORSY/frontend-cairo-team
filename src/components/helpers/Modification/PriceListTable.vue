@@ -12,7 +12,10 @@
     @row-select="onRowSelect"
     v-model:selection="selectedItems"
   >
+  <template v-if="displayAddButton">
     <Column selectionMode="multiple"></Column>
+  </template>
+  
     <Column field="item" header="#"></Column>
     <Column field="description" header="Description"></Column>
     <Column field="unit" header="Unit"></Column>
@@ -21,7 +24,7 @@
     <Column field="sup_inst" header="S&I"></Column>
     <Column field="type" header="Type"></Column>
   </DataTable>
-  <div class="flex justify-center items-center">
+  <div class="flex justify-center items-center" v-if="displayAddButton">
     <Button
       label="Add"
       :raised="true"
@@ -43,6 +46,8 @@ const dialogRef = inject("dialogRef");
 const selectedItems = ref([]);
 const listItems = ref();
 
+const displayAddButton=ref();
+
 const isItemsSelected=computed(()=>{
   if(selectedItems.value.length>0)
 {
@@ -52,6 +57,7 @@ return false;
 })
 onMounted(() => {
   listItems.value = dialogRef.value.data.priceListItems;
+  displayAddButton.value=dialogRef.value.data.displayAddButton;
 });
 
 const addItem=()=>{

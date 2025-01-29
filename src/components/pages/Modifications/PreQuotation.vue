@@ -338,7 +338,8 @@ const addItemsFromPriceList = () => {
     data: {
       modification_id: props.id,
       quotation_id: null,
-    },
+       displayAddButton:true
+    }
   });
 };
 

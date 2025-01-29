@@ -680,6 +680,9 @@ const id = ref(null);
 const NUR2G = ref([]);
 const NUR3G = ref([]);
 const NUR4G = ref([]);
+const FM2G=ref([]);
+const FM3G=ref([]);
+const FM4G=ref([]);
 const insertionDataField = ref("");
 const items = [
   {
@@ -766,11 +769,18 @@ const getSiteNUR = () => {
       NUR2G.value = response.data.NUR2G;
       NUR3G.value = response.data.NUR3G;
       NUR4G.value = response.data.NUR4G;
+      FM2G.value=response.data.FM2G;
+      FM3G.value=response.data.FM3G;
+      FM4G.value=response.data.FM4G;
 
       if (
         NUR2G.value.length == 0 &&
         NUR3G.value.length == 0 &&
-        NUR4G.value.length == 0
+        NUR4G.value.length == 0 &&
+        FM2G.value.length==0 &&
+        FM3G.value.length==0 &&
+        FM4G.value.length==0
+
       ) {
         toast.add({
           severity: "success",
@@ -781,7 +791,7 @@ const getSiteNUR = () => {
       } else {
         dialog.open(siteNURTable, {
           props: {
-            header: this.siteName,
+            header: siteName.value,
             style: {
               width: "75vw",
             },
@@ -796,6 +806,9 @@ const getSiteNUR = () => {
             NUR3G: NUR3G.value,
             NUR2G: NUR2G.value,
             NUR4G: NUR4G.value,
+            FM2G:FM2G.value,
+            FM3G:FM3G.value,
+            FM4G:FM4G.value,
             site_code: siteCode.value,
             site_name: siteName.value,
           },
@@ -1123,80 +1136,80 @@ const getBatteriesData = () => {
     .catch((error) => {});
 };
 const getSiteData = () => {
-  let siteData = [];
+  // let siteData = [];
 
-  let site = {
-    "On Air Date": null,
-  };
-  siteData.push(site);
-  site = {
-    Topology: null,
-  };
-  siteData.push(site);
-  site = {
-    Structure: null,
-  };
-  siteData.push(site);
-  site = {
-    "Equip-Room": null,
-  };
-  siteData.push(site);
-  site = {
-    "NTRA Cluster": null,
-  };
-  siteData.push(site);
-  site = {
-    CXO: null,
-  };
-  siteData.push(site);
-  site = {
-    Axis: null,
-  };
-  siteData.push(site);
-  site = {
-    "Serve Compound": null,
-  };
-  siteData.push(site);
-  site = {
-    Universities: null,
-  };
-  siteData.push(site);
-  site = {
-    "Hot Spot": null,
-  };
-  siteData.push(site);
-  site = {
-    "AC1 Type": null,
-  };
-  siteData.push(site);
-  site = {
-    "AC1 HP": null,
-  };
-  siteData.push(site);
-  site = {
-    "AC2 Type": null,
-  };
-  siteData.push(site);
-  site = {
-    "AC2 HP": null,
-  };
-  siteData.push(site);
-  site = {
-    "Network Type": null,
-  };
-  siteData.push(site);
-  site = {
-    "Last PM Date": null,
-  };
-  siteData.push(site);
-  site = {
-    "Access Permission": null,
-  };
-  siteData.push(site);
-  site = {
-    "Permission Type": null,
-  };
-  siteData.push(site);
+  // let site = {
+  //   "On Air Date": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   Topology: null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   Structure: null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Equip-Room": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "NTRA Cluster": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   CXO: null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   Axis: null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Serve Compound": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   Universities: null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Hot Spot": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "AC1 Type": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "AC1 HP": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "AC2 Type": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "AC2 HP": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Network Type": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Last PM Date": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Access Permission": null,
+  // };
+  // siteData.push(site);
+  // site = {
+  //   "Permission Type": null,
+  // };
+  // siteData.push(site);
   Sites.getSiteDeepDetails(data.value).then((response) => {
     console.log(response);
 
