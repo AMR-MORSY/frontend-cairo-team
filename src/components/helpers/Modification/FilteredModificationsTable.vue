@@ -20,11 +20,11 @@
             <Column selectionMode="single"></Column>
             <Column field="site.site_code" header="Code"></Column>
             <Column field="site.site_name" header="Name"></Column>
-            <Column field="subcontractor" header="Subcontractor"></Column>
-            <Column field="requester" header="Requester"></Column>
+            <Column field="subcontractor.name" header="Subcontractor"></Column>
+            <Column field="requester.name" header="Requester"></Column>
             <Column field="actions" header="Action"></Column>
-            <Column field="status" header="Status"></Column>
-            <Column field="project" header="Project"></Column>
+            <Column field="status.name" header="Status"></Column>
+            <Column field="project.name" header="Project"></Column>
             <Column
               field="request_date"
               sortable
@@ -40,7 +40,7 @@
               header="Action Owner"
               sortable
             ></Column>
-            <Column field="reported" sortable header="Reported"></Column>
+            <Column field="reported.name" sortable header="Reported"></Column>
             <Column
               field="reported_at"
               sortable
@@ -114,6 +114,7 @@ import exportFromJSON from "export-from-json";
 import { onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import * as XLSX from "xlsx";
+import { stringify } from "postcss";
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -125,12 +126,30 @@ const selectedModification = ref(null);
 const thereIsMod = computed(() => props.modificationsData);
 const noModifications = computed(() => !thereIsMod.value);
 
-const modifications = computed(() => props.modificationsData);
+const prepareProject = (project) => {
+  if (project!=null) {
+    return project.name;
+  }
+  return ""
+};
+const modifications = computed(() => {
+  var modification = [];
+
+  props.modificationsData.forEach((element) => {
+    var action = [];
+    element.actions.forEach((ele) => {
+      action.push(ele.name);
+    });
+    element.actions = action.join(", ");
+    modification.push(element);
+  });
+  return modification;
+});
 
 const unReportedModifications = computed(() => {
   if (props.modificationsData.length > 0) {
     let modif = props.modificationsData.filter((element) => {
-      return element.reported == "No";
+      return element.reported.id == 2;
     });
     return modif;
   }
@@ -155,7 +174,7 @@ const prepareUnreportedArray = () => {
   var modifications = [];
 
   unReportedModifications.value.forEach((element) => {
-    modifications.push({id:element.id,est_cost:element.est_cost});
+    modifications.push({ id: element.id, est_cost: element.est_cost });
   });
   return modifications;
 };
@@ -200,15 +219,13 @@ const reportModifications = () => {
         confirm.close();
       },
     });
-  }
-  else{
+  } else {
     confirm.require({
       group: "info",
-      message:
-        "One or more modifications has no estimated cost",
+      message: "One or more modifications has no estimated cost",
       header: "Confirmation",
       icon: "pi pi-exclamation-triangle",
-      position:"top",
+      position: "top",
       acceptProps: {
         label: "OK",
         severity: "danger",
@@ -216,9 +233,7 @@ const reportModifications = () => {
       accept: () => {
         confirm.close();
       },
-    
     });
-
   }
 };
 
@@ -238,9 +253,16 @@ const rowClass = (data) => {
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const downloadModifications = () => {
+  console.log(modifications.value);
   modifications.value = modifications.value.forEach((element) => {
     element.action_owner = element.action_owner.name;
     element.site = element.site.site_name;
+    element.subcontractor = element.subcontractor.name;
+    element.requester = element.requester.name;
+    element.reported = element.reported.name;
+     element.project = prepareProject(element.project)
+    element.status = element.status.name;
+ 
     if (element.cw_date == null) {
       element.cw_date = "";
     }

@@ -185,6 +185,13 @@
                 class="block"
                 @click.prevent="downloadQuotation"
               />
+              <Button
+                label="Back To Modification"
+                severity="primary"
+                :raised="true"
+                class="block"
+                @click.prevent="goBackToModification"
+              />
             </div>
           </template>
         </DataTable>
@@ -255,6 +262,10 @@ const mustIncludeFile = (value) => {
 
 const onRowSelect = () => {};
 
+const goBackToModification=()=>{
+  router.push(`/modification/view/${props.id}`)
+}
+
 const getSearchByChoice = () => {
   if (searchBy.value == "priceList") {
     addItemsFromPriceList();
@@ -300,14 +311,15 @@ const submitQuotationSheet = async () => {
     })
     .catch((error) => {
       if (error.response) {
-        if ((error.response.status = 422)) {
+        if ((error.response.status == 422)) {
           if (error.response.data.sheet_errors) {
             sheet_errors.value = error.response.data.sheet_errors;
             console.log(sheet_errors.value);
           } else if (error.response.data.errors) {
+            console.log(error.response.data.errors);
             var errors = [];
             errors = error.response.data.errors;
-            errors.foreEach((element) => {
+            errors.forEach((element) => {
               toast.add({
                 severity: "error",
                 summary: "Error Message",

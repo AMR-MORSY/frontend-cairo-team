@@ -29,6 +29,11 @@ export default {
         return allInstances.Api.get(`/modifications/filterdates/${date_type}/${from_date}/${to_date}`);
 
     },
+    getModificationsFilteredByWO(wo)
+    {
+        return allInstances.Api.get(`/modifications/wo/${wo}`);
+
+    },
     updateModification(data,id)
     {
         return allInstances.Api.put(`/modifications/update/${id}`,data);

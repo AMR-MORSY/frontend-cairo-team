@@ -61,6 +61,7 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import Menubar from 'primevue/menubar';
 import RadioButton from 'primevue/radiobutton';
+import MultiSelect from 'primevue/multiselect';
 
 
 import DatePicker from 'primevue/datepicker';
@@ -98,6 +99,18 @@ const myPresets = definePreset(Aura, {
       // paddingY:"0.25rem",
 
       
+    },
+    multiselect:{
+      disabledBackground:'white',
+
+    },
+    select:{
+      disabledBackground:'white',
+
+    },
+    textarea:{
+      disabledBackground:'white',
+
     },
     button:{
      warnBackground:'{my.button.warn.background}',
@@ -194,6 +207,7 @@ app
   .component("downloadExcel", JsonExcel)
   .component("FloatLabel", FloatLabel)
   .component("RadioButton",RadioButton)
+  .component('MultiSelect',MultiSelect)
 
 
   .mount("#app");

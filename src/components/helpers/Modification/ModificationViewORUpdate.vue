@@ -55,7 +55,7 @@ const getModificationDetails = () => {
   Modifications.getModificationDetails(props.id)
 
     .then((response) => {
-        console.log(response)
+   
        site_code.value = response.data.details.site.site_code;
 
        site_name.value = response.data.details.site.site_name;

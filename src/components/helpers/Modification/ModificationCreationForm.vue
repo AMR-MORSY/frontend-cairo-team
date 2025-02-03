@@ -49,6 +49,8 @@
                     v-model="subcontractor"
                     :invalid="v$.subcontractor.$errors.length > 0"
                     :options="subcontractors"
+                    optionLabel="name"
+                    optionValue="id"
                     :disabled="needed_action == 'view'"
                   >
                   </Select>
@@ -65,6 +67,8 @@
                     fluid
                     id="status"
                     :options="status_options"
+                    optionLabel="name"
+                    optionValue="id"
                     v-model="status"
                     :invalid="v$.status.$errors.length > 0"
                     :disabled="needed_action == 'view'"
@@ -85,6 +89,8 @@
                     :invalid="v$.requester.$errors.length > 0"
                     :options="requester_options"
                     :disabled="needed_action == 'view'"
+                    optionLabel="name"
+                    optionValue="id"
                   >
                   </Select>
                 </div>
@@ -104,6 +110,8 @@
                     id="Projects"
                     :invalid="v$.project.$errors.length > 0"
                     :disabled="needed_action == 'view'"
+                    optionLabel="name"
+                    optionValue="id"
                   >
                   </Select>
                 </div>
@@ -171,9 +179,9 @@
                   <InputNumber
                     fluid
                     v-model="est_cost"
-                    :min=0
+                    :min="0"
                     id="est_cost"
-                      :invalid="v$.est_cost.$errors.length > 0"
+                    :invalid="v$.est_cost.$errors.length > 0"
                     :disabled="needed_action == 'view'"
                   />
                 </div>
@@ -188,7 +196,7 @@
                     fluid
                     v-model="final_cost"
                     :invalid="v$.final_cost.$errors.length > 0"
-                    :min=0
+                    :min="0"
                     id="final_cost"
                     :disabled="needed_action == 'view'"
                   />
@@ -209,15 +217,18 @@
               <div class="col-span-4 md:col-span-2 lg:col-span-1">
                 <div class="flex flex-col justify-start">
                   <label for="Actions">Actions:</label>
-                  <Select
+                  <MultiSelect
                     fluid
                     id="Actions"
+                    filter
                     v-model="actions"
                     :invalid="v$.actions.$errors.length > 0"
                     :options="actions_options"
                     :disabled="needed_action == 'view'"
+                    optionLabel="name"
+                    optionValue="id"
                   >
-                  </Select>
+                  </MultiSelect>
                 </div>
                 <div v-if="v$.actions.$error">
                   <validationErrorMessage :errors="v$.actions.$errors" />
@@ -233,6 +244,8 @@
                     :options="reported_options"
                     :invalid="v$.reported.$errors.length > 0"
                     :disabled="needed_action == 'view'"
+                    optionLabel="name"
+                    optionValue="id"
                   >
                   </Select>
                 </div>
@@ -292,6 +305,7 @@
                 raised
                 class="block"
                 @click.prevent="goToQuotation"
+                :disabled="!userCanUploadQuotationOrUpdateMOdification"
               />
               <Button
                 label="Update"
@@ -300,6 +314,7 @@
                 raised
                 class="block"
                 @click.prevent="goToUpdate"
+                :disabled="!userCanUploadQuotationOrUpdateMOdification"
               />
               <Button
                 label="Delete"
@@ -308,6 +323,7 @@
                 v-if="needed_action == 'view'"
                 raised
                 class="block"
+                :disabled="!userCanDeleteModification"
               />
               <template v-if="needed_action == 'update'">
                 <Button
@@ -317,6 +333,7 @@
                   severity="help"
                   raised
                   class="block"
+                  :disabled="userCanUploadQuotationOrUpdateMOdification"
                 />
               </template>
               <template v-if="needed_action == 'insert'">
@@ -327,6 +344,7 @@
                   severity="help"
                   raised
                   class="block"
+                  :disabled="!userCanCreateModification"
                 />
               </template>
             </div>
@@ -350,143 +368,74 @@ import validationErrorMessage from "../../helpers/validationErrorMessage.vue";
 import Modifications from "../../../apis/Modifications";
 import InputText from "primevue/inputtext";
 import { useConfirm } from "primevue/useconfirm";
+import { useAbility } from "@casl/vue";
+
+import store from "../../../vuex/store";
 
 const toast = useToast();
 const router = useRouter();
 const confirm = useConfirm();
+const { can } = useAbility();
 
-const subcontractor = ref(null);
+const subcontractor = ref("");
 
 const est_cost = ref(0);
 
 const final_cost = ref(0);
 
-const subcontractors = [
-  "OT",
-  "Alandick",
-  "Tri-Tech",
-  "Siatnile",
-  "Merc",
-  "GP",
-  "MBV",
-  "Systel",
-  "TELE-TECH",
-  "SAG",
-  "LM",
-  "HAS",
-  "Red Tech",
-  "H-PLUS",
-  "MERG",
-  "STEPS",
-  "GTE",
-  "AFRO",
-  "Benaya",
-  "EEC",
-  "Egypt Gate",
-  "Huawei",
-  "INTEGRA",
-  "Unilink",
-  "Tele-Trust",
-  "SAMA-TEL",
-];
+const subcontractors = ref([]);
 const request_date = ref(null);
 
-const requester = ref(null);
+const requester = ref("");
 
-const requester_options = [
-  "Management Team",
-  "Civil Team",
-  "Maintenance",
-  "Radio",
-  "Rollout",
-  "Transmission",
-  "GA",
-  "Soc",
-  "Sharing team",
-];
-const project = ref(null);
+const requester_options = ref([]);
+const project = ref("");
 
-const project_options = [
-  "Site Dismantle",
-  "NTRA",
-  "Unsafe Existing",
-  "B2B",
-  "LTE",
-  "5G",
-  "Sharing",
-  "Site Security",
-  "Adding Sec",
-  "TDD",
-  "Power Modification",
-  "L1 Modification",
-  "Tx Modification",
-  "G2G",
-  "New Sites",
-];
-const status = ref(null);
+const project_options = ref([]);
+const status = ref("");
 
-const status_options = ["waiting D6", "done", "in progress"];
-const cw_date = ref(null);
+const status_options = ref([]);
+const cw_date = ref("");
 const d6_date = ref(null);
 
-const actions = ref(null);
+const actions = ref([]);
 const description = ref("");
-const reported = ref("No");
+const reported = ref(2);
 const reported_at = ref(null);
-const operation_zone = ref(null);
-const action_owner = ref(null);
+const operation_zone = ref("");
+const action_owner = ref("");
 
-const reported_options = ["Yes", "No"];
+const reported_options = ref([]);
 
 const mustBeYes = (value) => {
-  if (reported_at.value != null && value == "No") {
+  if (reported_at.value != null && value == 2) {
     return false;
   }
   return true;
 };
 
 const greaterThanZeroWhenStatusDoneORWaiting = (value) => {
-  if ((value == 0 && status.value == "done") || (value == 0 && status.value == "waiting D6")) {
+  if ((value == 0 && status.value == 1) || (value == 0 && status.value == 3)) {
     return false;
   }
   return true;
 };
-
 
 const greaterThanZeroWhenStatusDone = (value) => {
-  if (value == 0 && status.value == "done")  {
+  if (value == 0 && status.value == 1) {
     return false;
   }
   return true;
 };
 
-const greaterThanZeroWhenReported=(value)=>{
-  if (value == 0 && reported.value == "Yes") {
+const greaterThanZeroWhenReported = (value) => {
+  if (value == 0 && reported.value == 1) {
     return false;
   }
   return true;
+};
 
-}
-
-const actions_options = [
-  "Retrofitting",
-  "Antenna Swap",
-  "Repair",
-  "Adding SA",
-  "Change Power Cable",
-  "WE Sharing Panel",
-  "PT Ring",
-  "Adding Antennas",
-  "Extending Cables",
-  "Concrete Works",
-  "Cable Trays",
-  "RRUs Relocation",
-  "Site Dismantle",
-  "Cage Installation",
-  "Adding Mast",
-  "Dismantling Cabinets",
-  "Relocating Power Meter"
-];
+const actions_options = ref([]);
 
 const wo_code = ref(null);
 
@@ -497,21 +446,112 @@ const props = defineProps([
   "siteName",
 ]);
 
+const userCanUploadQuotationOrUpdateMOdification = computed(() => {
+  if (
+    (props.modificationData.oz == "Cairo North" &&
+      can("update_CN_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Cairo South" &&
+      can("update_CS_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Cairo East" &&
+      can("update_CE_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Giza" && can("update_GZ_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else return false;
+});
+
+const userCanDeleteModification = computed(() => {
+  if (
+    (props.modificationData.oz == "Cairo North" &&
+      can("delete_CN_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Cairo South" &&
+      can("delete_CS_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Cairo East" &&
+      can("delete_CE_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else if (
+    (props.modificationData.oz == "Giza" && can("delete_GZ_modifications")) ||
+    store.getters.userId == props.modificationData.action_owner
+  )
+    return true;
+  else return false;
+});
+
+const userCanCreateModification = computed(() => {
+  if (
+    props.modificationData.oz == "Cairo North" &&
+    can("create_CN_modifications")
+  )
+    return true;
+  else if (
+    props.modificationData.oz == "Cairo South" &&
+    can("create_CS_modifications")
+  )
+    return true;
+  else if (
+    props.modificationData.oz == "Cairo East" &&
+    can("create_CE_modifications")
+  )
+    return true;
+  else if (
+    props.modificationData.oz == "Giza" &&
+    can("create_GZ_modifications")
+  )
+    return true;
+  else return false;
+});
+const prepareActionsArray = (actions) => {
+  let newActions = [];
+  actions.forEach((element) => {
+    newActions.push(element.id);
+  });
+  return newActions;
+};
+
+const prepareProject = (project) => {
+  if (project != null) {
+    return project.id;
+  }
+  return "";
+};
 watch(props.modificationData, (newValue, oldValue) => {
   if (newValue.length > 0 || typeof newValue == "object") {
-    subcontractor.value = props.modificationData.subcontractor;
+    subcontractor.value = props.modificationData.subcontractor.id;
     request_date.value = returnDate(props.modificationData.request_date);
-    requester.value = props.modificationData.requester;
-    project.value = props.modificationData.project;
-    status.value = props.modificationData.status;
+    requester.value = props.modificationData.requester.id;
+    project.value = prepareProject(props.modificationData.project);
+    status.value = props.modificationData.status.id;
     d6_date.value = returnDate(props.modificationData.d6_date);
     cw_date.value = returnDate(props.modificationData.cw_date);
-    actions.value = props.modificationData.actions;
+    actions.value = prepareActionsArray(props.modificationData.actions);
     est_cost.value = Number(props.modificationData.est_cost);
     final_cost.value = Number(props.modificationData.final_cost);
     description.value = props.modificationData.description;
     wo_code.value = props.modificationData.wo_code;
-    reported.value = props.modificationData.reported;
+    reported.value = props.modificationData.reported.id;
     operation_zone.value = props.modificationData.oz;
     action_owner.value = props.modificationData.action_owner;
     reported_at.value = returnDate(props.modificationData.reported_at);
@@ -520,6 +560,22 @@ watch(props.modificationData, (newValue, oldValue) => {
 
 const goBack = () => {
   router.go(-1);
+};
+
+onMounted(() => {
+  getModificationAnalysis();
+});
+
+const getModificationAnalysis = () => {
+  Modifications.getModificationAnalysis().then((response) => {
+    // console.log(response)
+    status_options.value = response.data.index.status;
+    subcontractors.value = response.data.index.subcontractor;
+    project_options.value = response.data.index.project;
+    requester_options.value = response.data.index.requester;
+    actions_options.value = response.data.index.actions;
+    reported_options.value = response.data.index.reported;
+  });
 };
 
 const goToQuotation = () => {
@@ -536,7 +592,7 @@ const rules = computed(() => ({
   cw_date: {
     requiredIf: helpers.withMessage(
       "C.W date is required",
-      requiredIf(status.value == "done" || status.value=="waiting D6")
+      requiredIf(status.value == 1 || status.value == 3)
     ),
     minValue: helpers.withMessage(
       "must be after request date",
@@ -546,7 +602,7 @@ const rules = computed(() => ({
   d6_date: {
     requiredIf: helpers.withMessage(
       "D6 date is required",
-      requiredIf(status.value == "done")
+      requiredIf(status.value == 1)
     ),
     minValue: helpers.withMessage(
       "must be after request date",
@@ -554,9 +610,8 @@ const rules = computed(() => ({
     ),
     minValue: helpers.withMessage(
       "must be after Civil work date",
-      minValue( cw_date.value)
+      minValue(cw_date.value)
     ),
-    
   },
   requester: {
     required: helpers.withMessage("Requester is required", required),
@@ -568,7 +623,7 @@ const rules = computed(() => ({
     required: helpers.withMessage("status is required", required),
   },
   actions: {
-    required: helpers.withMessage("Action is required", required),
+    required: helpers.withMessage("Actions are required", required),
   },
   description: {
     requiredIf: helpers.withMessage(
@@ -577,9 +632,9 @@ const rules = computed(() => ({
     ),
   },
   final_cost: {
-   greaterThanZeroWhenStatusDone: helpers.withMessage(
+    greaterThanZeroWhenStatusDone: helpers.withMessage(
       "Cost is required",
-     greaterThanZeroWhenStatusDone
+      greaterThanZeroWhenStatusDone
     ),
   },
   est_cost: {
@@ -587,7 +642,6 @@ const rules = computed(() => ({
       "Estimated Cost is required",
       greaterThanZeroWhenStatusDoneORWaiting
     ),
-  
   },
   reported: {
     mustBeYes: helpers.withMessage(
@@ -598,7 +652,7 @@ const rules = computed(() => ({
   reported_at: {
     requiredIf: helpers.withMessage(
       "Reporting date is required",
-      requiredIf(reported.value == "Yes")
+      requiredIf(reported.value == 1)
     ),
     minValue: helpers.withMessage(
       "must be after request date",
@@ -703,6 +757,8 @@ const updateModification = () => {
             detail: "Updated Successfully",
             life: 3000,
           });
+
+          router.push(`/modification/view/${props.modificationData.id}`);
         })
         .catch((error) => {
           console.log(error);
@@ -727,10 +783,12 @@ const insertNewModification = async () => {
   let data = formData();
 
   data.site_code = props.siteCode;
+  console.log(data);
 
   Modifications.insertNewModification(data)
 
     .then((response) => {
+      // console.log(response)
       toast.add({
         severity: "success",
         summary: "Success Message",

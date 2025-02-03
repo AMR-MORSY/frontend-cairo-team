@@ -50,15 +50,8 @@
               severity="secondary"
               raised
               class="block mx-4"
+              :disabled="!userCanCreateModification"
             />
-            <!-- <Button
-              label="Delete"
-              @click="deleteModification"
-              severity="danger"
-              raised
-              class="block"
-              :disabled="!isRowSelected"
-            /> -->
           </div>
         </div>
       </Fieldset>
@@ -87,25 +80,23 @@ const columns = ref();
 const confirm = useConfirm();
 const toast = useToast();
 
-
-
 onMounted(() => {
   columns.value = [
-    { field: "subcontractor", header: "Subcontractor" },
+    { field: "subcontractor.name", header: "Subcontractor" },
     { field: "actions", header: "Action" },
-    { field: "requester", header: "Requester" },
+    { field: "requester.name", header: "Requester" },
     { field: "request_date", header: "Request Date" },
-    { field: "project", header: "Project" },
+    { field: "project.name", header: "Project" },
     { field: "cw_date", header: "C.W Date" },
     { field: "d6_date", header: "D6 Date" },
-    { field: "status", header: "Status" },
+    { field: "status.name", header: "Status" },
     { field: "final_cost", header: "Final Cost" },
     { field: "est_cost", header: "Estimated Cost" },
     { field: "wo_code", header: "W.O Code" },
     { field: "description", header: "Description" },
     { field: "action_owner.name", header: "Action Owner" },
     { field: "oz", header: "Operation Zone" },
-    { field: "reported", header: "Reported" },
+    { field: "reported.name", header: "Reported" },
   ];
   getSiteModifications();
 });
@@ -114,12 +105,29 @@ const goBack = () => {
   router.go(-1);
 };
 
+const prepareModificationAction = (modificationsArray) => {
+  var modification = [];
+
+  modificationsArray.forEach((element) => {
+    var action = [];
+    element.actions.forEach((ele) => {
+      action.push(ele.name);
+    });
+    element.actions = action.join(", ");
+    modification.push(element);
+  });
+  return modification;
+};
+
 const getSiteModifications = () => {
   isModificationsFound.value = false;
 
   Modifications.getSiteModifications(props.site_code)
     .then((response) => {
-      modifications.value = response.data.modifications;
+      console.log(response);
+      modifications.value = prepareModificationAction(
+        response.data.modifications
+      );
       if (modifications.value.length > 0) {
         isModificationsFound.value = true;
       } else {
@@ -160,55 +168,62 @@ const getSiteModifications = () => {
     .finally(() => {});
 };
 
+const userCanCreateModification = computed(() => {
+  if (
+    modifications.value[0].oz == "Cairo North" &&
+    can("create_CN_modifications")
+  )
+    return true;
+  else if (
+    modifications.value[0].oz == "Cairo South" &&
+    can("create_CS_modifications")
+  )
+    return true;
+  else if (
+    modifications.value[0].oz == "Cairo East" &&
+    can("create_CE_modifications")
+  )
+    return true;
+  else if (
+    modifications.value[0].oz == "Giza" &&
+    can("create_GZ_modifications")
+  )
+    return true;
+  else return false;
+});
 const insertNewModification = () => {
   router.push(`/modifications/new/${props.site_code}/${props.site_name}`);
 };
 
-
 const gotToModificationView = () => {
-  router.push(
-    `/modification/view/${selectedModification.value.id}`
-  );
+  router.push(`/modification/view/${selectedModification.value.id}`);
 };
 
 const onRowSelect = () => {
-  if (selectedModification.value.action_owner.id == store.getters.userId) {
-    isRowSelected.value = true;
-  } else if (
-    (selectedModification.value.oz == "Cairo South" &&
-      can("update_CS_modifications")) ||
-    (selectedModification.value.oz == "Cairo South" &&
-      can("delete_CS_modifications"))
+  if (
+    selectedModification.value.oz == "Cairo South" &&
+    can("read_CS_modifications")
   ) {
     isRowSelected.value = true;
   } else if (
-    (selectedModification.value.oz == "Cairo East" &&
-      can("update_CE_modifications")) ||
-    (selectedModification.value.oz == "Cairo East" &&
-      can("delete_CE_modifications"))
+    selectedModification.value.oz == "Cairo East" &&
+    can("read_CE_modifications")
   ) {
     isRowSelected.value = true;
   } else if (
-    (selectedModification.value.oz == "Cairo North" &&
-      can("update_CN_modifications")) ||
-    (selectedModification.value.oz == "Cairo North" &&
-      can("delete_CN_modifications"))
+    selectedModification.value.oz == "Cairo North" &&
+    can("read_CN_modifications")
   ) {
     isRowSelected.value = true;
   } else if (
-    (selectedModification.value.oz == "Giza" &&
-      can("update_GZ_modifications")) ||
-    (selectedModification.value.oz == "Giza" && can("delete_GZ_modifications"))
+    selectedModification.value.oz == "Giza" &&
+    can("read_GZ_modifications")
   ) {
     isRowSelected.value = true;
   } else {
     isRowSelected.value = false;
   }
 };
-
 </script>
 
-<style lang="scss" scoped>
-
-
-</style>
+<style lang="scss" scoped></style>

@@ -36,11 +36,13 @@ import { ref, computed } from "vue";
 import { maxLength, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { helpers } from "@vuelidate/validators";
+import { useRoute, useRouter } from "vue-router";
 import validationErrorMessage from "../../helpers/validationErrorMessage.vue";
 
 const search = ref(null);
+const router=useRouter();
 
-const nameReg = helpers.regex(/^[a-zA-Z0-9 _-]{3,}$/);
+const nameReg = helpers.regex(/^(cn|cs|gz|CN|CE|GZ|ce|CE)[-]\d{3,8}$/);
 
 const rules = computed(() => ({
   search: {
@@ -57,5 +59,7 @@ const v$ = useVuelidate(rules, { search });
 const submitSearch = async () => {
   const isFormCorrect = await v$.value.$validate();
   if (!isFormCorrect) return;
+  router.push(`modification/wo/${search}`)
+
 };
 </script>

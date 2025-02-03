@@ -34,6 +34,8 @@
                   fluid
                   v-model="columnValue"
                   :options="columnValues"
+                  optionLabel="name"
+                  optionValue="id"
                   id="columnValue"
                 >
                 </Select>
@@ -122,6 +124,7 @@ const getModificationAnalysis = () => {
   Modifications.getModificationAnalysis()
 
     .then((response) => {
+      
       status.value = response.data.index.status;
       subcontractor.value = response.data.index.subcontractor;
       project.value = response.data.index.project;

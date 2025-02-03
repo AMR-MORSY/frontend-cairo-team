@@ -75,7 +75,7 @@
                                 <!-- <input type="file" name="energy_sheet" class="form-control" id="energy_sheet"
                                     @change="Nur2GSheetFile" /> -->
                                 <FileUpload ref="NurSheet" mode="basic" accept=".xlsx,.csv,.xlsm"
-                                    :maxFileSize="1000000" />
+                                    :maxFileSize="2000000" />
 
                             </div>
                             <div v-if="v$.NurSheet.$error">

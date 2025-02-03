@@ -35,19 +35,21 @@ const getModificationsIndex = () => {
     columnValue: props.columnValue,
   };
 
-  if (data.columnName == "reported") {
-    if (data.columnValue == "Yes") {
-      data.columnValue = 1;
-    } else if ((data.columnValue = "No")) {
-      data.columnValue=0;
-    }
-  }
+  // if (data.columnName == "reported") {
+  //   if (data.columnValue == "Yes") {
+  //     data.columnValue = 1;
+  //   } else if ((data.columnValue = "No")) {
+  //     data.columnValue=0;
+  //   }
+  // }
 
 
 
   Modifications.getModificationIndex(data)
 
     .then((response) => {
+
+      console.log(response)
     
 
       modifications.value = response.data.modifications;
@@ -71,6 +73,7 @@ const getModificationsIndex = () => {
       }
     })
     .catch((error) => {
+      console.log(error)
       if (error.response.status == 422) {
         let errors = error.response.data.errors;
         if (errors.columnName) {
