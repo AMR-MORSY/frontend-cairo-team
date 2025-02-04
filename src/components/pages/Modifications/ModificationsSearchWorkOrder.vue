@@ -42,7 +42,7 @@ import validationErrorMessage from "../../helpers/validationErrorMessage.vue";
 const search = ref(null);
 const router=useRouter();
 
-const nameReg = helpers.regex(/^(cn|cs|gz|CN|CE|GZ|ce|CE)[-]\d{3,8}$/);
+const nameReg = helpers.regex(/^(cn|CN|gz|GZ|CE|ce|cs|CS)[-]\d{3,8}$/);
 
 const rules = computed(() => ({
   search: {
@@ -59,7 +59,7 @@ const v$ = useVuelidate(rules, { search });
 const submitSearch = async () => {
   const isFormCorrect = await v$.value.$validate();
   if (!isFormCorrect) return;
-  router.push(`modification/wo/${search}`)
+  router.push(`/modification/wo/${search.value}`)
 
 };
 </script>

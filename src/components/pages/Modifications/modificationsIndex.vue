@@ -43,14 +43,10 @@ const getModificationsIndex = () => {
   //   }
   // }
 
-
-
   Modifications.getModificationIndex(data)
 
     .then((response) => {
-
-      console.log(response)
-    
+      console.log(response);
 
       modifications.value = response.data.modifications;
       if (modifications.value.length == 0) {
@@ -73,7 +69,7 @@ const getModificationsIndex = () => {
       }
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       if (error.response.status == 422) {
         let errors = error.response.data.errors;
         if (errors.columnName) {
@@ -100,21 +96,3 @@ const getModificationsIndex = () => {
     .finally(() => {});
 };
 </script>
-
-<style lang="scss" scoped>
-.no-modification {
-  padding: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.no-modification p {
-  color: red;
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-</style>

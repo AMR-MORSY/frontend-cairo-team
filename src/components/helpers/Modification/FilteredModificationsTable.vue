@@ -110,11 +110,9 @@ import { computed, ref } from "vue";
 import Modifications from "../../../apis/Modifications";
 import { useConfirm } from "primevue/useconfirm";
 import { useRouter } from "vue-router";
-import exportFromJSON from "export-from-json";
-import { onMounted } from "vue";
+
 import { useToast } from "primevue/usetoast";
 import * as XLSX from "xlsx";
-import { stringify } from "postcss";
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -123,28 +121,53 @@ const props = defineProps(["modificationsData"]);
 
 const isRowSelected = ref(false);
 const selectedModification = ref(null);
-const thereIsMod = computed(() => props.modificationsData);
-const noModifications = computed(() => !thereIsMod.value);
 
 const prepareProject = (project) => {
-  if (project!=null) {
+  if (project != null) {
     return project.name;
   }
-  return ""
+  return "";
 };
-const modifications = computed(() => {
-  var modification = [];
 
-  props.modificationsData.forEach((element) => {
-    var action = [];
-    element.actions.forEach((ele) => {
-      action.push(ele.name);
+
+const fillModificationsTable=()=>{
+  var modifications= [];
+  if (props.modificationsData.length > 0) {
+    props.modificationsData.forEach((element) => {
+      var action = [];
+      element.actions.forEach((ele) => {
+        action.push(ele.name);
+      });
+      element.actions = action.join(", ");
+      modifications.push(element);
     });
-    element.actions = action.join(", ");
-    modification.push(element);
-  });
-  return modification;
-});
+  }
+
+   return modifications;
+
+}
+
+const modifications = computed(()=>fillModificationsTable())
+const thereIsMod = computed(() => modifications.value.length > 0);
+const noModifications = computed(() => !thereIsMod.value);
+
+// watch(()=>props.modificationsData,()=>fillModificationsTable());
+
+// const modifications = computed(() => {
+//   var modification = [];
+//   if (props.modificationsData.length > 0) {
+//     props.modificationsData.forEach((element) => {
+//       var action = [];
+//       element.actions.forEach((ele) => {
+//         action.push(ele.name);
+//       });
+//       element.actions = action.join(", ");
+//       modification.push(element);
+//     });
+//   }
+
+//   return modification;
+// });
 
 const unReportedModifications = computed(() => {
   if (props.modificationsData.length > 0) {
@@ -260,9 +283,9 @@ const downloadModifications = () => {
     element.subcontractor = element.subcontractor.name;
     element.requester = element.requester.name;
     element.reported = element.reported.name;
-     element.project = prepareProject(element.project)
+    element.project = prepareProject(element.project);
     element.status = element.status.name;
- 
+
     if (element.cw_date == null) {
       element.cw_date = "";
     }
