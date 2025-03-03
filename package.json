@@ -33,6 +33,7 @@
     "vue-json-excel3": "^1.0.19",
     "vue-loader": "^17.0.0",
     "vue-notifications": "^1.0.2",
+    "vue-pdf": "^4.3.0",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2",
     "xlsx": "^0.20.0"

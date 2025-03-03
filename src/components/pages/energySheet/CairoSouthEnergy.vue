@@ -8,9 +8,9 @@
      
       </template>
       <template #content>
-         <div class="row mt-5">
+         <div class="grid grid-cols-3 gap-4">
       
-         <div class="col-12 col-md-6 mt-2">
+         <div class="col-span-3  mt-2">
           <TopSites :zoneAlarms="{
                 alarms: cairoSouthSitesReportedHTAlarms,
                 alarmsName: 'sitesReportedHTAlarms',
@@ -23,7 +23,7 @@
             </template>
           </TopSites>
         </div>
-          <div class="col-12 col-md-6 mt-2">
+          <div class="col-span-3  mt-2">
           <TopSites :zoneAlarms="{
                 alarms: cairoSouthSitesReportedGenAlarms,
                 alarmsName: 'sitesReportedGenAlarms',
@@ -36,7 +36,7 @@
             </template>
           </TopSites>
         </div>
-         <div class="col-12 mt-2">
+         <div class="col-span-3  mt-2">
             <template v-if="countHTAlarms">
               <Button
                 type="button"

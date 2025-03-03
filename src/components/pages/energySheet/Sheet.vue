@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <!-- <div class="container mt-5">
     <div class="card index">
       <form id="energysheet" @submit.prevent="submitEnergySheet" enctype="multipart/form-data">
 
@@ -103,205 +103,357 @@
     <template #footer>
       <button class="btn btn-danger" @click="closeModal">close</button>
     </template>
-  </modal>
+  </modal> -->
+
+  <div class="w-screen-2xl px-10 py-20">
+    <Card class="max-w-screen-md mx-auto">
+      <template #header>
+        <h5
+          class="text-center mt-6 font-bold text-font-main-color font-Signika"
+        >
+          Energy
+        </h5>
+      </template>
+      <template #content>
+        <form
+          id="energysheet"
+          @submit.prevent="submitEnergySheet"
+          enctype="multipart/form-data"
+        >
+          <div class="grid grid-cols-4 gap-4">
+            <div class="col-span-4">
+              <div v-if="serverError">
+                {{ serverError }}
+              </div>
+            </div>
+
+            <div class="col-span-4 md:col-span-1">
+              <div class="flex-auto">
+                <label for="weeks" class="font-bold">Week:</label>
+                <Select
+                  v-model="week"
+                  id="weeks"
+                  fluid
+                  :options="weeks"
+                  :invalid="v$.week.$errors.length > 0"
+                />
+              </div>
+              <div v-if="v$.week.$error">
+                <validationErrorMessage :errors="v$.week.$errors" />
+              </div>
+              <!-- <div class="form-group">
+                <select v-model="week" id="weeks" class="form-select">
+                  <option value="">select week</option>
+
+                  <option v-for="week in weeks" :key="week">{{ week }}</option>
+                </select>
+                <div v-if="weekErrors">
+                  <ul>
+                    <li
+                      v-for="error in weekErrors"
+                      style="color: red"
+                      :key="error"
+                    >
+                      {{ error }}
+                    </li>
+                  </ul>
+                </div>
+              </div> -->
+            </div>
+            <div class="col-span-4 md:col-span-1">
+              <!-- <div class="form-group">
+                <select v-model="year" class="form-select">
+                  <option value="">select year</option>
+
+                  <option v-for="year in years" :key="year">{{ year }}</option>
+                </select>
+                <div v-if="yearErrors">
+                  <ul>
+                    <li
+                      v-for="error in yearErrors"
+                      style="color: red"
+                      :key="error"
+                    >
+                      {{ error }}
+                    </li>
+                  </ul>
+                </div>
+              </div> -->
+              <div class="flex-auto">
+                <label for="weeks" class="font-bold">Year:</label>
+                <Select
+                  v-model="year"
+                  id="weeks"
+                  fluid
+                  :options="years"
+                  :invalid="v$.year.$errors.length > 0"
+                />
+              </div>
+              <div v-if="v$.year.$error">
+                <validationErrorMessage :errors="v$.year.$errors" />
+              </div>
+            </div>
+
+            <div class="col-span-4 md:col-span-1 mb-2">
+              <div class="flex justify-start">
+             
+                <FileUpload
+                  ref="energySheet"
+                  mode="basic"
+                  accept=".xlsx,.csv,.xlsm"
+                  :maxFileSize="2000000"
+                />
+              </div>
+              <div v-if="v$.energySheet.$error">
+                <validationErrorMessage :errors="v$.energySheet.$errors" />
+              </div>
+           
+            </div>
+
+            <div class="col-span-4 mt-2">
+              <Button
+                label="Submit"
+                class="block"
+                severity="info"
+                type="submit"
+              />
+            </div>
+          </div>
+        </form>
+
+       
+
+        <div class="w-100" v-if="sheetValidationErrors.length>0">
+          <DataTable
+            :value="sheetValidationErrors"
+            scrollable
+            :paginator="true"
+            :rows="5"
+            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            :rowsPerPageOptions="[5, 10, 15]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+            class="text-sm"
+            tableStyle="min-width: 50rem"
+          >
+            <Column field="row" header="Row"   class="font-Signika text-font-main-color"></Column>
+            <Column field="attribute" header="Attribute"   class="font-Signika text-font-main-color"></Column>
+            <Column field="errors" header="Errors"   class="font-Signika text-font-main-color">
+              <template #body="slotProps">
+                <strong
+                  class="font-Signika text-font-main-color"
+                  v-for="error in slotProps.data.errors"
+                  :key="error"
+                >
+                  {{ error }}
+                </strong>
+              </template>
+            </Column>
+            <Column field="values" header="Values">
+              <template #body="slotProps">
+                <p>
+                  <strong
+                    class="font-Signika text-font-main-color font-semibold"
+                    >Site Code:</strong
+                  >
+                  {{ slotProps.data.values["site code"] }}
+                </p>
+                <p>
+                  <strong
+                    class="font-Signika text-font-main-color font-semibold"
+                    >site Name:</strong
+                  >
+                  {{ slotProps.data.values["site name"] }}
+                </p>
+              
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+      </template>
+    </Card>
+  </div>
 </template>
 
-<script>
-
-import spinnerButton from "../../helpers/spinnerButton.vue";
+<script setup>
 import Energy from "../../../apis/Energy";
+import { ref, onMounted, computed } from "vue";
+import validationErrorMessage from "../../helpers/validationErrorMessage.vue";
+import { useVuelidate } from "@vuelidate/core";
+import { helpers } from "@vuelidate/validators";
+import { required, requiredIf } from "@vuelidate/validators";
+import { useToast } from "primevue/usetoast";
 
-export default {
-  components: { spinnerButton },
-  data() {
-    return {
-      weeks: [],
-      years: [],
-      year: "",
-      week: "",
-      energySheet: null,
-
-      sheetValidationErrors: null,
-
-      yearErrors: null,
-
-      weekErrors: null,
-
-      energySheetErrors: null,
-      serverError: null,
-
-      successMessage: null,
-
-      showModal: false,
-      showSpinner: false,
-    };
-  },
-  name: "Sheet",
-
-  mounted(){
-    this.getEnergySheetIndex();
-
-  },
-
-  methods: {
-    getEnergySheetIndex() {
-      this.serverError = null;
-      this.yearErrors = null;
-      this.weekErrors = null;
-
-      Energy.getEnergySheetIndex()
-        .then((response) => {
-          this.weeks = response.data.weeks;
-          this.years = response.data.years;
-        })
-        .catch((error) => {
-          if (error.response.status == 500) {
-            this.serverError = "internal Server Error";
-          }
-        });
-    },
-
-    energySheetFile(e) {
-      return (this.energySheet = e.target.files[0]);
-    },
-
-    closeModal() {
-      return (this.showModal = false);
-    },
-
-    submitEnergySheet() {
-      this.weekErrors = null;
-      this.serverError = null;
-      this.yearErrors = null;
-      this.sheetValidationErrors = null;
-      var data = {
-        energy_sheet: this.energySheet,
-        week: this.week,
-        year: this.year,
-      };
-      this.showSpinner = true;
-
-      Energy.submitEnergySheet(data)
-        .then((response) => {
-          console.log(response.data.message);
-          this.successMessage = response.data.message;
-          this.showModal = true;
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.log(error.response);
-            if (error.response.status == 500) {
-              this.serverError = error.response.data.message;
-            }
-            if (error.response.status == 422) {
-              if (error.response.data.errors) {
-                var errors = error.response.data.errors;
-                if (errors.week) {
-                  this.weekErrors = errors.week;
-                }
-                if (errors.year) {
-                  this.yearErrors = errors.year;
-                }
-                if (errors.energy_sheet) {
-                  this.energySheetErrors = errors.energy_sheet;
-                }
-              } else if (error.response.data.sheet_errors) {
-                this.sheetValidationErrors = error.response.data.sheet_errors;
-              }
-            }
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
-          }
-          //   console.log(error.config);
-        })
-        .finally(() => {
-          this.showSpinner = false;
-          this.week = "";
-          this.year = "";
-          var energy_sheet = document.getElementById("energy_sheet");
-          energy_sheet.value = "";
-        });
-    },
-  },
+const weeks = ref([]);
+const years = ref([]);
+const year = ref();
+const week = ref();
+const energySheet = ref(null);
+const sheetValidationErrors = ref([]);
+const toast = useToast();
+const mustIncludeFile = (value) => {
+  if (value.files[0]) {
+    return true;
+  }
+  return false;
 };
+const yearErrors = ref(null);
+
+const weekErrors = ref(null);
+
+const energySheetErrors = ref(null);
+const serverError = ref(null);
+
+const rules = computed(() => ({
+  year: {
+    required: helpers.withMessage("Select a year", required),
+  },
+  week: {
+    required: helpers.withMessage("Select a week", required),
+  },
+
+  energySheet: {
+    mustIncludeFile: helpers.withMessage(
+      "Energy sheet is required",
+      mustIncludeFile
+    ),
+  },
+}));
+
+const v$ = useVuelidate(rules, { week, year, energySheet });
+
+const getEnergySheetIndex = () => {
+  serverError.value = null;
+  yearErrors.value = null;
+  weekErrors.value = null;
+
+  Energy.getEnergySheetIndex()
+    .then((response) => {
+      weeks.value = response.data.weeks;
+      years.value = response.data.years;
+    })
+    .catch((error) => {
+      if (error.response.status == 500) {
+        serverError.value = "internal Server Error";
+      }
+    });
+};
+
+const showErrors = (errors, error) => {
+  if (errors) {
+    if (errors.week) {
+      showToast(errors.week);
+    } else if (errors.year) {
+      showToast(errors.year);
+    } else if (errors.energy_sheet) {
+      showToast(errors.energy_sheet);
+    } 
+  } else if (error) {
+    if (error.response.data.sheet_errors) {
+      sheetValidationErrors.value = error.response.data.sheet_errors;
+    } else if (error.response.data.week_year) {
+      toast.add({
+        severity: "error",
+        summary: "Failed",
+        detail: error.response.data.week_year,
+        life: 4000,
+      });
+    }
+  }
+};
+const submitEnergySheet = async () => {
+  // weekErrors.value = null;
+  // serverError.value = null;
+  // yearErrors.value = null;
+  sheetValidationErrors.value =[];
+
+  const isFormCorrect = await v$.value.$validate();
+  if (!isFormCorrect) {
+    return;
+  }
+  var data = {
+    energy_sheet: energySheet.value.files[0],
+    week: week.value,
+    year: year.value,
+  };
+
+  
+    Energy.submitEnergySheet(data)
+      .then((response) => {
+        console.log(response.data.message);
+        toast.add({
+          severity: "success",
+          summary: "Success Message",
+          detail: "inserted Successfully",
+          life: 3000,
+        });
+      })
+    .catch((error) => {
+      console.log(error)
+      if (error.response) {
+        if (error.response.status == 422) {
+          if (error.response.data.errors) {
+            var errors = error.response.data.errors;
+            showErrors(errors, null);
+          } else if (error.response.data.sheet_errors) {
+            showErrors(null, error);
+          } else if (error.response.data.week_year) {
+            showErrors(null, error);
+          }
+        } else if (error.response.status == 500) {
+          toast.add({
+            severity: "error",
+            summary: "Failed",
+            detail: error.response.data.message,
+            life: 4000,
+          });
+        }
+      }
+    });
+};
+
+onMounted(() => {
+  getEnergySheetIndex();
+});
+
 </script>
 
 <style lang="scss" scoped>
-.index,
-.helper-table-container {
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 2rem;
-}
 
-.index {
-  margin-top: 6em;
+@media (min-width: 320px) {
+  /* smartphones, iPhone, portrait 480x320 phones */
 
- 
-}
-
-
-
-@media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ 
- 
-  
-  .card{
-    
+  .card {
     width: 95%;
-   
-   
   }
-
-
 }
-@media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ 
-  
-  
-  .card{
-    
+@media (min-width: 481px) {
+  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+
+  .card {
     width: 90%;
-   
-   
   }
 }
 
-@media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
-  
-  
-  .card{
-    
-    width: 80%;
-   
-   
-  }
-}
-@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */
-  #analysis{
-  
-  .card{
-    
-    width: 80%;
-   
-   
-  }
-}
-}
-@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */
+@media (min-width: 641px) {
+  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
 
-  
-  .card{
-    
+  .card {
+    width: 80%;
+  }
+}
+@media (min-width: 961px) {
+  /* tablet, landscape iPad, lo-res laptops ands desktops */
+  #analysis {
+    .card {
+      width: 80%;
+    }
+  }
+}
+@media (min-width: 1025px) {
+  /* big landscape tablets, laptops, and desktops */
+
+  .card {
     width: 75%;
-   
-   
   }
-
 }
 </style>

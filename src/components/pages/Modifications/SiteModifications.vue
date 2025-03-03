@@ -45,6 +45,14 @@
               :disabled="!isRowSelected"
             />
             <Button
+              label="Download"
+              @click="downloadModifications"
+              severity="info"
+              raised
+              class="block"
+              :disabled="!userCanCreateModification"
+            />
+            <Button
               label="New Modification"
               @click="insertNewModification"
               severity="secondary"
@@ -69,9 +77,10 @@ import { useAbility } from "@casl/vue";
 import store from "../../../vuex/store";
 import { computed } from "vue";
 import { useToast } from "primevue/usetoast";
+import * as XLSX from "xlsx";
 const { can } = useAbility();
 const router = useRouter();
-const props = defineProps(["site_code", "site_name"]);
+const props = defineProps(["site_code", "site_name", "oz"]);
 const modifications = ref(null);
 const selectedModification = ref(null);
 const isRowSelected = ref(false);
@@ -90,6 +99,7 @@ onMounted(() => {
     { field: "cw_date", header: "C.W Date" },
     { field: "d6_date", header: "D6 Date" },
     { field: "status.name", header: "Status" },
+    { field: "pending", header: "Pending" },
     { field: "final_cost", header: "Final Cost" },
     { field: "est_cost", header: "Estimated Cost" },
     { field: "wo_code", header: "W.O Code" },
@@ -131,9 +141,7 @@ const getSiteModifications = () => {
       if (modifications.value.length > 0) {
         isModificationsFound.value = true;
       } else {
-        // isModificationsFound = false;
-        // isModificationNotFound = false;
-
+      
         confirm.require({
           group: "yesNo",
           message: "There is No modifications, insert new modification?",
@@ -169,34 +177,91 @@ const getSiteModifications = () => {
 };
 
 const userCanCreateModification = computed(() => {
-  if (
-    modifications.value[0].oz == "Cairo North" &&
-    can("create_CN_modifications")
-  )
-    return true;
-  else if (
-    modifications.value[0].oz == "Cairo South" &&
-    can("create_CS_modifications")
-  )
-    return true;
-  else if (
-    modifications.value[0].oz == "Cairo East" &&
-    can("create_CE_modifications")
-  )
-    return true;
-  else if (
-    modifications.value[0].oz == "Giza" &&
-    can("create_GZ_modifications")
-  )
-    return true;
-  else return false;
+  if (modifications.value == null) {
+    return false;
+  } else {
+    if (
+      modifications.value[0].oz == "Cairo North" &&
+      can("create_CN_modifications")
+    )
+      return true;
+    else if (
+      modifications.value[0].oz == "Cairo South" &&
+      can("create_CS_modifications")
+    )
+      return true;
+    else if (
+      modifications.value[0].oz == "Cairo East" &&
+      can("create_CE_modifications")
+    )
+      return true;
+    else if (
+      modifications.value[0].oz == "Giza" &&
+      can("create_GZ_modifications")
+    )
+      return true;
+    else return false;
+  }
 });
 const insertNewModification = () => {
-  router.push(`/modifications/new/${props.site_code}/${props.site_name}`);
+  router.push(
+    `/modifications/new/${props.site_code}/${props.site_name}/${props.oz}`
+  );
 };
 
 const gotToModificationView = () => {
   router.push(`/modification/view/${selectedModification.value.id}`);
+};
+
+const prepareProject = (project) => {
+  if (project != null) {
+    return project.name;
+  }
+  return "";
+};
+
+const downloadModifications = () => {
+  if (isModificationsFound.value == true) {
+    let modific=[];
+     modifications.value.forEach((element) => {
+      element.action_owner = element.action_owner.name;
+      element.site = element.site.site_name;
+      element.subcontractor = element.subcontractor.name;
+      element.requester = element.requester.name;
+      element.reported = element.reported.name;
+      element.project = prepareProject(element.project);
+      element.status = element.status.name;
+
+      if (element.cw_date == null) {
+        element.cw_date = "";
+      }
+      if (element.d6_date == null) {
+        element.d6_date = "";
+      }
+      if (element.final_cost == null) {
+        element.final_cost = "";
+      }
+      if (element.est_cost == null) {
+        element.est_cost = "";
+      }
+      if (element.reported_at == null) {
+        element.reported_at = "";
+      }
+      modific.push(element)
+    });
+    console.log(modifications)
+  
+    const modificationsSheet = XLSX.utils.json_to_sheet(modific);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, modificationsSheet, "modifications");
+
+    XLSX.writeFile(
+      workbook,
+      `${props.site_code}-${props.site_name}-Modifications.xlsx`,
+      { compression: true }
+    );
+  }
 };
 
 const onRowSelect = () => {

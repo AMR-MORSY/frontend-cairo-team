@@ -35,7 +35,7 @@
                   <InputText
                     fluid
                     id="action_owner"
-                    v-model="action_owner"
+                    v-model="action_owner.name"
                     disabled
                   />
                 </div>
@@ -77,6 +77,23 @@
                 </div>
                 <div v-if="v$.status.$error">
                   <validationErrorMessage :errors="v$.status.$errors" />
+                </div>
+              </div>
+              <div class="col-span-4 md:col-span-2 lg:col-span-1">
+                <div class="flex flex-col justify-start">
+                  <label for="pending">Pending:</label>
+
+                  <Textarea
+                    v-model="pending"
+                    id="pending"
+                   :invalid="v$.pending.$errors.length > 0"
+                    rows="2"
+                    cols="20"
+                    :disabled="needed_action == 'view'"
+                  ></Textarea>
+                </div>
+                <div v-if="v$.pending.$error">
+                  <validationErrorMessage :errors="v$.pending.$errors" />
                 </div>
               </div>
               <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -333,7 +350,7 @@
                   severity="help"
                   raised
                   class="block"
-                  :disabled="userCanUploadQuotationOrUpdateMOdification"
+                  :disabled="!userCanUploadQuotationOrUpdateMOdification"
                 />
               </template>
               <template v-if="needed_action == 'insert'">
@@ -378,6 +395,7 @@ const confirm = useConfirm();
 const { can } = useAbility();
 
 const subcontractor = ref("");
+const pending=ref('');
 
 const est_cost = ref(0);
 
@@ -444,30 +462,31 @@ const props = defineProps([
   "needed_action",
   "siteCode",
   "siteName",
+  "operation_zone"
 ]);
 
 const userCanUploadQuotationOrUpdateMOdification = computed(() => {
   if (
     (props.modificationData.oz == "Cairo North" &&
       can("update_CN_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Cairo South" &&
       can("update_CS_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Cairo East" &&
       can("update_CE_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Giza" && can("update_GZ_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else return false;
@@ -477,24 +496,24 @@ const userCanDeleteModification = computed(() => {
   if (
     (props.modificationData.oz == "Cairo North" &&
       can("delete_CN_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Cairo South" &&
       can("delete_CS_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Cairo East" &&
       can("delete_CE_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else if (
     (props.modificationData.oz == "Giza" && can("delete_GZ_modifications")) ||
-    store.getters.userId == props.modificationData.action_owner
+    store.getters.userId == action_owner.value.id
   )
     return true;
   else return false;
@@ -502,22 +521,22 @@ const userCanDeleteModification = computed(() => {
 
 const userCanCreateModification = computed(() => {
   if (
-    props.modificationData.oz == "Cairo North" &&
+    props.operation_zone == "Cairo North" &&
     can("create_CN_modifications")
   )
     return true;
   else if (
-    props.modificationData.oz == "Cairo South" &&
+    props.operation_zone == "Cairo South" &&
     can("create_CS_modifications")
   )
     return true;
   else if (
-    props.modificationData.oz == "Cairo East" &&
+    props.operation_zone == "Cairo East" &&
     can("create_CE_modifications")
   )
     return true;
   else if (
-    props.modificationData.oz == "Giza" &&
+    props.operation_zone == "Giza" &&
     can("create_GZ_modifications")
   )
     return true;
@@ -554,6 +573,7 @@ watch(props.modificationData, (newValue, oldValue) => {
     reported.value = props.modificationData.reported.id;
     operation_zone.value = props.modificationData.oz;
     action_owner.value = props.modificationData.action_owner;
+    pending.value=props.modificationData.pending;
     reported_at.value = returnDate(props.modificationData.reported_at);
   }
 });
@@ -581,6 +601,8 @@ const getModificationAnalysis = () => {
 const goToQuotation = () => {
   router.push(`/quotation/modification/${props.modificationData.id}`);
 };
+
+const stringReg=helpers.regex(/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/);////////////////////chars,special chars,spaces,numbers,underscores,dashes,tabs, and new lines
 
 const rules = computed(() => ({
   subcontractor: {
@@ -630,6 +652,11 @@ const rules = computed(() => ({
       "description is required",
       requiredIf(actions.value != null)
     ),
+    stringReg:helpers.withMessage('invalid input format',stringReg)
+  },
+  pending:{
+    stringReg:helpers.withMessage('invalid input format',stringReg)
+
   },
   final_cost: {
     greaterThanZeroWhenStatusDone: helpers.withMessage(
@@ -704,6 +731,7 @@ const v$ = useVuelidate(rules, {
   description,
   reported_at,
   reported,
+  pending
 });
 
 const formData = () => {
@@ -721,6 +749,7 @@ const formData = () => {
     description: description.value,
     reported: reported.value,
     reported_at: convertDate(reported_at.value),
+    pending:pending.value
   };
 };
 const updateModification = () => {
@@ -796,7 +825,7 @@ const insertNewModification = async () => {
         life: 3000,
       });
       router.push(
-        `/modifications/sitemodifications/${props.siteCode}/${props.siteName}`
+        `/modifications/sitemodifications/${props.siteCode}/${props.siteName}/${props.operation_zone}`
       );
     })
     .catch((error) => {

@@ -32,7 +32,7 @@ const formatElement = (id) => {
   let card = props.cards.filter((element) => {
     return element.id == id;
   });
-  console.log(card);
+
   if (card[0].path == "2G") {
     router.push("/nur/2G");
   } else if (card[0].path == "3G") {
@@ -49,6 +49,12 @@ const formatElement = (id) => {
     router.push("/modifications/search/workorder");
   } else if (card[0].path == "Price List") {
     router.push("/modifications/search/pricelist");
+  } else if (card[0].path == "Invoices") {
+    router.push("/modifications/invoices");
+  } else if (card[0].path == "SearchEnergy") {
+    router.push("/energy/index");
+  } else if (card[0].path == "New Sheet") {
+    router.push("/energy/sheet");
   }
 };
 </script>

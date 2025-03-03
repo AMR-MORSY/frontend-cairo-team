@@ -252,6 +252,7 @@ const AddNewPriceListItem = () => {
     data: {
       modification_id: props.modification_id,
       quotation_id: props.quotation_id,
+      displayAddButton:true
     
     },
   });

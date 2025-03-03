@@ -8,9 +8,9 @@
 
       </template>
       <template #content>
-        <div class="row mt-5">
+        <div class="grid grid-cols-3 gap-4">
        
-          <div class="col-12 col-md-6 mt-2">
+          <div class="col-span-3  mt-2">
             <TopSites :zoneAlarms="{
               alarms: gizaSitesReportedHTAlarms,
               alarmsName: 'sitesReportedHTAlarms',
@@ -23,7 +23,7 @@
               </template>
             </TopSites>
           </div>
-          <div class="col-12 col-md-6 mt-2">
+          <div class="col-span-3  mt-2">
             <TopSites :zoneAlarms="{
               alarms: gizaSitesReportedGenAlarms,
               alarmsName: 'sitesReportedGenAlarms',
@@ -36,10 +36,7 @@
               </template>
             </TopSites>
           </div>
-          <zoneSitesReportedDownAlarms zone="Giza" :week="period_No" :year="year"></zoneSitesReportedDownAlarms>
-          <zoneDownSitesAfterPowerAlarm zone="Giza" :week="period_No" :year="year"></zoneDownSitesAfterPowerAlarm>
-          <zoneSitesDownWithoutPowerAlarms zone="Giza" :week="period_No" :year="year"></zoneSitesDownWithoutPowerAlarms>
-          <div class="col-12 mt-2">
+          <div class="col-span-3  mt-2">
             <template v-if="countHTAlarms">
               <Button type="button" class="p-button-help" @click="downloadHTSites()">
                 <span class="material-symbols-sharp">download</span>
@@ -47,6 +44,10 @@
               </Button>
             </template>
           </div>
+          <zoneSitesReportedDownAlarms zone="Giza" :week="period_No" :year="year"></zoneSitesReportedDownAlarms>
+          <zoneDownSitesAfterPowerAlarm zone="Giza" :week="period_No" :year="year"></zoneDownSitesAfterPowerAlarm>
+          <zoneSitesDownWithoutPowerAlarms zone="Giza" :week="period_No" :year="year"></zoneSitesDownWithoutPowerAlarms>
+         
         </div>
 
       </template>

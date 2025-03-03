@@ -164,7 +164,8 @@ export default {
 
       let form = {
         email: this.email,
-        password: this.password
+        password: this.password,
+        timezone:Intl.DateTimeFormat().resolvedOptions().timeZone
       }
       User.login(form)
         .then((response) => {

@@ -48,6 +48,7 @@ import ModificationsSearchDate from "../components/pages/Modifications/Modificat
 import ModificationsSearchCategory from "../components/pages/Modifications/ModificationsSearchCategory.vue";
 import ModificationsSearchWorkOrder from "../components/pages/Modifications/ModificationsSearchWorkOrder.vue";
 import ModificationByWO from "../components/pages/Modifications/ModificationByWO.vue";
+import ModificationInvoices from "../components/pages/Modifications/ModificationInvoices.vue";
 const routes = [
   {
     path: "/energy/sheet",
@@ -87,7 +88,7 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/modifications/new/:site_code/:site_name",
+    path: "/modifications/new/:site_code/:site_name/:oz",
     component: NewModification,
     props: true,
     meta: { requiresAuth: true },
@@ -139,13 +140,19 @@ const routes = [
   
   },
   {
+    path: "/modifications/invoices",
+    component:ModificationInvoices,
+    meta: { requiresAuth: true},
+  
+  },
+  {
     path: "/modifications/search/workorder",
     component: ModificationsSearchWorkOrder,
     meta: { requiresAuth: true},
   
   },
   {
-    path: "/modifications/sitemodifications/:site_code/:site_name",
+    path: "/modifications/sitemodifications/:site_code/:site_name/:oz",
     component: SiteModifications,
     props: true,
     meta: { requiresAuth: true },

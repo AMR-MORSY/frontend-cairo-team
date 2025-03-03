@@ -883,7 +883,7 @@ const onRowSelect = () => {
 };
 const gotToSiteModifications = () => {
   router.push(
-    `/modifications/sitemodifications/${siteCode.value}/${siteName.value}`
+    `/modifications/sitemodifications/${siteCode.value}/${siteName.value}/${operationZone.value}`
   );
 };
 const goToSiteUpdate = () => {
@@ -895,14 +895,14 @@ const goToUpdateCascadesPage = () => {
 };
 const getSitePowerAlarms = () => {
   // this.$store.dispatch("displaySpinnerPage", false);
-  Energy.getSitePowerAlarms(this.data)
+  Energy.getSitePowerAlarms(data.value)
     .then((response) => {
       if (response.data.alarms.length > 0) {
         store.dispatch("siteAlarms", {
           alarmName: "power",
           alarmData: response.data.alarms,
         });
-        this.openDialog();
+        openDialog();
       } else {
         toast.add({
           severity: "error",
@@ -941,7 +941,7 @@ const getSiteHTAlarms = () => {
           alarmName: "highTemp",
           alarmData: response.data.alarms,
         });
-        this.openDialog();
+        openDialog();
       } else {
         toast.add({
           severity: "error",
@@ -1005,8 +1005,8 @@ const getSiteGenAlarms = () => {
     });
 };
 const getSiteDownAlarmsGroupedByWeek = () => {
-  // store.dispatch("displaySpinnerPage", false);
-  Energy.getSiteDownAlarmsGroupedByWeek(this.data)
+
+  Energy.getSiteDownAlarmsGroupedByWeek(data.value)
     .then((response) => {
       if (response.data.statestics.alarms == "exist") {
         dialog.open(SiteDownAlarmsGroupedByWeek, {

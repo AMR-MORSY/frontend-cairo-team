@@ -44,7 +44,8 @@ const modificationDetails = reactive({
   final_cost: null,
   wo_code: null,
   reported: null,
-  reported_at:null
+  reported_at:null,
+  pending:null
 });
 
 onMounted(() => {
@@ -55,6 +56,7 @@ const getModificationDetails = () => {
   Modifications.getModificationDetails(props.id)
 
     .then((response) => {
+      console.log(response)
    
        site_code.value = response.data.details.site.site_code;
 
@@ -66,7 +68,7 @@ const getModificationDetails = () => {
       modificationDetails.reported = response.data.details.reported;
       modificationDetails.requester = response.data.details.requester;
       modificationDetails.project = response.data.details.project;
-      modificationDetails.action_owner = response.data.details.action_owner.name;
+      modificationDetails.action_owner = response.data.details.action_owner;
       modificationDetails.status = response.data.details.status;
       modificationDetails.oz = response.data.details.oz;
       modificationDetails.d6_date = response.data.details.d6_date;
@@ -76,6 +78,7 @@ const getModificationDetails = () => {
       modificationDetails.est_cost = response.data.details.est_cost;
       modificationDetails.wo_code = response.data.details.wo_code;
       modificationDetails.reported_at=response.data.details.reported_at;
+      modificationDetails.pending=response.data.details.pending;
     })
     .catch((error) => {
       console.log(error);

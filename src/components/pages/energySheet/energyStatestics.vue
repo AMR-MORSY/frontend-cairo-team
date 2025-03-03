@@ -1,5 +1,109 @@
 <template>
-  <div id="cairo-and-zones" v-if="isAlarmsAvailable">
+  <div class="w-screen-2xl px-10 py-20" v-if="isAlarmsAvailable">
+    <Card class="max-w-screen-xl mx-auto">
+      <template #header>
+        <div class="flex items-center justify-center pt-4">
+          <p
+            class="text-center text-font-main-color font-extrabold text-lg font-Signika"
+          >
+            {{ period }} {{ period_No }}
+          </p>
+        </div>
+      </template>
+      <template #content>
+        <div class="w-5/6 mx-auto">
+          <Card>
+            <template #header>
+              <p
+                class="text-center text-font-main-color font-extrabold text-lg font-Signika"
+              >
+                Power Alarms
+              </p>
+            </template>
+            <template #content>
+              <BarChart
+                :chartDataSets="zonesPowerAlrarmsCount"
+                chartTitle=""
+                chartId="Power_alarms"
+              />
+            </template>
+          </Card>
+
+          <Card class="mt-3">
+            <template #header>
+              <p
+                class="text-center text-font-main-color font-extrabold text-lg font-Signika"
+              >
+                HT Alarms
+              </p>
+            </template>
+            <template #content>
+              <BarChart
+                :chartDataSets="zonesHTAlrarmsCount"
+                chartTitle=""
+                chartId="HT_alarms"
+              />
+            </template>
+          </Card>
+          <Card class="mt-3">
+            <template #header>
+              <p
+                class="text-center text-font-main-color font-extrabold text-lg font-Signika"
+              >
+                Gen Alarms
+              </p>
+            </template>
+            <template #content>
+              <BarChart
+                :chartDataSets="zonesGenAlrarmsCount"
+                chartTitle=""
+                chartId="Gen_alarms"
+              />
+            </template>
+          </Card>
+        </div>
+
+        <section id="zones">
+          <cairo-south-energy
+            :cairoSouthSitesReportedHTAlarms="cairoSouthSitesReportedHTAlarms"
+            :cairoSouthSitesReportedGenAlarms="cairoSouthSitesReportedGenAlarms"
+            :period="period"
+            :period_No="period_No"
+            zone="Cairo South"
+            :year="year"
+          >
+          </cairo-south-energy>
+          <cairo-east-energy
+            :cairoEastSitesReportedHTAlarms="cairoEastSitesReportedHTAlarms"
+            :cairoEastSitesReportedGenAlarms="cairoEastSitesReportedGenAlarms"
+            :period="period"
+            :period_No="period_No"
+            zone="Cairo East"
+            :year="year"
+          ></cairo-east-energy>
+          <cairo-north-energy
+            :cairoNorthSitesReportedHTAlarms="cairoNorthSitesReportedHTAlarms"
+            :cairoNorthSitesReportedGenAlarms="cairoNorthSitesReportedGenAlarms"
+            :period="period"
+            :period_No="period_No"
+            :year="year"
+            zone="Cairo North"
+          >
+          </cairo-north-energy>
+          <giza-energy
+            :gizaSitesReportedHTAlarms="gizaSitesReportedHTAlarms"
+            :gizaSitesReportedGenAlarms="gizaSitesReportedGenAlarms"
+            :period="period"
+            :period_No="period_No"
+            zone="Giza"
+            :year="year"
+          ></giza-energy>
+        </section>
+      </template>
+    </Card>
+  </div>
+
+  <!-- <div id="cairo-and-zones" v-if="isAlarmsAvailable">
     <section id="cairo">
       <div class="container mt-5">
         <Card>
@@ -13,36 +117,57 @@
               <div class="col-12 col-md-4">
                 <Card>
                   <template #title>
-                    <div class="d-flex justify-content-center align-items-center">
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
                       <p style="text-align: center">Power Alarms</p>
                     </div>
                   </template>
                   <template #content>
-                    <Chart type="bar" :data="zonesPowerAlrarmsCount" :options="lightOptions" :plugins="plugins" />
+                    <Chart
+                      type="bar"
+                      :data="zonesPowerAlrarmsCount"
+                      :options="lightOptions"
+                      :plugins="plugins"
+                    />
                   </template>
                 </Card>
               </div>
               <div class="col-12 col-md-4">
                 <Card>
                   <template #title>
-                    <div class="d-flex justify-content-center align-items-center">
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
                       <p style="text-align: center">HT Alarms</p>
                     </div>
                   </template>
                   <template #content>
-                    <Chart type="bar" :data="zonesHTAlrarmsCount" :options="lightOptions" :plugins="plugins" />
+                    <Chart
+                      type="bar"
+                      :data="zonesHTAlrarmsCount"
+                      :options="lightOptions"
+                      :plugins="plugins"
+                    />
                   </template>
                 </Card>
               </div>
               <div class="col-12 col-md-4">
                 <Card>
                   <template #title>
-                    <div class="d-flex justify-content-center align-items-center">
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
                       <p style="text-align: center">Gen Alarms</p>
                     </div>
                   </template>
                   <template #content>
-                    <Chart type="bar" :data="zonesGenAlrarmsCount" :options="lightOptions" :plugins="plugins" />
+                    <Chart
+                      type="bar"
+                      :data="zonesGenAlrarmsCount"
+                      :options="lightOptions"
+                      :plugins="plugins"
+                    />
                   </template>
                 </Card>
               </div>
@@ -52,30 +177,42 @@
       </div>
     </section>
     <section id="zones">
-      <cairo-south-energy 
-       
-           :cairoSouthSitesReportedHTAlarms="cairoSouthSitesReportedHTAlarms
-    " :cairoSouthSitesReportedGenAlarms="cairoSouthSitesReportedGenAlarms
-    " :period="period" :period_No="period_No" zone="Cairo South" :year="year">
+      <cairo-south-energy
+        :cairoSouthSitesReportedHTAlarms="cairoSouthSitesReportedHTAlarms"
+        :cairoSouthSitesReportedGenAlarms="cairoSouthSitesReportedGenAlarms"
+        :period="period"
+        :period_No="period_No"
+        zone="Cairo South"
+        :year="year"
+      >
       </cairo-south-energy>
-      <cairo-east-energy 
-     
-          :cairoEastSitesReportedHTAlarms="cairoEastSitesReportedHTAlarms
-    " :cairoEastSitesReportedGenAlarms="cairoEastSitesReportedGenAlarms
-    " :period="period" :period_No="period_No" zone="Cairo East" :year="year"></cairo-east-energy>
-      <cairo-north-energy 
-     
-          :cairoNorthSitesReportedHTAlarms="cairoNorthSitesReportedHTAlarms
-    " :cairoNorthSitesReportedGenAlarms="cairoNorthSitesReportedGenAlarms
-    " :period="period" :period_No="period_No" :year="year" zone="Cairo North">
+      <cairo-east-energy
+        :cairoEastSitesReportedHTAlarms="cairoEastSitesReportedHTAlarms"
+        :cairoEastSitesReportedGenAlarms="cairoEastSitesReportedGenAlarms"
+        :period="period"
+        :period_No="period_No"
+        zone="Cairo East"
+        :year="year"
+      ></cairo-east-energy>
+      <cairo-north-energy
+        :cairoNorthSitesReportedHTAlarms="cairoNorthSitesReportedHTAlarms"
+        :cairoNorthSitesReportedGenAlarms="cairoNorthSitesReportedGenAlarms"
+        :period="period"
+        :period_No="period_No"
+        :year="year"
+        zone="Cairo North"
+      >
       </cairo-north-energy>
-      <giza-energy 
-     
+      <giza-energy
         :gizaSitesReportedHTAlarms="gizaSitesReportedHTAlarms"
-        :gizaSitesReportedGenAlarms="gizaSitesReportedGenAlarms" :period="period" :period_No="period_No"
-        zone="Giza" :year="year"></giza-energy>
+        :gizaSitesReportedGenAlarms="gizaSitesReportedGenAlarms"
+        :period="period"
+        :period_No="period_No"
+        zone="Giza"
+        :year="year"
+      ></giza-energy>
     </section>
-  </div>
+  </div> -->
 
   <div v-if="!isAlarmsAvailable">
     <div class="container mt-5">
@@ -88,7 +225,11 @@
                 {{ error }}
               </p>
               <div>
-                <Button label="Back" class="p-button-danger" @click="this.$router.go(-1)" />
+                <Button
+                  label="Back"
+                  class="p-button-danger"
+                  @click="this.$router.go(-1)"
+                />
               </div>
             </div>
           </transition>
@@ -101,6 +242,7 @@
 
 <script>
 import Energy from "../../../apis/Energy";
+import BarChart from "../../helpers/BarChart.vue";
 import CairoEastEnergy from "../energySheet/CairoEastEnergy.vue";
 import CairoNorthEnergy from "../energySheet/CairoNorthEnergy.vue";
 import CairoSouthEnergy from "../energySheet/CairoSouthEnergy.vue";
@@ -113,8 +255,7 @@ export default {
       alarms: null,
       period: null,
       period_No: null,
-     
-    
+
       cairoEastSitesReportedHTAlarms: null,
       cairoNorthSitesReportedHTAlarms: null,
       cairoSouthSitesReportedHTAlarms: null,
@@ -153,6 +294,7 @@ export default {
     CairoNorthEnergy,
     CairoSouthEnergy,
     GizaEnergy,
+    BarChart,
   },
   watch: {
     week() {
@@ -164,8 +306,30 @@ export default {
     this.getEnergyStatestics();
   },
   methods: {
+    setZonesAlarmsChart(totalNumberOfAlarms, totalNumberOfSites) {
+      const documentStyle = getComputedStyle(document.documentElement);
+      return {
+        labels: Object.keys(totalNumberOfAlarms),
+
+        datasets: [
+          {
+            label: "Total Alarms",
+
+            data: Object.values(totalNumberOfAlarms),
+            backgroundColor: documentStyle.getPropertyValue("--p-cyan-500"),
+            borderColor: documentStyle.getPropertyValue("--p-cyan-500"),
+          },
+          {
+            label: "Total Sites",
+
+            data: Object.values(totalNumberOfSites),
+            backgroundColor: documentStyle.getPropertyValue("--p-gray-500"),
+            borderColor: documentStyle.getPropertyValue("--p-gray-500"),
+          },
+        ],
+      };
+    },
     getEnergyStatestics() {
-      this.$store.dispatch("displaySpinnerPage", false);
       let data = {
         week: this.week,
 
@@ -178,7 +342,7 @@ export default {
           this.alarms = response.data.Alarms;
           this.period = this.alarms.period;
           this.period_No = this.alarms.period_No;
-       
+
           ////////////Zones Sites reported HT Alarms ///////////
 
           if (this.alarms.zonesSitesReportedHTAlarms["Cairo North"]) {
@@ -229,63 +393,23 @@ export default {
 
           /////////////Cairo zones Power Alarms Count//////////
 
-          this.zonesPowerAlrarmsCount = {
-            labels: Object.keys(this.alarms.zonesPowerAlarmsCount),
+          this.zonesPowerAlrarmsCount = this.setZonesAlarmsChart(
+            this.alarms.zonesPowerAlarmsCount,
+            this.alarms.zonesSitesReportedPowerAlarms
+          );
 
-            datasets: [
-              {
-                label: "Count Power Alarms",
-                backgroundColor: "#C3B1E1",
-                data: Object.values(this.alarms.zonesPowerAlarmsCount),
-                borderWidth: 1,
-              },
-              {
-                label: "Sites reported Power Alarms",
-                backgroundColor: "var(--purple-500)",
-                data: Object.values(this.alarms.zonesSitesReportedPowerAlarms),
-                borderWidth: 1,
-              },
-            ],
-          };
           /////////////////////////Cairo Zones HT Alarms count///////////////////////
 
-          this.zonesHTAlrarmsCount = {
-            labels: Object.keys(this.alarms.zonesHTAlarmsCount),
+          this.zonesHTAlrarmsCount = this.setZonesAlarmsChart(
+            this.alarms.zonesHTAlarmsCount,
+            this.alarms.zonesNumberSitesReportedHTAlarms
+          );
 
-            datasets: [
-              {
-                label: "Count HT Alarms",
-                backgroundColor: "#C3B1E1",
-                data: Object.values(this.alarms.zonesHTAlarmsCount),
-                borderWidth: 1,
-              },
-              {
-                label: "Sites reported HT Alarms",
-                backgroundColor: "var(--purple-500)",
-                data: Object.values(this.alarms.zonesNumberSitesReportedHTAlarms),
-                borderWidth: 1,
-              },
-            ],
-          };
           ////////////////////////Cairo Zones Gen Alarms count///////////////
-          this.zonesGenAlrarmsCount = {
-            labels: Object.keys(this.alarms.zonesGenAlarmsCount),
-
-            datasets: [
-              {
-                label: "Count Gen Alarms",
-                backgroundColor: "#C3B1E1",
-                data: Object.values(this.alarms.zonesGenAlarmsCount),
-                borderWidth: 1,
-              },
-              {
-                label: "Sites reported Gen Alarms",
-                backgroundColor: "var(--purple-500)",
-                data: Object.values(this.alarms.zonesNumberSitesReportedGenAlarms),
-                borderWidth: 1,
-              },
-            ],
-          };
+          this.zonesGenAlrarmsCount = this.setZonesAlarmsChart(
+            this.alarms.zonesGenAlarmsCount,
+            this.alarms.zonesNumberSitesReportedGenAlarms
+          );
         })
         .catch((error) => {
           this.isAlarmsAvailable = false;
