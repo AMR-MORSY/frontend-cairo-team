@@ -49,6 +49,11 @@ import ModificationsSearchCategory from "../components/pages/Modifications/Modif
 import ModificationsSearchWorkOrder from "../components/pages/Modifications/ModificationsSearchWorkOrder.vue";
 import ModificationByWO from "../components/pages/Modifications/ModificationByWO.vue";
 import ModificationInvoices from "../components/pages/Modifications/ModificationInvoices.vue";
+import ModificationInvoiceView from "../components/pages/Modifications/ModificationInvoiceView.vue";
+import ModificationsDashboard from "../components/pages/Modifications/ModificationsDashboard.vue";
+import Notifications from "../components/pages/User/Notifications.vue";
+import ModificationsWithoutPQ from "../components/pages/Modifications/ModificationsWithoutPQ.vue";
+import ViewNotification from "../components/pages/User/ViewNotification.vue";
 const routes = [
   {
     path: "/energy/sheet",
@@ -122,6 +127,12 @@ const routes = [
   
   },
   {
+    path: "/modifications/without/pq",
+    component: ModificationsWithoutPQ,
+    meta: { requiresAuth: true},
+  
+  },
+  {
     path: "/modifications/search/pricelist",
     component: ModificationsSearchPriceList,
     meta: { requiresAuth: true},
@@ -146,9 +157,23 @@ const routes = [
   
   },
   {
+    path: "/modification/invoice/view/:invoice_id",
+    component:ModificationInvoiceView,
+    meta: { requiresAuth: true},
+    props: true,
+  
+  },
+  {
     path: "/modifications/search/workorder",
     component: ModificationsSearchWorkOrder,
     meta: { requiresAuth: true},
+  
+  },
+  {
+    path: "/modifications/dashboard/:year",
+    component: ModificationsDashboard,
+    meta: { requiresAuth: true},
+    props:true
   
   },
   {
@@ -304,6 +329,27 @@ const routes = [
   },
   },
   {
+    path: "/user/notifications",
+    component:Notifications,
+    name: "notifications",
+  
+    meta: { requiresAuth: true  },
+   
+   
+
+  },
+  {
+    path: "/user/notification/view/:notification_id",
+    component:ViewNotification,
+   
+    props:true,
+  
+    meta: { requiresAuth: true  },
+   
+   
+
+  },
+  {
     path: "/user/signUp/:code",
     component: validateSignUpCode,
     name: "validateSignUpCode",
@@ -421,7 +467,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !store.getters.isLogin) {
-    next({ name: "login" });
+
+    next({ name: "login",
+      query:{redirect:to.fullPath}//////save the full path as a query to be used in login component to redirect the user to his required route after successfully login  
+     });
   } else {
     next();
   }

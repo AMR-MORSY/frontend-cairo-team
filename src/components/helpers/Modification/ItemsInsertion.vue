@@ -189,7 +189,7 @@ const insertMailPricesItems = () => {
     let data = {
       mail_prices: selectedItems.value,
     };
-    console.log(props.quotation_id);
+    console.log(data);
     Quotation.insertQuotationMailPricesItems(
       data,
       props.modification_id,

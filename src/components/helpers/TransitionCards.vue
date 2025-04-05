@@ -24,6 +24,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
+import Modifications from "../../apis/Modifications";
 const router = useRouter();
 
 const props = defineProps(["cards"]);
@@ -55,6 +56,14 @@ const formatElement = (id) => {
     router.push("/energy/index");
   } else if (card[0].path == "New Sheet") {
     router.push("/energy/sheet");
+  } else if (card[0].path == "Dashboard") {
+    Modifications.getModificationYears().then((response) => {
+      if (response.data.message == "success") {
+        router.push(`/modifications/dashboard/${response.data.years[0]}`);
+      }
+    });
+
+    // router.push("/energy/sheet");
   }
 };
 </script>

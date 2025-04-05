@@ -29,19 +29,23 @@
     "primevue": "^4.0.7",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vue": "^3.3.4",
+    "vue-awesome-paginate": "^1.2.0",
     "vue-chartkick": "^1.1.0",
     "vue-json-excel3": "^1.0.19",
     "vue-loader": "^17.0.0",
     "vue-notifications": "^1.0.2",
     "vue-pdf": "^4.3.0",
+    "vue-pdf-embed": "^2.1.2",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2",
     "xlsx": "^0.20.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "laravel-echo": "^2.0.2",
     "lodash": "^4.17.19",
     "postcss": "^8.4.47",
+    "pusher-js": "^8.4.0",
     "sass": "^1.55.0",
     "tailwindcss": "^3.4.13",
     "vite": "^3.0.0"

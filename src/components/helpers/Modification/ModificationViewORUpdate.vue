@@ -79,6 +79,7 @@ const getModificationDetails = () => {
       modificationDetails.wo_code = response.data.details.wo_code;
       modificationDetails.reported_at=response.data.details.reported_at;
       modificationDetails.pending=response.data.details.pending;
+      modificationDetails.invoice=response.data.details.invoice;
     })
     .catch((error) => {
       console.log(error);

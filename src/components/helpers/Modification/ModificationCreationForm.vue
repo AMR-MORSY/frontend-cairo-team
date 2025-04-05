@@ -86,7 +86,7 @@
                   <Textarea
                     v-model="pending"
                     id="pending"
-                   :invalid="v$.pending.$errors.length > 0"
+                    :invalid="v$.pending.$errors.length > 0"
                     rows="2"
                     cols="20"
                     :disabled="needed_action == 'view'"
@@ -325,6 +325,15 @@
                 :disabled="!userCanUploadQuotationOrUpdateMOdification"
               />
               <Button
+                label="Invoice"
+                severity="info"
+                v-if="needed_action == 'view'"
+                raised
+                class="block"
+                @click.prevent="viewInvoice"
+                :disabled="!userCanUploadQuotationOrUpdateMOdification"
+              />
+              <Button
                 label="Update"
                 severity="secondary"
                 v-if="needed_action == 'view'"
@@ -395,7 +404,7 @@ const confirm = useConfirm();
 const { can } = useAbility();
 
 const subcontractor = ref("");
-const pending=ref('');
+const pending = ref("");
 
 const est_cost = ref(0);
 
@@ -433,7 +442,7 @@ const mustBeYes = (value) => {
 };
 
 const greaterThanZeroWhenStatusDoneORWaiting = (value) => {
-  if ((value == 0 && status.value == 1) || (value == 0 && status.value == 3)) {
+  if ((value == 0 && status.value == 1) || (value == 0 && status.value == 3) || (value == 0 && status.value == 2)){
     return false;
   }
   return true;
@@ -462,7 +471,7 @@ const props = defineProps([
   "needed_action",
   "siteCode",
   "siteName",
-  "operation_zone"
+  "operation_zone",
 ]);
 
 const userCanUploadQuotationOrUpdateMOdification = computed(() => {
@@ -520,10 +529,7 @@ const userCanDeleteModification = computed(() => {
 });
 
 const userCanCreateModification = computed(() => {
-  if (
-    props.operation_zone == "Cairo North" &&
-    can("create_CN_modifications")
-  )
+  if (props.operation_zone == "Cairo North" && can("create_CN_modifications"))
     return true;
   else if (
     props.operation_zone == "Cairo South" &&
@@ -535,10 +541,7 @@ const userCanCreateModification = computed(() => {
     can("create_CE_modifications")
   )
     return true;
-  else if (
-    props.operation_zone == "Giza" &&
-    can("create_GZ_modifications")
-  )
+  else if (props.operation_zone == "Giza" && can("create_GZ_modifications"))
     return true;
   else return false;
 });
@@ -573,7 +576,7 @@ watch(props.modificationData, (newValue, oldValue) => {
     reported.value = props.modificationData.reported.id;
     operation_zone.value = props.modificationData.oz;
     action_owner.value = props.modificationData.action_owner;
-    pending.value=props.modificationData.pending;
+    pending.value = props.modificationData.pending;
     reported_at.value = returnDate(props.modificationData.reported_at);
   }
 });
@@ -602,7 +605,7 @@ const goToQuotation = () => {
   router.push(`/quotation/modification/${props.modificationData.id}`);
 };
 
-const stringReg=helpers.regex(/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/);////////////////////chars,special chars,spaces,numbers,underscores,dashes,tabs, and new lines
+const stringReg = helpers.regex(/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/); ////////////////////chars,special chars,spaces,numbers,underscores,dashes,tabs, and new lines
 
 const rules = computed(() => ({
   subcontractor: {
@@ -652,11 +655,10 @@ const rules = computed(() => ({
       "description is required",
       requiredIf(actions.value != null)
     ),
-    stringReg:helpers.withMessage('invalid input format',stringReg)
+    stringReg: helpers.withMessage("invalid input format", stringReg),
   },
-  pending:{
-    stringReg:helpers.withMessage('invalid input format',stringReg)
-
+  pending: {
+    stringReg: helpers.withMessage("invalid input format", stringReg),
   },
   final_cost: {
     greaterThanZeroWhenStatusDone: helpers.withMessage(
@@ -731,7 +733,7 @@ const v$ = useVuelidate(rules, {
   description,
   reported_at,
   reported,
-  pending
+  pending,
 });
 
 const formData = () => {
@@ -749,7 +751,7 @@ const formData = () => {
     description: description.value,
     reported: reported.value,
     reported_at: convertDate(reported_at.value),
-    pending:pending.value
+    pending: pending.value,
   };
 };
 const updateModification = () => {
@@ -1019,6 +1021,21 @@ const deleteModification = () => {
 };
 const goToUpdate = () => {
   router.push(`/modification/update/${props.modificationData.id}`);
+};
+
+const viewInvoice = () => {
+  if (props.modificationData.invoice.id == null) {
+    toast.add({
+      severity: "error",
+      summary: "Error Message",
+      detail: "Invoice unavailable",
+      life: 3000,
+    });
+  }
+  else{
+    router.push(`/modification/invoice/view/${props.modificationData.invoice.id}`);
+  
+  }
 };
 </script>
 

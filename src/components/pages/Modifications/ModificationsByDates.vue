@@ -20,9 +20,10 @@ const getModificationsByDates = () => {
     props.from_date,
     props.to_date
   ).then((response) => {
-    console.log(modifications.value)
-   
+   console.log(response)
     modifications.value=response.data.modifications
+    console.log(modifications.value)
+
 
   }).catch((error)=>{
 

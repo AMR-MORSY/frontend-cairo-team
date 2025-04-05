@@ -5,13 +5,14 @@ const store = createStore({
   state: {
     userData: JSON.parse(sessionStorage.getItem("User")),
     NUR: null,
+   
     displaySpinnerPage: true,
     showNetworkError: null,
     siteAlarms: null,
     displayDialog: false,
     dialogMessage: "",
     showUnauthenticatedToast: false,
-    permissions:[]
+    permissions: [],
   },
   getters: {
     isLogin(state) {
@@ -29,8 +30,14 @@ const store = createStore({
       }
     },
 
-    userPermissions(state)
-    {
+    notifications(state) {
+      if (state.userData) {
+      return state.userData.notifications;
+      }
+      return 0;
+    },
+
+    userPermissions(state) {
       return state.permissions;
     },
 
@@ -66,6 +73,9 @@ const store = createStore({
     USER_DATA(state, user) {
       state.userData = user;
     },
+    USER_Notifications(state, notifications) {
+      state.userData.notifications = notifications;
+    },
 
     CHANGE_TIME_OUT(state, status) {
       state.sessionTimeOut = status;
@@ -91,10 +101,9 @@ const store = createStore({
     SHOW_UNAUTH_TOAST(state, status) {
       state.showUnauthenticatedToast = status;
     },
-    USER_PERMISSIONS(state,permissions)
-    {
-      state.permissions=permissions;
-    }
+    USER_PERMISSIONS(state, permissions) {
+      state.permissions = permissions;
+    },
   },
   actions: {
     userData({ commit }, user) {
@@ -103,9 +112,9 @@ const store = createStore({
     userPermissions({ commit }, permissions) {
       commit("USER_PERMISSIONS", permissions);
     },
-    // userRoles({ commit }, roles) {
-    //   commit("USER_Roles", roles);
-    // },
+    userNotifications({ commit }, notifications) {
+      commit("USER_Notifications", notifications);
+    },
     setNUR({ commit }, NUR) {
       commit("SET_NUR", NUR);
     },

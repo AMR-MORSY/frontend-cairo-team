@@ -1,8 +1,8 @@
 <template>
     <div>
 
-        <Chart type="doughnut" :id="chartId" :data="yearlyData" :plugins='plugins' :options="chartOptions" class="w-full md:w-[20rem] lg:w-[25rem]" />
-        <Button label="Download Image" class=" block" raised severity="success" @click="downloadImage()" />
+        <Chart type="doughnut" :id="chartId" :data="yearlyData" :plugins='plugins' :options="chartOptions"  />
+        <Button label="Download Image" class=" block mt-2" raised severity="success" @click="downloadImage()" />
     </div>
 </template>
 
@@ -45,6 +45,16 @@ const setChartOptions = () => {
                     cutout: '60%',
                     color: textColor
                 }
+            },
+            datalabels: {
+                anchor: "center",
+                color: "white",
+                // align:'top',
+                offset:1,
+                formatter: function(value) {
+                    // Format number with commas
+                    return value.toLocaleString();
+                },
             },
             title: {
                 display: true,

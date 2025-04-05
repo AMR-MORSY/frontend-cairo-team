@@ -1,5 +1,5 @@
 <template>
-  <div class="w-screen-2xl px-5 py-20">
+  <div class="py-20 px-2">
     <Card class="max-w-4xl mx-auto">
       <template #content>
         <Tabs value="0">
@@ -30,378 +30,328 @@
           <TabPanels>
             <TabPanel value="0">
               <div
-                class="grid grid-cols-4 px-4 py-4 gap-4 rounded-md border border-spacing-2 border-font-main-color"
+                class="flex justify-evenly py-2 flex-wrap gap-4 rounded-md border border-spacing-2 border-font-main-color"
               >
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="siteCode"
-                      >Site code</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm uppercase"
-                      disabled
-                      fluid
-                      v-model="siteCode"
-                      aria-describedby="siteCode"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="siteCode"
+                    >Site code</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm uppercase"
+                    disabled
+                    fluid
+                    v-model="siteCode"
+                    aria-describedby="siteCode"
+                  />
                 </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto" id="siteCode">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="siteName"
-                      >Site Name</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="siteName"
-                      aria-describedby="siteName"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="siteName"
+                    >Site Name</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="siteName"
+                    aria-describedby="siteName"
+                  />
                 </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="BSC"
-                      >BSC</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="BSC"
-                      aria-describedby="BSC"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color"
+                    >BSC</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="BSC"
+                    aria-describedby="BSC"
+                  />
                 </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="RNC"
-                      >RNC</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="RNC"
-                      aria-describedby="RNC"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color" id="RNC"
+                    >RNC</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="RNC"
+                    aria-describedby="RNC"
+                  />
                 </div>
-
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="oz"
-                      >OZ</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="operationZone"
-                      aria-describedby="oz"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color" id="oz"
+                    >OZ</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="operationZone"
+                    aria-describedby="oz"
+                  />
                 </div>
-
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="severity"
-                      >Severity</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="severity"
-                      aria-describedby="severity"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="severity"
+                    >Severity</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="severity"
+                    aria-describedby="severity"
+                  />
                 </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="office"
-                      >Office</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="office"
-                      aria-describedby="office"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="office"
+                    >Office</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="office"
+                    aria-describedby="office"
+                  />
                 </div>
 
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="nodalCode"
-                      >Nodal Code</span
-                    >
-                    <InputText
-                      type="text"
-                      disabled
-                      fluid
-                      v-model="nodalCode"
-                      aria-describedby="nodalCode"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="nodal"
-                      >Nodal Name</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="nodalName"
-                      aria-describedby="nodal"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="nodalCode"
+                    >Nodal Code</span
+                  >
+                  <InputText
+                    type="text"
+                    disabled
+                    fluid
+                    v-model="nodalCode"
+                    aria-describedby="nodalCode"
+                  />
                 </div>
 
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="2g"
-                      >2G</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      aria-describedby="2g"
-                      v-model="cell2G"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="3g"
-                      >3G</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="cell3G"
-                      aria-describedby="3g"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="4g"
-                      >4G</span
-                    >
-                    <InputText
-                      type="text"
-                      disabled
-                      fluid
-                      v-model="cell4G"
-                      aria-describedby="4g"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="category"
-                      >Category</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="category"
-                      aria-describedby="category"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="sharing"
-                      >Sharing</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="sharing"
-                      aria-describedby="sharing"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="host"
-                      >Host</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="host"
-                      aria-describedby="host"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="guest"
-                      >Gest</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="gest"
-                      aria-describedby="guest"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="guest"
-                      >VF Code</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="vf_code"
-                      aria-describedby="vf_code"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="guest"
-                      >ET Code</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="et_code"
-                      aria-describedby="et_code"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="guest"
-                      >WE Code</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="we_code"
-                      aria-describedby="we_code"
-                    />
-                  </div>
-                </div>
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="status"
-                      >Status</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="status"
-                      aria-describedby="status"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="nodal"
+                    >Nodal Name</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="nodalName"
+                    aria-describedby="nodal"
+                  />
                 </div>
 
-                <div class="col-span-4 sm:col-span-1">
-                  <div class="flex-auto">
-                    <span
-                      class="block font-Signika text-font-main-color"
-                      id="type"
-                      >Type</span
-                    >
-                    <InputText
-                      type="text"
-                      class="text-sm"
-                      disabled
-                      fluid
-                      v-model="type"
-                      aria-describedby="type"
-                    />
-                  </div>
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color" id="2g"
+                    >2G</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    aria-describedby="2g"
+                    v-model="cell2G"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color" id="3g"
+                    >3G</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="cell3G"
+                    aria-describedby="3g"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span class="block font-Signika text-font-main-color" id="4g"
+                    >4G</span
+                  >
+                  <InputText
+                    type="text"
+                    disabled
+                    fluid
+                    v-model="cell4G"
+                    aria-describedby="4g"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="category"
+                    >Category</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="category"
+                    aria-describedby="category"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="sharing"
+                    >Sharing</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="sharing"
+                    aria-describedby="sharing"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="host"
+                    >Host</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="host"
+                    aria-describedby="host"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="guest"
+                    >Gest</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="gest"
+                    aria-describedby="guest"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="guest"
+                    >VF Code</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="vf_code"
+                    aria-describedby="vf_code"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="guest"
+                    >ET Code</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="et_code"
+                    aria-describedby="et_code"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="guest"
+                    >WE Code</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="we_code"
+                    aria-describedby="we_code"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="status"
+                    >Status</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="status"
+                    aria-describedby="status"
+                  />
+                </div>
+
+                <div class="shrink-0 w-40">
+                  <span
+                    class="block font-Signika text-font-main-color"
+                    id="type"
+                    >Type</span
+                  >
+                  <InputText
+                    type="text"
+                    class="text-sm"
+                    disabled
+                    fluid
+                    v-model="type"
+                    aria-describedby="type"
+                  />
                 </div>
               </div>
+              <div class="w-full border border-spacing-2 border-font-main-color my-5"></div>
 
-              <div
-                class="w-full border border-spacing-2 border-font-main-color my-5"
-              ></div>
-
-              <div
-                class="grid grid-cols-6 gap-4 px-4 py-4 rounded-md border border-spacing-2 border-font-main-color"
-              >
-                <div class="col-span-6 md:col-span-1 my-3">
+              <div class="flex justify-evenly gap-1 flex-wrap">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!displayModifications"
                     label="Modifications"
@@ -411,7 +361,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     label="NUR"
                     :disabled="!$can('read_NUR_data')"
@@ -421,7 +371,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     label="Batteries Health"
                     @click="getSiteBatteriesHealth"
@@ -430,7 +380,7 @@
                     class="text-xs block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     label="Update"
                     :disabled="!$can('update_Site_data')"
@@ -440,7 +390,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="Batteries Data"
@@ -450,7 +400,7 @@
                     class="text-xs block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="Rectifier Data"
@@ -460,7 +410,7 @@
                     class="text-xs block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="Site Data"
@@ -470,7 +420,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="MW Data"
@@ -480,7 +430,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="BTS Data"
@@ -490,7 +440,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     :disabled="!$can('read_Instrument_data')"
                     label="Power Data"
@@ -500,7 +450,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     label="Tx.issues"
                     :disabled="!$can('read_Instrument_data')"
@@ -510,7 +460,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="col-span-6 md:col-span-1 my-3">
+                <div class="shrink-0 w-40 my-3">
                   <Button
                     icon="pi pi-search"
                     label="Tx issues"
@@ -522,7 +472,6 @@
                   />
                 </div>
               </div>
-
               <div class="my-10">
                 <div class="relative">
                   <SpeedDial
@@ -533,6 +482,7 @@
                     showIcon="pi pi-bell"
                     hideIcon="pi pi-times"
                     buttonClass="p-button-outlined"
+                    :tooltipOptions="{ position: 'right' }"
                   >
                   </SpeedDial>
                 </div>
@@ -619,6 +569,7 @@
       </template>
     </Card>
   </div>
+ 
 </template>
 
 <script setup>
@@ -680,9 +631,9 @@ const id = ref(null);
 const NUR2G = ref([]);
 const NUR3G = ref([]);
 const NUR4G = ref([]);
-const FM2G=ref([]);
-const FM3G=ref([]);
-const FM4G=ref([]);
+const FM2G = ref([]);
+const FM3G = ref([]);
+const FM4G = ref([]);
 const insertionDataField = ref("");
 const items = [
   {
@@ -716,8 +667,6 @@ const items = [
 ];
 
 // const site_code=computed(()=> props.site_code)
-
-
 
 const countCascades = computed(() => {
   if (cascades.value == null || cascades.value.length == 0) {
@@ -769,18 +718,17 @@ const getSiteNUR = () => {
       NUR2G.value = response.data.NUR2G;
       NUR3G.value = response.data.NUR3G;
       NUR4G.value = response.data.NUR4G;
-      FM2G.value=response.data.FM2G;
-      FM3G.value=response.data.FM3G;
-      FM4G.value=response.data.FM4G;
+      FM2G.value = response.data.FM2G;
+      FM3G.value = response.data.FM3G;
+      FM4G.value = response.data.FM4G;
 
       if (
         NUR2G.value.length == 0 &&
         NUR3G.value.length == 0 &&
         NUR4G.value.length == 0 &&
-        FM2G.value.length==0 &&
-        FM3G.value.length==0 &&
-        FM4G.value.length==0
-
+        FM2G.value.length == 0 &&
+        FM3G.value.length == 0 &&
+        FM4G.value.length == 0
       ) {
         toast.add({
           severity: "success",
@@ -806,9 +754,9 @@ const getSiteNUR = () => {
             NUR3G: NUR3G.value,
             NUR2G: NUR2G.value,
             NUR4G: NUR4G.value,
-            FM2G:FM2G.value,
-            FM3G:FM3G.value,
-            FM4G:FM4G.value,
+            FM2G: FM2G.value,
+            FM3G: FM3G.value,
+            FM4G: FM4G.value,
             site_code: siteCode.value,
             site_name: siteName.value,
           },
@@ -857,7 +805,10 @@ const getSiteDetails = () => {
   });
 };
 
-watch(()=>props.site_code,()=> getSiteDetails());/////////////////////////the right way of writing watch
+watch(
+  () => props.site_code,
+  () => getSiteDetails()
+); /////////////////////////the right way of writing watch
 
 const openDialog = () => {
   dialog.open(SiteAlarmsTable, {
@@ -1005,7 +956,6 @@ const getSiteGenAlarms = () => {
     });
 };
 const getSiteDownAlarmsGroupedByWeek = () => {
-
   Energy.getSiteDownAlarmsGroupedByWeek(data.value)
     .then((response) => {
       if (response.data.statestics.alarms == "exist") {
@@ -1822,8 +1772,6 @@ const insertNewBatteiesData = () => {
     },
   });
 };
-
-
 </script>
 
 <style lang="scss">

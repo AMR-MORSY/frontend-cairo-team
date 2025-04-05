@@ -62,6 +62,27 @@ export default {
     getModificationQuotation(id)
     {
         return allInstances.Api.get(`/quotation/modification/${id}`);
+    },
+    uploadInvoice(data)
+    {
+        return allInstances.uploadApi.post('/modifications/invoice/store',data);
+    },
+    viewInvoice(id)
+    {
+        return allInstances.Api.get(`/modifications/invoice/${id}`)
+    },
+    getModificationYears()
+    {
+        return allInstances.Api.get('/modifications/years');
+    },
+
+    modificationDashboard(year)
+    {
+        return allInstances.Api.get(`/modifications/dashboard/${year}`);
+    },
+    modificationsWithoutPQ()
+    {
+        return allInstances.Api.get('/modifications/quotation/check')
     }
 
     

@@ -20,14 +20,7 @@
           :sortable="col.sortable"
         ></Column>
       </DataTable>
-      <!-- <div class="mt-2">
-        <Button
-          label="Download 2G NUR"
-          severity="secondary"
-          class="block"
-          @click="download2GNUR"
-        />
-      </div> -->
+   
     </div>
     <div v-if="count3G" class="mb-2">
       <DataTable
@@ -49,14 +42,7 @@
           :sortable="col.sortable"
         ></Column>
       </DataTable>
-      <!-- <div class="mt-2">
-        <Button
-          label="Download 3G NUR"
-          severity="secondary"
-          class="block"
-          @click="download3GNUR"
-        />
-      </div> -->
+    
     </div>
     <div v-if="count4G" class="mb-2">
       <DataTable
@@ -78,14 +64,7 @@
           :sortable="col.sortable"
         ></Column>
       </DataTable>
-      <!-- <div class="mt-2">
-        <Button
-          label="Download 4G NUR"
-          severity="secondary"
-          class="block"
-          @click="download4GNUR"
-        />
-      </div> -->
+    
     </div>
     <div v-if="countFM2G" class="mb-2">
       <DataTable
@@ -107,14 +86,7 @@
           :sortable="col.sortable"
         ></Column>
       </DataTable>
-      <!-- <div class="mt-2">
-        <Button
-          label="Download 4G NUR"
-          severity="secondary"
-          class="block"
-          @click="download4GNUR"
-        />
-      </div> -->
+   
     </div>
     <div v-if="countFM3G" class="mb-2">
       <DataTable
@@ -136,14 +108,7 @@
           :sortable="col.sortable"
         ></Column>
       </DataTable>
-      <!-- <div class="mt-2">
-        <Button
-          label="Download 4G NUR"
-          severity="secondary"
-          class="block"
-          @click="download4GNUR"
-        />
-      </div> -->
+     
     </div>
     <div v-if="countFM4G" class="mb-2">
       <DataTable
@@ -314,74 +279,9 @@ export default {
         this.countFM2G = true;
       }
     },
-    // download2GNUR() {
-    //   let data = {
-    //     site_code: this.dialogRef.data.NUR2G[0].problem_site_code,
-    //   };
-
-    //   NUR.download2GNUR(data)
-    //     .then((response) => {
-    //       console.log(response);
-    //       var fileUrl = window.URL.createObjectURL(new Blob([response.data]));
-    //       var fileLink = document.createElement("a");
-    //       fileLink.href = fileUrl;
-    //       fileLink.setAttribute(
-    //         "download",
-    //         `${this.dialogRef.data.NUR2G[0].problem_site_name}NUR2G.xlsx`
-    //       );
-    //       document.body.appendChild(fileLink);
-    //       fileLink.click();
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     })
-    //     .finally(() => {});
-    // },
-    // download3GNUR() {
-    //   let data = {
-    //     site_code: this.dialogRef.data.NUR3G[0].problem_site_code,
-    //   };
-
-    //   NUR.download3GNUR(data)
-    //     .then((response) => {
-    //       console.log(response);
-    //       var fileUrl = window.URL.createObjectURL(new Blob([response.data]));
-    //       var fileLink = document.createElement("a");
-    //       fileLink.href = fileUrl;
-    //       fileLink.setAttribute(
-    //         "download",
-    //         `${this.dialogRef.data.NUR3G[0].problem_site_name}NUR3G.xlsx`
-    //       );
-    //       document.body.appendChild(fileLink);
-    //       fileLink.click();
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     })
-    //     .finally(() => {});
-    // },
+   
     downloadTickets() {
-      // let data = {
-      //   site_code: this.dialogRef.data.NUR4G[0].problem_site_code,
-      // };
-
-      // NUR.download4GNUR(data)
-      //   .then((response) => {
-      //     console.log(response);
-      //     var fileUrl = window.URL.createObjectURL(new Blob([response.data]));
-      //     var fileLink = document.createElement("a");
-      //     fileLink.href = fileUrl;
-      //     fileLink.setAttribute(
-      //       "download",
-      //       `${this.dialogRef.data.NUR4G[0].problem_site_name}NUR4G.xlsx`
-      //     );
-      //     document.body.appendChild(fileLink);
-      //     fileLink.click();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   })
-      //   .finally(() => {});
+    
       var NUR = [];
       if (this.count2G) {
         this.siteNUR2G.forEach((element)=>{

@@ -41,5 +41,30 @@ export default {
 
 
   },
+  userNotifications(page,per_page)
+  {
+    return allInstances.Api.get(`user/notifications?page=${page}&per_page=${per_page}`)
+  },
+  markNotificationAsRead(notification_id)
+  {
+    return allInstances.Api.get(`user/notifications/read/${notification_id}`)
+
+  },
+  markAllNotificationAsRead()
+  {
+    return allInstances.Api.get(`user/notifications/read/all`)
+
+  },
+  deleteNotification(notification_id)
+  {
+    return allInstances.Api.get(`user/notifications/delete/${notification_id}`)
+
+  },
+  clearAllNotifications()
+  {
+    return allInstances.Api.get(`user/notifications/delete/all`)
+
+
+  }
 
 };

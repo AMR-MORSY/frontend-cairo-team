@@ -62,9 +62,17 @@ import TabPanels from 'primevue/tabpanels';
 import Menubar from 'primevue/menubar';
 import RadioButton from 'primevue/radiobutton';
 import MultiSelect from 'primevue/multiselect';
-
-
+import Popover from 'primevue/popover';
+import ColumnGroup from 'primevue/columngroup';
+import Row from "primevue/row";
+import MeterGroup from 'primevue/metergroup';
 import DatePicker from 'primevue/datepicker';
+import OverlayBadge from 'primevue/overlaybadge';
+import Avatar from 'primevue/avatar';
+import Knob from 'primevue/knob';
+import Paginator from 'primevue/paginator';
+
+
 
 import "../node_modules/bootstrap/dist/js/bootstrap.min";
 
@@ -76,7 +84,17 @@ import JsonExcel from "vue-json-excel3";
 
 import "./assets/style.css";
 
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
+window.Pusher = Pusher;
+window.Echo=new Echo({
+  broadcaster: 'pusher',
+  key: import.meta.env.VITE_PUSHER_APP_KEY,
+  cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+  forceTLS: true,
+
+})
 const myPresets = definePreset(Aura, {
   semantic:{
     myButton:{
@@ -129,14 +147,18 @@ const myPresets = definePreset(Aura, {
         color:"transparent"
 
       },
-      base:{
+      // base:{
         item:{
          
-          // padding:"2rem"
+          focus:{
+
+            background:'transparent'
+
+          }
 
         }
 
-      },
+      // },
       
       
     }
@@ -161,6 +183,7 @@ app
   .use(abilitiesPlugin, ability, {
     useGlobalProperties: true,
   })
+  
   .directive("tooltip", Tooltip)
   .directive("ripple", Ripple)
    .directive('keyfilter', KeyFilter)
@@ -208,6 +231,15 @@ app
   .component("FloatLabel", FloatLabel)
   .component("RadioButton",RadioButton)
   .component('MultiSelect',MultiSelect)
+  .component('Popover',Popover)
+  .component("ColumnGroup",ColumnGroup)
+  .component("Row",Row)
+  .component("MeterGroup",MeterGroup)
+  .component("Knob",Knob)
+  .component('OverlayBadge',OverlayBadge)
+  .component('Avatar',Avatar)
+
+  .component("Paginator",Paginator)
 
 
   .mount("#app");

@@ -19,49 +19,58 @@
         </a>
       </template>
       <template #item="{ item, props, hasSubmenu, root }" class="md:ml-32">
-        <a v-ripple class="flex items-center" v-bind="props.action">
-          <template v-if="item.to">
-            <router-link
-              class="text-font-main-color font-Signika"
-              :to="item.to"
-              >{{ item.label }}</router-link
-            >
+        <template v-if="item.to">
+          <router-link class="text-font-main-color font-Signika" :to="item.to">
+            <a v-ripple class="flex items-center" v-bind="props.action">
+              <span
+                v-if="item.icon"
+                class="border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
+                :class="item.icon"
+              >
+              </span>
+              <span>{{ item.label }}</span>
+           
 
+              <!-- <OverlayBadge
+                v-if="item.badge"
+                :value="item.badge"
+                size="small"
+                class="top-1 right-1"
+              >
+                <i class="pi pi-bell block mx-auto" style="font-size: 1.5rem" />
+              </OverlayBadge> -->
+            </a>
+            <OverlayBadge
+                :value="item.badgeValue"
+                v-if="item.badge"
+                size="small" >
+                <i class="pi pi-bell" style="font-size: 1.5rem"/>
+              </OverlayBadge>
+          </router-link>
+        </template>
+
+        <template v-if="!item.to">
+          <a class="flex items-center" v-bind="props.action">
             <span
               v-if="item.icon"
-              class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
+              class="block border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
               :class="item.icon"
             >
             </span>
-          </template>
-
-          <template v-if="!item.to">
-            <span class="text-font-main-color font-Signika">{{
+            <span class="text-font-main-color font-Signika block">{{
               item.label
             }}</span>
 
-            <span
-              v-if="item.icon"
-              class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-              :class="item.icon"
-            >
-            </span>
-          </template>
+            <i
+              v-if="hasSubmenu"
+              :class="[
+                'pi pi-angle-down ml-auto',
+                { 'pi-angle-down': root, 'pi-angle-right': !root },
+              ]"
+            ></i>
+          </a>
+        </template>
 
-          <Badge
-            v-if="item.badge"
-            :class="{ 'ml-auto': !root, 'ml-2': root }"
-            :value="item.badge"
-          />
-
-          <i
-            v-if="hasSubmenu"
-            :class="[
-              'pi pi-angle-down ml-auto',
-              { 'pi-angle-down': root, 'pi-angle-right': !root },
-            ]"
-          ></i>
-        </a>
       </template>
       <template #end>
         <form @submit.prevent="submitSearch">
@@ -83,7 +92,9 @@
           </div>
         </form>
         <!-- <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" /> -->
+     
       </template>
+     
     </Menubar>
   </div>
 </template>
@@ -152,6 +163,7 @@ const updateUserAbility = () => {
                   label: "Home",
                   to: "/home",
                 },
+
                 {
                   label: computed(() => store.getters.userName),
                 },
@@ -168,33 +180,39 @@ const updateUserAbility = () => {
                           },
                         ]
                       : []),
-                    ...(can("read_TX_data")
-                      ? [
-                          {
-                            label: "Tx issues",
-                            icon: "pi pi-search",
-                            command: () => {
-                              SearchTxIssues();
-                            },
-                          },
-                        ]
-                      : []),
+                    // ...(can("read_TX_data")
+                    //   ? [
+                    //       {
+                    //         label: "Tx issues",
+                    //         icon: "pi pi-search",
+                    //         command: () => {
+                    //           SearchTxIssues();
+                    //         },
+                    //       },
+                    //     ]
+                    //   : []),
                     ...(computed(() => store.getters.isLogin)
                       ? [
-                        ...(can("read_Site_data")?[ {
-                          label: "Sites",
-                          icon: "pi pi-server",
-                          shortcut: "⌘+S",
-                          to: "/sites",
-                        }]:[])
-                         ,
-                         ...(can("read_ENERGY_data")?[
-                          {
-                            label: "Energy",
-                            icon: "pi pi-bolt",
-                            shortcut: "⌘+S",
-                            to: "/energy",
-                          }]:[]),
+                          ...(can("read_Site_data")
+                            ? [
+                                {
+                                  label: "Sites",
+                                  icon: "pi pi-server",
+                                  shortcut: "⌘+S",
+                                  to: "/sites",
+                                },
+                              ]
+                            : []),
+                          ...(can("read_ENERGY_data")
+                            ? [
+                                {
+                                  label: "Energy",
+                                  icon: "pi pi-bolt",
+                                  shortcut: "⌘+S",
+                                  to: "/energy",
+                                },
+                              ]
+                            : []),
                           ...(can("read_CS_modifications") ||
                           can("read_CN_modifications") ||
                           can("read_CE_modifications") ||
@@ -217,6 +235,14 @@ const updateUserAbility = () => {
                   command: () => {
                     logout();
                   },
+                },
+                {
+                  // label: "Notifications",
+                  // icon: "pi pi-bell",
+
+                  badge:5 ,
+                  to: "/user/notifications",
+                  badgeValue:computed(()=>store.getters.notifications)
                 },
               ]
             : []),
@@ -284,6 +310,8 @@ const submitSearch = async () => {
       }
     });
 };
+
+
 
 const SearchTxIssues = () => {
   dialog.open(SearchTxIssuesForm, {
