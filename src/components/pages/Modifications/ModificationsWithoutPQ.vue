@@ -10,10 +10,10 @@ import Modifications from '../../../apis/Modifications';
 import { onMounted,ref } from 'vue';
 
 const modifications=ref([]);
-
+const props=defineProps(['oz','action_owner']);
 
 const getModificationsWithoutPQ=()=>{
-    Modifications.modificationsWithoutPQ().then((response)=>{
+    Modifications.modificationsWithoutPQ(props.oz,props.action_owner).then((response)=>{
         console.log(response)
         modifications.value=response.data.modifications
     })

@@ -80,9 +80,15 @@ export default {
     {
         return allInstances.Api.get(`/modifications/dashboard/${year}`);
     },
-    modificationsWithoutPQ()
+    modificationsWithoutPQ(oz,action_owner)
     {
-        return allInstances.Api.get('/modifications/quotation/check')
+        return allInstances.Api.get(`/modifications/without-quotation?oz=${oz}&action_owner=${action_owner}`)
+    },
+    unreportedModifications(oz,action_owner)
+    {
+        return allInstances.Api.get(`/modifications/unreported?oz=${oz}&action_owner=${action_owner}`)
+
+
     }
 
     

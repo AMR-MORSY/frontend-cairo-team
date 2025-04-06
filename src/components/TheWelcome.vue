@@ -227,6 +227,8 @@ export default {
 
 
       Sites.index().then((response) => {
+
+        console.log(response)
       
         this.maxVIPNDL = response.data.statestics.VIP_NDL;
         this.maxNodals = response.data.statestics.NDL;

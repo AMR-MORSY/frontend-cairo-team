@@ -54,6 +54,7 @@ import ModificationsDashboard from "../components/pages/Modifications/Modificati
 import Notifications from "../components/pages/User/Notifications.vue";
 import ModificationsWithoutPQ from "../components/pages/Modifications/ModificationsWithoutPQ.vue";
 import ViewNotification from "../components/pages/User/ViewNotification.vue";
+import UnreportedModifications from "../components/pages/Modifications/UnreportedModifications.vue";
 const routes = [
   {
     path: "/energy/sheet",
@@ -127,9 +128,23 @@ const routes = [
   
   },
   {
-    path: "/modifications/without/pq",
+    path: "/modifications/without/pq/:oz/:action_owner",
     component: ModificationsWithoutPQ,
     meta: { requiresAuth: true},
+    props: (route) => ({ 
+      oz: route.params.oz || null, // Explicitly set to null if missing,
+      action_owner:route.params.action_owner||null
+    })
+  
+  },
+  {
+    path: "/modifications/unreported-modifications/:oz/:action_owner",
+    component: UnreportedModifications,
+    meta: { requiresAuth: true},
+    props: (route) => ({ 
+      oz: route.params.oz || null, // Explicitly set to null if missing,
+      action_owner:route.params.action_owner||null
+    })
   
   },
   {
