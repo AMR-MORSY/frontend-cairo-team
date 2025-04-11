@@ -78,9 +78,12 @@
     style="z-index: 10000000000"
   ></SpinnerPage>
 
-  <UnauthenticatedToast></UnauthenticatedToast>
-  <NetworkErrorToast></NetworkErrorToast>
+  <!-- <UnauthenticatedToast></UnauthenticatedToast> -->
+  <!-- <NetworkErrorToast
+    :message="showNetworkNotificationsToast"
+  ></NetworkErrorToast> -->
 
+  <NotificationDrawer />
   <Toast
     position="bottom-right"
     :breakpoints="{ '480px': { width: '80%', margin: 'auto' } }"
@@ -90,14 +93,14 @@
 
   <Toast position="bottom-center" group="headless">
     <template #message="slotProps">
-      <div class="flex flex-col  flex-auto  w-full rounded-xl">
+      <div class="flex flex-col flex-auto w-full rounded-xl">
         <div class="flex items-center gap-2">
-          <Avatar icon="pi pi-user" class="mr-2" size="xlarge"  shape="circle"/>
-          <span class=" font-semibold text-lg text-black">{{
+          <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle" />
+          <span class="font-semibold text-lg text-black">{{
             slotProps.message.summary
           }}</span>
         </div>
-        <div class=" font-normal my-4">
+        <div class="font-normal my-4">
           {{ slotProps.message.detail }}
           <!-- Has created new modification action on site {{ slotProps.message.summary.site.site_code }}{{ slotProps.message.summary.site.site_name }} in {{ slotProps.message.summary.oz }} -->
         </div>
@@ -111,9 +114,8 @@
 import SpinnerPage from "../src/components/helpers/SpinnerPage.vue";
 import navbar from "../src/components/navbar.vue";
 import SitesTable from "../src/components/pages/sites/SitesTable.vue";
-import UnauthenticatedToast from "../src/components/helpers/UnauthenticatedToast.vue";
 
-import NetworkErrorToast from "./components/helpers/NetworkErrorToast.vue";
+import NotificationDrawer from "./components/helpers/NotificationDrawer.vue";
 import User from "./apis/User";
 // import echo from "../src/apis/echo";
 
@@ -122,20 +124,22 @@ export default {
     SpinnerPage,
     navbar,
     SitesTable,
-    UnauthenticatedToast,
-    NetworkErrorToast,
+    // UnauthenticatedToast,
+    // NetworkErrorToast,
+    NotificationDrawer
   },
   data() {
     return {
-      showModal: false,
+      // showModal: false,
 
-      data: "session will end after 2 minutes, renew session",
+      // data: "session will end after 2 minutes, renew session",
       whiteBackground: false,
       visible: false,
     };
   },
   watch: {
     $route() {
+      this.$store.commit("HIDE_DRAWER_NOTIFICATION");//////////is used to hide the drawer if it exists for better customer experience
       if (this.$store.getters.isLogin) {
         User.userAbilities().then((response) => {
           let rules = [];
@@ -161,12 +165,23 @@ export default {
     displaySpinnerPage() {
       return this.$store.state.displaySpinnerPage;
     },
-    displayDialog() {
-      return this.$store.state.displayDialog;
-    },
-    dialogMessage() {
-      return this.$store.state.dialogMessage;
-    },
+    // displayDialog() {
+    //   return this.$store.state.displayDialog;
+    // },
+    // dialogMessage() {
+    //   return this.$store.state.dialogMessage;
+    // },
+    // showNetworkNotificationsToast() {
+    //   if (this.$store.state.networkNotificationsToast != null) {
+    //     return this.$store.state.networkNotificationsToast;
+    //   }
+    // },
+    showNotificationDrawerMessage(){
+      if (this.$store.state.drawerNotification != null) {
+      
+        return this.$store.state.drawerNotification;
+      }
+    }
   },
   name: "app",
 
@@ -209,7 +224,6 @@ export default {
     },
 
     handleModificationCreation(modification) {
-     
       if (this.$store.getters.userId != modification.action_owner.id) {
         var owner = modification.action_owner.name;
         var details = `Has created new modification action on site ${modification.site.site_code}${modification.site.site_name} in ${modification.oz}.`;

@@ -7,12 +7,16 @@ const store = createStore({
     NUR: null,
    
     displaySpinnerPage: true,
-    showNetworkError: null,
+   
     siteAlarms: null,
-    displayDialog: false,
-    dialogMessage: "",
-    showUnauthenticatedToast: false,
+    
     permissions: [],
+   
+    drawerNotification:{
+      visible:false,
+      message:null,
+      icon:null
+    },
   },
   getters: {
     isLogin(state) {
@@ -58,16 +62,8 @@ const store = createStore({
         return null;
       }
     },
-    showUnauthenticatedToast(state) {
-      return state.showUnauthenticatedToast;
-    },
-    showNetworkErrorToast(state) {
-      if (state.showNetworkError) {
-        setTimeout(() => store.dispatch("showNetworkError", null), 3000);
-        return state.showNetworkError;
-      }
-      return null;
-    },
+    
+
   },
   mutations: {
     USER_DATA(state, user) {
@@ -86,24 +82,26 @@ const store = createStore({
     DISPLAY_SPINNER(state, status) {
       state.displaySpinnerPage = status;
     },
-    DISPLAY_NETWORKERRORTOAST(state, status) {
-      state.showNetworkError = status;
-    },
+    
     SITE_ALARMS(state, alarms) {
       state.siteAlarms = alarms;
     },
-    DISPLAY_DIALOG(state, status) {
-      state.displayDialog = status;
-    },
-    DIALOG_MESSAGE(state, message) {
-      state.dialogMessage = message;
-    },
-    SHOW_UNAUTH_TOAST(state, status) {
-      state.showUnauthenticatedToast = status;
-    },
+   
     USER_PERMISSIONS(state, permissions) {
       state.permissions = permissions;
     },
+   
+    SHOW_DRAWER_NOTIFICATION(state,payload)
+    {
+    
+      state.drawerNotification={
+        ...state.drawerNotification,visible:true,...payload
+      }
+    },
+    HIDE_DRAWER_NOTIFICATION(state,payload)
+    {
+      state.drawerNotification.visible=false
+    }
   },
   actions: {
     userData({ commit }, user) {
@@ -121,21 +119,20 @@ const store = createStore({
     displaySpinnerPage({ commit }, status) {
       commit("DISPLAY_SPINNER", status);
     },
-    showNetworkError({ commit }, status) {
-      commit("DISPLAY_NETWORKERRORTOAST", status);
-    },
+  
     siteAlarms({ commit }, alarms) {
       commit("SITE_ALARMS", alarms);
     },
-    displayDialog({ commit }, status) {
-      commit("DISPLAY_DIALOG", status);
+   
+    showDrawerNotification({commit},payload)
+    {
+      commit ('SHOW_DRAWER_NOTIFICATION',payload)
     },
-    dialogMessage({ commit }, message) {
-      commit("DIALOG_MESSAGE", message);
-    },
-    showUnauthToast({ commit }, status) {
-      commit("SHOW_UNAUTH_TOAST", status);
-    },
+    hideDrawerNotification({commit})
+    {
+      commit("HIDE_DRAWER_NOTIFICATION")
+    }
+    
   },
 });
 export default store;

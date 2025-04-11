@@ -21,10 +21,10 @@ import TransitionCards from "../../helpers/TransitionCards.vue";
 import { ref } from "vue";
 
 const cards = ref([
-  { id: 1, icon: "search", path: "Search" },
-  { id: 2, icon: "add_circle", path: "2G" },
-  { id: 3, icon: "add_circle", path: "3G" },
-  { id: 4, icon: "add_circle", path: "4G" },
+  { id: 1, icon: "pi-search", path: "Search" },
+  { id: 2, icon: "pi-plus-circle", path: "2G" },
+  { id: 3, icon: "pi-plus-circle", path: "3G" },
+  { id: 4, icon: "pi-plus-circle", path: "4G" },
 ]);
 </script>
 <!-- 

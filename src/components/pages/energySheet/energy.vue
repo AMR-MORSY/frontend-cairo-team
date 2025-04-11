@@ -8,7 +8,7 @@ import { ref } from "vue";
 import TransitionCards from "../../helpers/TransitionCards.vue";
 
 const cards = ref([
-  { id: 1, icon: "search", path: "SearchEnergy" },
-  { id: 2, icon: "add_circle", path: "New Sheet" },
+  { id: 1, icon: "pi-search", path: "SearchEnergy" },
+  { id: 2, icon: "pi-plus-circle", path: "New Sheet" },
 ]);
 </script>

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import Sheet from "../components/pages/energySheet/Sheet.vue";
 
 import newSitesInsert from "../components/pages/sites/newSitesInsert.vue";
@@ -483,6 +484,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !store.getters.isLogin) {
 
+   
     next({ name: "login",
       query:{redirect:to.fullPath}//////save the full path as a query to be used in login component to redirect the user to his required route after successfully login  
      });

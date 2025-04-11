@@ -13,7 +13,7 @@
           :key="card.id"
         >
           <div class="card" @click.self="formatElement(card.id)">
-            <span class="material-symbols-rounded"> {{ card.icon }} </span>
+            <span :class="['pi',' ',`${card.icon}`]"> </span>
             <p>{{ card.path }}</p>
           </div>
         </div>
@@ -25,6 +25,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import Modifications from "../../apis/Modifications";
+
 const router = useRouter();
 
 const props = defineProps(["cards"]);
@@ -71,7 +72,7 @@ const formatElement = (id) => {
 <style scoped>
 .card span {
   text-align: center;
-  font-size: 5rem;
+  font-size: 2rem;
   z-index: 1;
   color: gray;
 }

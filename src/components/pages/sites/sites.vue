@@ -4,7 +4,7 @@
       <TransitionGroup class="grid grid-cols-3 gap-4 px-5 mt-20" tag="div" name="cards" appear>
         <div class="col-span-3 lg:col-span-1  mt-5" v-for="card in cards" :key="card.id">
           <div class="card px-7" @click.self="formatElement(card.id)">
-            <span class="material-symbols-rounded"> {{ card.icon }} </span>
+            <span :class="['pi',' ',`${card.icon}`]"> </span>
             <p>{{ card.path }}</p>
           </div>
         </div>
@@ -34,9 +34,9 @@ onMounted(() => {
     // { id: 1, icon: "add_circle", path: "New sites" },
     // { id: 2, icon: "add_circle", path: "Cascades" },
     // { id: 3, icon: "add_circle", path: "Nodals" },
-    { id: 4, icon: "add_circle", path: "New site" },
-    { id: 5, icon: "download", path: "Cairo Sites" },
-    { id: 6, icon: "download", path: "Download Nodals" },
+    { id: 4, icon: "pi-plus-circle", path: "New site" },
+    { id: 5, icon: "pi-download", path: "Cairo Sites" },
+    { id: 6, icon: "pi-download", path: "Download Nodals" },
   ];
 
 })
@@ -118,7 +118,7 @@ const formatElement = (id) => {
 <style lang="scss" scoped>
 .card span {
   text-align: center;
-  font-size: 5rem;
+  font-size: 2rem;
   z-index: 1;
   color: gray;
 }

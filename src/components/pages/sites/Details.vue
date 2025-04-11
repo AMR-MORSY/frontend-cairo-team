@@ -11,20 +11,30 @@
               >
             </Tab>
             <Tab value="1">
-              <span
-                class="text-font-main-color font-Signika font-extrabold uppercase"
-                >Cascades</span
-              >
-              <Badge :value="countCascades" v-if="countCascades"></Badge>
+              <OverlayBadge v-if="countCascades" :value="countCascades">
+                <span class="text-font-main-color font-Signika font-extrabold uppercase">Cascades</span>
+              
+              </OverlayBadge>
+              <span class="text-font-main-color font-Signika font-extrabold uppercase" v-else>Cascades</span>
+              <!-- <Badge :value="countCascades" v-if="countCascades"></Badge> -->
             </Tab>
             <Tab value="2"
-              ><span
+            
+              >
+              <OverlayBadge v-if="countIndirectCascades" :value="countIndirectCascades">
+                <span class="text-font-main-color font-Signika font-extrabold uppercase">Indirect</span>
+              
+              </OverlayBadge>
+              <span class="text-font-main-color font-Signika font-extrabold uppercase" v-else>Indirect</span>
+              <!-- <Button type="button" label="Indirect Cascades"  :badge="countIndirectCascades" v-if="countIndirectCascades" badgeSeverity="contrast" outlined />
+              <Button type="button" label="Indirect Cascades" icon="pi pi-inbox" v-else  outlined /> -->
+              <!-- <span
                 class="text-font-main-color font-Signika font-extrabold uppercase"
                 >Indirect Cascades</span
               >
               <template v-if="countIndirectCascades">
                 <Badge :value="countIndirectCascades"></Badge>
-              </template>
+              </template> -->
             </Tab>
           </TabList>
           <TabPanels>

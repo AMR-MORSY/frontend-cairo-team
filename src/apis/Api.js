@@ -14,34 +14,44 @@ let Api = axios.create({
 
 function unauthorizedUnauthintecatedErrorResponse(error) {
   if (error.response.status == 419 || error.response.status == 403) {
-    let response = error.response;
-    if (response.config.method == "post") {
-      router.push({ path: "/unauthorized/1" });
-    } else if (response.config.method == "get") {
-      router.push({ path: "/unauthorized/2" });
-    }
+    showUnAuthToast();
+    
   } else if (error.response.status == 401) {
     showUnauthintecatedToast();
   } else if (error.response.status == 404) {
     router.push({ name: "notFound" });
+  } else if(error.response.status==503)
+  {
+    showMaintenanceModeNotification()
+
   }
 }
-function showNetworkToast() {
-  
 
- store.dispatch('showNetworkError','Network error......');
+function showMaintenanceModeNotification()
+{
+  store.dispatch('showDrawerNotification',{message:'We’re performing scheduled maintenance. Please check back later!"...',icon:'pi pi-calendar-plus'});
 }
+function showNetworkToast() {
+ 
+
+ store.dispatch('showDrawerNotification',{message:'Network error......',icon:'pi pi-wifi'});
+}
+function showUnAuthToast() {
+ 
+
+  store.dispatch('showDrawerNotification',{message:'You do not have the right permission......',icon:'pi pi-user'});
+ }
 
 function showUnauthintecatedToast() {
-  const toastLiveExample = document.getElementById("liveToast");
-  const toastBootstrap = new bootstrap.Toast(toastLiveExample);
+  // const toastLiveExample = document.getElementById("liveToast");
+  // const toastBootstrap = new bootstrap.Toast(toastLiveExample);
   sessionStorage.removeItem("User");
   store.dispatch("userData", null);
   // store.dispatch("showUnauthToast", true);
-
-  toastBootstrap.show();
+  router.push({ path: "/user/login" });
+  // toastBootstrap.show();
   // store.dispatch('showNetworkError','Unauthenticated');
-
+  store.dispatch('showDrawerNotification',{message:'You are not allowed to access this data, please login first......',icon:'pi pi-user'});
 }
 
 Api.defaults.withCredentials = true;
