@@ -114,6 +114,11 @@ export default {
       return allInstances.Api.post("/instruments/updateMWData",data)
 
     },
+    insertSiteMWDetails(data)
+    {
+      return allInstances.Api.post("/instruments/insertMWData",data)
+
+    },
     getSiteBTSDetails(data)
     {
       return allInstances.Api.post("/instruments/siteBTSData",data)
@@ -122,6 +127,11 @@ export default {
     updateSiteBTSDetails(data)
     {
       return allInstances.Api.post("/instruments/updateSiteBTSData",data)
+
+    },
+    insertSiteBTSDetails(data)
+    {
+      return allInstances.Api.post("/instruments/insertSiteBTSData",data)
 
     },
    
@@ -135,5 +145,16 @@ export default {
       return allInstances.Api.post("/instruments/updateSitePowerData",data)
 
     },
+    insertSitePowerDetails(data)
+    {
+      return allInstances.Api.post("/instruments/insertSitePowerData",data)
+
+    },
+
+
+    viewMuxPlan(site_code)
+    {
+      return allInstances.Api.get(`/sites/muxPlans?site_code=${site_code}`)
+    }
     
 };

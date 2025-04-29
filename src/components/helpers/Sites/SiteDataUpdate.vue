@@ -35,13 +35,13 @@
           <label class="font-bold" id="topology">Topology</label>
           <InputText
             fluid
-            :invalid="v$.form.topology.$errors.length > 0"
+            :invalid="v$.topology.$errors.length > 0"
             v-model="form.topology"
             aria-describedby="topology"
           />
         </div>
-        <div v-if="v$.form.topology.$error">
-          <validationErrorMessage :errors="v$.form.topology.$errors" />
+        <div v-if="v$.topology.$error">
+          <validationErrorMessage :errors="v$.topology.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -49,13 +49,13 @@
           <label class="font-bold" id="structure">Structure</label>
           <InputText
             fluid
-            :invalid="v$.form.structure.$error"
-            v-model="v$.form.structure.$model"
+            :invalid="v$.structure.$error"
+            v-model="v$.structure.$model"
             aria-describedby="structure"
           />
         </div>
-        <div v-if="v$.form.structure.$error">
-          <validationErrorMessage :errors="v$.form.structure.$errors" />
+        <div v-if="v$.structure.$error">
+          <validationErrorMessage :errors="v$.structure.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -63,13 +63,13 @@
           <label class="font-bold" id="equip_room">Equip Room</label>
           <InputText
             fluid
-            :invalid="v$.form.equip_room.$error"
-            v-model="v$.form.equip_room.$model"
+            :invalid="v$.equip_room.$error"
+            v-model="v$.equip_room.$model"
             aria-describedby="equip_room"
           />
         </div>
-        <div v-if="v$.form.equip_room.$error">
-          <validationErrorMessage :errors="v$.form.equip_room.$errors" />
+        <div v-if="v$.equip_room.$error">
+          <validationErrorMessage :errors="v$.equip_room.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -77,15 +77,15 @@
           <label class="font-bold" id="ntra_cluster">NTRA</label>
           <Select
             fluid
-            :invalid="v$.form.ntra_cluster.$error"
+            :invalid="v$.ntra_cluster.$error"
             :options="serve_comp_options"
-            v-model.trim="v$.form.ntra_cluster.$model"
+            v-model.trim="v$.ntra_cluster.$model"
             aria-describedby="ntra_cluster"
           >
           </Select>
         </div>
-        <div v-if="v$.form.ntra_cluster.$error">
-          <validationErrorMessage :errors="v$.form.ntra_cluster.$errors" />
+        <div v-if="v$.ntra_cluster.$error">
+          <validationErrorMessage :errors="v$.ntra_cluster.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -93,15 +93,15 @@
           <label class="font-bold" id=" care_ceo">CXO</label>
           <Select
             fluid
-            :invalid="v$.form.care_ceo.$error"
+            :invalid="v$.care_ceo.$error"
             :options="serve_comp_options"
-            v-model.trim="v$.form.care_ceo.$model"
+            v-model.trim="v$.care_ceo.$model"
             aria-describedby="care_ceo"
           >
           </Select>
         </div>
-        <div v-if="v$.form.care_ceo.$error">
-          <validationErrorMessage :errors="v$.form.care_ceo.$errors" />
+        <div v-if="v$.care_ceo.$error">
+          <validationErrorMessage :errors="v$.care_ceo.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -109,15 +109,15 @@
           <label class="font-bold" id="axsees">Axis</label>
           <Select
             fluid
-            :invalid="v$.form.axsees.$error"
+            :invalid="v$.axsees.$error"
             :options="serve_comp_options"
-            v-model.trim="v$.form.axsees.$model"
+            v-model.trim="v$.axsees.$model"
             aria-describedby="axsees"
           >
           </Select>
         </div>
-        <div v-if="v$.form.axsees.$error">
-          <validationErrorMessage :errors="v$.form.axsees.$errors" />
+        <div v-if="v$.axsees.$error">
+          <validationErrorMessage :errors="v$.axsees.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -125,15 +125,15 @@
           <label class="font-bold" id="serve_compound">Serve Compound</label>
           <Select
             fluid
-            :invalid="v$.form.serve_compound.$error"
+            :invalid="v$.serve_compound.$error"
             :options="serve_comp_options"
-            v-model.trim="v$.form.serve_compound.$model"
+            v-model.trim="v$.serve_compound.$model"
             aria-describedby="serve_compound"
           >
           </Select>
         </div>
-        <div v-if="v$.form.serve_compound.$error">
-          <validationErrorMessage :errors="v$.form.serve_compound.$errors" />
+        <div v-if="v$.serve_compound.$error">
+          <validationErrorMessage :errors="v$.serve_compound.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -141,15 +141,15 @@
           <label class="font-bold" id="no_ldn_accounts">Universities</label>
           <Select
             fluid
-            :class="v$.form.universities.$error"
+            :class="v$.universities.$error"
             :options="serve_comp_options"
-            v-model="v$.form.universities.$model"
+            v-model="v$.universities.$model"
             aria-describedby="universities"
           >
           </Select>
         </div>
-        <div v-if="v$.form.universities.$error">
-          <validationErrorMessage :errors="v$.form.universities.$errors" />
+        <div v-if="v$.universities.$error">
+          <validationErrorMessage :errors="v$.universities.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -157,84 +157,58 @@
           <label class="font-bold" id="no_tp_accounts">Hot Spot</label>
           <Select
             fluid
-            :invalid="v$.form.hot_spot.$error"
-            v-model="v$.form.hot_spot.$model"
+            :invalid="v$.hot_spot.$error"
+            v-model="v$.hot_spot.$model"
             :options="serve_comp_options"
             aria-describedby="hot_spot"
           ></Select>
         </div>
-        <div v-if="v$.form.hot_spot.$error">
-          <validationErrorMessage :errors="v$.form.hot_spot.$errors" />
+        <div v-if="v$.hot_spot.$error">
+          <validationErrorMessage :errors="v$.hot_spot.$errors" />
+        </div>
+      </div>
+   
+      <div class="col-span-4 md:col-span-2 lg:col-span-1">
+        <div class="flex-auto">
+          <label class="font-bold" id="ac1_hp">X-Coordinate</label>
+          <InputText
+            fluid
+            :invalid="v$.x_coordinate.$error"
+            v-model="v$.x_coordinate.$model"
+            aria-describedby="x_coordinate"
+          />
+        </div>
+        <div v-if="v$.x_coordinate.$error">
+          <validationErrorMessage :errors="v$.x_coordinate.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
         <div class="flex-auto">
-          <label class="font-bold" id="ac1_type">AC1 type</label>
+          <label class="font-bold" id="ac2_type">Y-Coordinate</label>
           <InputText
             fluid
-            :invalid="v$.form.ac1_type.$error"
-            v-model="v$.form.ac1_type.$model"
-            aria-describedby="ac1_type"
+            :invalid="v$.y_coordinate.$error"
+            v-model="v$.y_coordinate.$model"
+            aria-describedby="y_coordinate"
           />
         </div>
-        <div v-if="v$.form.ac1_type.$error">
-          <validationErrorMessage :errors="v$.form.ac1_type.$errors" />
+        <div v-if="v$.y_coordinate.$error">
+          <validationErrorMessage :errors="v$.y_coordinate.$errors" />
         </div>
       </div>
-      <div class="col-span-4 md:col-span-2 lg:col-span-1">
-        <div class="flex-auto">
-          <label class="font-bold" id="ac1_hp">AC1 HP</label>
-          <InputText
-            fluid
-            :invalid="v$.form.ac1_hp.$error"
-            v-model="v$.form.ac1_hp.$model"
-            aria-describedby="ac1_hp"
-          />
-        </div>
-        <div v-if="v$.form.ac1_hp.$error">
-          <validationErrorMessage :errors="v$.form.ac1_hp.$errors" />
-        </div>
-      </div>
-      <div class="col-span-4 md:col-span-2 lg:col-span-1">
-        <div class="flex-auto">
-          <label class="font-bold" id="ac2_type">AC2 type</label>
-          <InputText
-            fluid
-            :invalid="v$.form.ac2_type.$error"
-            v-model="v$.form.ac2_type.$model"
-            aria-describedby="ac2_type"
-          />
-        </div>
-        <div v-if="v$.form.ac2_type.$error">
-          <validationErrorMessage :errors="v$.form.ac2_type.$errors" />
-        </div>
-      </div>
-      <div class="col-span-4 md:col-span-2 lg:col-span-1">
-        <div class="flex-auto">
-          <label class="font-bold" id="ac2_hp">AC2 HP</label>
-          <InputText
-            fluid
-            :invalid="v$.form.ac2_hp.$error"
-            v-model="v$.form.ac2_hp.$model"
-            aria-describedby="ac2_hp"
-          />
-        </div>
-        <div v-if="v$.form.ac2_hp.$error">
-          <validationErrorMessage :errors="v$.form.ac2_hp.$errors" />
-        </div>
-      </div>
+    
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
         <div class="flex-auto">
           <label class="font-bold" id=" network_type">Network Type</label>
           <InputText
             fluid
-            :invalid="v$.form.network_type.$error"
-            v-model="v$.form.network_type.$model"
+            :invalid="v$.network_type.$error"
+            v-model="v$.network_type.$model"
             aria-describedby=" network_type"
           />
         </div>
-        <div v-if="v$.form.network_type.$error">
-          <validationErrorMessage :errors="v$.form.network_type.$errors" />
+        <div v-if="v$.network_type.$error">
+          <validationErrorMessage :errors="v$.network_type.$errors" />
         </div>
       </div>
 
@@ -245,17 +219,15 @@
           >
           <Select
             fluid
-            :invalid="v$.form.need_access_permission.$error"
-            v-model.trim="v$.form.need_access_permission.$model"
+            :invalid="v$.need_access_permission.$error"
+            v-model.trim="v$.need_access_permission.$model"
             :options="access_perm_options"
             aria-describedby=" need_access_permission"
           >
           </Select>
         </div>
-        <div v-if="v$.form.need_access_permission.$error">
-          <validationErrorMessage
-            :errors="v$.form.need_access_permission.$errors"
-          />
+        <div v-if="v$.need_access_permission.$error">
+          <validationErrorMessage :errors="v$.need_access_permission.$errors" />
         </div>
       </div>
       <div class="col-span-4 md:col-span-2 lg:col-span-1">
@@ -263,19 +235,45 @@
           <label class="font-bold" id=" permission_type">Permission Type</label>
           <InputText
             fluid
-            :invalid="v$.form.permission_type.$error"
-            v-model="v$.form.permission_type.$model"
+            :invalid="v$.permission_type.$error"
+            v-model="v$.permission_type.$model"
             aria-describedby=" permission_type"
           />
         </div>
-        <div v-if="v$.form.permission_type.$error">
-          <validationErrorMessage :errors="v$.form.permission_type.$errors" />
+        <div v-if="v$.permission_type.$error">
+          <validationErrorMessage :errors="v$.permission_type.$errors" />
+        </div>
+      </div>
+      <div class="col-span-4 md:col-span-2 lg:col-span-1">
+        <div class="flex-auto">
+          <label class="font-bold" id="address">Address</label>
+          <Textarea
+            fluid
+            :invalid="v$.address.$error"
+            v-model="v$.address.$model"
+            aria-describedby="address"
+             rows="5" cols="30" style="resize: none"
+          />
+        </div>
+        <div v-if="v$.address.$error">
+          <validationErrorMessage :errors="v$.address.$errors" />
         </div>
       </div>
     </div>
     <div class="w-full flex justify-center mt-4">
       <Button
+        v-if="action == 'Update'"
         label="Update"
+        type="submit"
+        icon="pi pi-external-link"
+        class="block"
+        severity="success"
+        text
+        raised
+      />
+      <Button
+        v-else
+        label="Insert"
         type="submit"
         icon="pi pi-external-link"
         class="block"
@@ -304,7 +302,9 @@ import { inject } from "vue";
 import { onBeforeRouteUpdate } from "vue-router";
 import { useToast } from "primevue/usetoast";
 import { onMounted, computed } from "vue";
+import { useConfirm } from "primevue/useconfirm";
 
+const confirm = useConfirm();
 const dialogRef = inject("dialogRef");
 const toast = useToast();
 const form = reactive({
@@ -318,15 +318,15 @@ const form = reactive({
   serve_compound: null,
   universities: null,
   hot_spot: null,
-  ac1_type: null,
-  ac1_hp: null,
-  ac2_type: null,
-  ac2_hp: null,
+  address: null,
+  x_coordinate: null,
+  y_coordinate: null,
   network_type: null,
   last_pm_date: null,
   need_access_permission: null,
   permission_type: null,
   id: null,
+  site_code: null,
 });
 
 const topic = ref(null);
@@ -374,22 +374,19 @@ const rules = computed(() => ({
   hot_spot: {
     booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
   },
-  ac1_type: {
+  x_coordinate: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
     stringReg: helpers.withMessage("alphanumeric only", stringReg),
   },
-  ac2_type: {
+  y_coordinate: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
     stringReg: helpers.withMessage("alphanumeric only", stringReg),
   },
-  ac1_hp: {
-    maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
+  address: {
+    maxLength: helpers.withMessage("max 50 characters", maxLength(1000)),
     stringReg: helpers.withMessage("alphanumeric only", stringReg),
   },
-  ac2_hp: {
-    maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-    stringReg: helpers.withMessage("alphanumeric only", stringReg),
-  },
+  
   network_type: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
     stringReg: helpers.withMessage("alphanumeric only", stringReg),
@@ -439,6 +436,7 @@ const convertDate = (date) => {
   return null;
 };
 const mountData = () => {
+  console.log(dialogRef.value.data);
   if (dialogRef.value.data.action == "Update") {
     form.on_air_date = returnDate(dialogRef.value.data.rowData.on_air_date);
     form.topology = dialogRef.value.data.rowData.topology;
@@ -450,16 +448,19 @@ const mountData = () => {
     form.serve_compound = dialogRef.value.data.rowData.serve_compound;
     form.universities = dialogRef.value.data.rowData.universities;
     form.hot_spot = dialogRef.value.data.rowData.hot_spot;
-    form.ac1_type = dialogRef.value.data.rowData.ac1_type;
-    form.ac2_type = dialogRef.value.data.rowData.ac2_type;
-    form.ac1_hp = dialogRef.value.data.rowData.ac1_hp;
-    form.ac2_hp = dialogRef.value.data.rowData.ac2_hp;
+    form.address = dialogRef.value.data.rowData.address;
+    form.x_coordinate = dialogRef.value.data.rowData.x_coordinate;
+    form.y_coordinate = dialogRef.value.data.rowData.y_coordinate;
     form.network_type = dialogRef.value.data.rowData.network_type;
     form.last_pm_date = returnDate(dialogRef.value.data.rowData.last_pm_date);
     form.need_access_permission =
       dialogRef.value.data.rowData.need_access_permission;
     form.permission_type = dialogRef.value.data.rowData.permission_type;
-    form.id = dialogRef.value.data.id;
+    form.id = dialogRef.value.data.rowData.id;
+  }
+
+  if (dialogRef.value.data.site_code) {
+    form.site_code = dialogRef.value.data.site_code;
   }
 
   topic.value = dialogRef.value.data.topic;
@@ -467,36 +468,68 @@ const mountData = () => {
 };
 
 const submitUpdateForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-  if (!isFormCorrect) {
-    return;
-  }
+  confirm.require({
+    group: "yesNo",
+    message: "Are you sure you want to proceed?",
+    header: "Confirmation",
+    icon: "pi pi-exclamation-triangle",
+    position: "center",
+    rejectProps: {
+      label: "No",
+      severity: "danger",
+    },
+    acceptProps: {
+      label: "Yes",
+      severity: "success",
+    },
+    accept: async () => {
+      confirm.close();
+      const isFormCorrect = await v$.value.$validate();
+      if (!isFormCorrect) {
+        return;
+      }
 
-  if (action.value == "Update") {
-    // console.log(this.form);
-    Sites.updatesiteDeepDetails(this.form)
-      .then((response) => {
-        if (response.data.message == "updated successfully") {
-          toast.add({
-            severity: "success",
-            summary: "Success Message",
-            detail: "Updated Successfully",
-            life: 3000,
+      if (action.value == "Update") {
+        Sites.updatesiteDeepDetails(form)
+          .then((response) => {
+            if (response.data.message == "updated successfully") {
+              toast.add({
+                severity: "success",
+                summary: "Success Message",
+                detail: "Updated Successfully",
+                life: 3000,
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status == 204) {
+              toast.add({
+                severity: "info",
+                summary: "Success Message",
+                detail: "site instrument not found",
+                life: 3000,
+              });
+            }
           });
-        }
-      })
-      .catch((error) => {
-        if (error.response.status == 204) {
-          toast.add({
-            severity: "info",
-            summary: "Success Message",
-            detail: "site instrument not found",
-            life: 3000,
-          });
-        }
-      });
-  } else {
-  }
+      } else {
+        Sites.insertSiteDeepDetails(form)
+          .then((response) => {
+            if (response.data.message == "inserted successfully") {
+              toast.add({
+                severity: "success",
+                summary: "Success Message",
+                detail: "inserted Successfully",
+                life: 3000,
+              });
+            }
+          })
+          .catch((error) => {});
+      }
+    },
+    reject: () => {
+      confirm.close();
+    },
+  });
 };
 
 // export default {

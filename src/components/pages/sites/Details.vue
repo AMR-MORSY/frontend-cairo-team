@@ -12,20 +12,33 @@
             </Tab>
             <Tab value="1">
               <OverlayBadge v-if="countCascades" :value="countCascades">
-                <span class="text-font-main-color font-Signika font-extrabold uppercase">Cascades</span>
-              
+                <span
+                  class="text-font-main-color font-Signika font-extrabold uppercase"
+                  >Cascades</span
+                >
               </OverlayBadge>
-              <span class="text-font-main-color font-Signika font-extrabold uppercase" v-else>Cascades</span>
+              <span
+                class="text-font-main-color font-Signika font-extrabold uppercase"
+                v-else
+                >Cascades</span
+              >
               <!-- <Badge :value="countCascades" v-if="countCascades"></Badge> -->
             </Tab>
-            <Tab value="2"
-            
+            <Tab value="2">
+              <OverlayBadge
+                v-if="countIndirectCascades"
+                :value="countIndirectCascades"
               >
-              <OverlayBadge v-if="countIndirectCascades" :value="countIndirectCascades">
-                <span class="text-font-main-color font-Signika font-extrabold uppercase">Indirect</span>
-              
+                <span
+                  class="text-font-main-color font-Signika font-extrabold uppercase"
+                  >Indirect</span
+                >
               </OverlayBadge>
-              <span class="text-font-main-color font-Signika font-extrabold uppercase" v-else>Indirect</span>
+              <span
+                class="text-font-main-color font-Signika font-extrabold uppercase"
+                v-else
+                >Indirect</span
+              >
               <!-- <Button type="button" label="Indirect Cascades"  :badge="countIndirectCascades" v-if="countIndirectCascades" badgeSeverity="contrast" outlined />
               <Button type="button" label="Indirect Cascades" icon="pi pi-inbox" v-else  outlined /> -->
               <!-- <span
@@ -358,7 +371,9 @@
                   />
                 </div>
               </div>
-              <div class="w-full border border-spacing-2 border-font-main-color my-5"></div>
+              <div
+                class="w-full border border-spacing-2 border-font-main-color my-5"
+              ></div>
 
               <div class="flex justify-evenly gap-1 flex-wrap">
                 <div class="shrink-0 w-40 my-3">
@@ -460,7 +475,7 @@
                     class="block w-full"
                   />
                 </div>
-                <div class="shrink-0 w-40 my-3">
+                <!-- <div class="shrink-0 w-40 my-3">
                   <Button
                     label="Tx.issues"
                     :disabled="!$can('read_Instrument_data')"
@@ -469,8 +484,8 @@
                     raised
                     class="block w-full"
                   />
-                </div>
-                <div class="shrink-0 w-40 my-3">
+                </div> -->
+                <!-- <div class="shrink-0 w-40 my-3">
                   <Button
                     icon="pi pi-search"
                     label="Tx issues"
@@ -479,6 +494,16 @@
                     raised
                     @click="SearchTxIssues()"
                     :disabled="!$can('read_TX_data')"
+                  />
+                </div> -->
+                <div class="shrink-0 w-40 my-3">
+                  <Button
+                    icon="pi pi-search"
+                    label="Mux Plan"
+                    severity="success"
+                    class="block w-full text-xs"
+                    raised
+                    @click="viewMuxPlan"
                   />
                 </div>
               </div>
@@ -579,7 +604,6 @@
       </template>
     </Card>
   </div>
- 
 </template>
 
 <script setup>
@@ -595,6 +619,8 @@ import TransmissionDetails from "../../helpers/Transmission/TransmissionDetails.
 import SearchTxIssuesForm from "../../helpers/Transmission/SearchTxIssuesForm.vue";
 import SiteBatteriesTable from "../../helpers/Sites/SiteBatteriesTable.vue";
 import BatteriesUpdate from "../../helpers/Sites/BatteriesUpdate.vue";
+import SiteMuxPlanTable from "../../helpers/Sites/SiteMuxPlanTable.vue";
+import MWDataUpdate from "../../helpers/Sites/MWDataUpdate.vue";
 import { watch, ref } from "vue";
 import { computed } from "vue";
 import { onMounted } from "vue";
@@ -605,6 +631,11 @@ import { useRouter } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
 import { useAbility } from "@casl/vue";
 import { watchEffect } from "vue";
+import SiteDataUpdate from "../../helpers/Sites/SiteDataUpdate.vue";
+import RectifierDataUpdate from "../../helpers/Sites/RectifierDataUpdate.vue";
+import PowerDataUpdate from "../../helpers/Sites/PowerDataUpdate.vue";
+import BTSDataUpdate from "../../helpers/Sites/BTSDataUpdate.vue";
+
 const { can } = useAbility();
 const toast = useToast();
 const dialog = useDialog();
@@ -856,7 +887,7 @@ const goToUpdateCascadesPage = () => {
 };
 const getSitePowerAlarms = () => {
   // this.$store.dispatch("displaySpinnerPage", false);
-  Energy.getSitePowerAlarms(data.value)
+  Energy.getSitePowerAlarms({ site_code: props.site_code })
     .then((response) => {
       if (response.data.alarms.length > 0) {
         store.dispatch("siteAlarms", {
@@ -895,7 +926,7 @@ const getSitePowerAlarms = () => {
     });
 };
 const getSiteHTAlarms = () => {
-  Energy.getSiteHighTempAlarms(data.value)
+  Energy.getSiteHighTempAlarms({ site_code: props.site_code })
     .then((response) => {
       if (response.data.alarms.length > 0) {
         store.dispatch("siteAlarms", {
@@ -932,7 +963,7 @@ const getSiteHTAlarms = () => {
     });
 };
 const getSiteGenAlarms = () => {
-  Energy.getSiteGenAlarms(data.value)
+  Energy.getSiteGenAlarms({ site_code: props.site_code })
     .then((response) => {
       if (response.data.alarms.length > 0) {
         store.dispatch("siteAlarms", {
@@ -966,7 +997,7 @@ const getSiteGenAlarms = () => {
     });
 };
 const getSiteDownAlarmsGroupedByWeek = () => {
-  Energy.getSiteDownAlarmsGroupedByWeek(data.value)
+  Energy.getSiteDownAlarmsGroupedByWeek({ site_code: props.site_code })
     .then((response) => {
       if (response.data.statestics.alarms == "exist") {
         dialog.open(SiteDownAlarmsGroupedByWeek, {
@@ -982,7 +1013,7 @@ const getSiteDownAlarmsGroupedByWeek = () => {
           },
           data: {
             downAlarms: response.data.statestics,
-            site_code: data.value.site_code,
+            site_code: props.site_code,
           },
         });
       } else {
@@ -1014,7 +1045,7 @@ const getSiteDownAlarmsGroupedByWeek = () => {
     });
 };
 const getSiteBatteriesHealth = () => {
-  Energy.getSiteBatteriesHealth(data.value)
+  Energy.getSiteBatteriesHealth({ site_code: props.site_code })
     .then((response) => {
       if (response.data.statestics.powerAlarms == "exist") {
         dialog.open(siteBatteriesHealth, {
@@ -1096,159 +1127,10 @@ const getBatteriesData = () => {
     .catch((error) => {});
 };
 const getSiteData = () => {
-  // let siteData = [];
-
-  // let site = {
-  //   "On Air Date": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   Topology: null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   Structure: null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Equip-Room": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "NTRA Cluster": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   CXO: null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   Axis: null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Serve Compound": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   Universities: null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Hot Spot": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "AC1 Type": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "AC1 HP": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "AC2 Type": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "AC2 HP": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Network Type": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Last PM Date": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Access Permission": null,
-  // };
-  // siteData.push(site);
-  // site = {
-  //   "Permission Type": null,
-  // };
-  // siteData.push(site);
-  Sites.getSiteDeepDetails(data.value).then((response) => {
+  Sites.getSiteDeepDetails({ site_code: props.site_code }).then((response) => {
     console.log(response);
-
-    if (response.data.data == "found data") {
-      let siteData = [];
-      let site = {
-        "On Air Date": response.data.on_air_date,
-      };
-      siteData.push(site);
-      site = {
-        Topology: response.data.topology,
-      };
-      siteData.push(site);
-      site = {
-        Structure: response.data.structure,
-      };
-      siteData.push(site);
-      site = {
-        "Equip-Room": response.data.equip_room,
-      };
-      siteData.push(site);
-      site = {
-        "NTRA Cluster": response.data.ntra_cluster,
-      };
-      siteData.push(site);
-      site = {
-        CXO: response.data.care_ceo,
-      };
-      siteData.push(site);
-      site = {
-        Axis: response.data.axsees,
-      };
-      siteData.push(site);
-      site = {
-        "Serve Compound": response.data.serve_compound,
-      };
-      siteData.push(site);
-      site = {
-        Universities: response.data.universities,
-      };
-      siteData.push(site);
-      site = {
-        "Host Spot": response.data.hot_spot,
-      };
-      siteData.push(site);
-      site = {
-        "AC1 Type": response.data.ac1_type,
-      };
-      siteData.push(site);
-      site = {
-        "AC1 HP": response.data.ac1_hp,
-      };
-      siteData.push(site);
-      site = {
-        "AC2 Type": response.data.ac2_type,
-      };
-      siteData.push(site);
-      site = {
-        "AC2 HP": response.data.ac2_hp,
-      };
-      siteData.push(site);
-      site = {
-        "Network Type": response.data.network_type,
-      };
-      siteData.push(site);
-      site = {
-        "Last PM Date": response.data.last_pm_date,
-      };
-      siteData.push(site);
-      site = {
-        "Access Permission": response.data.need_access_permission,
-      };
-      siteData.push(site);
-      site = {
-        "Permission Type": response.data.permission_type,
-      };
-      siteData.push(site);
-
-      dialog.open(EquipmentDetails, {
+    if (response.data.instrument != null) {
+      dialog.open(SiteDataUpdate, {
         props: {
           style: {
             width: "90vw",
@@ -1258,117 +1140,81 @@ const getSiteData = () => {
         },
 
         data: {
-          statestics: siteData,
-          id: response.data.id,
-          topic: "Site Data",
-          rowData: response.data,
+          rowData: response.data.instrument,
           action: "Update",
+          topic: "Site Data",
         },
       });
     } else {
-      dialog.open(EquipmentDetails, {
-        props: {
-          style: {
-            width: "50vw",
-          },
-          breakpoints: {
-            "960px": "75vw",
-            "640px": "90vw",
-          },
-
-          modal: true,
+      confirm.require({
+        group: "yesNo",
+        message: "There is No data, insert new data?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        rejectProps: {
+          icon: "pi pi-times",
+          label: "No",
+          size: "small",
+          severity: "danger",
         },
+        acceptProps: {
+          severity: "success",
+          icon: "pi pi-check",
+          size: "small",
+          label: "Yes",
+        },
+        accept: () => {
+          confirm.close();
 
-        data: {
-          statestics: siteData,
-          id: null,
-          topic: "Site Data",
-          action: "Insert",
-          site_code: siteCode.value,
-          rowData: null,
+          dialog.open(SiteDataUpdate, {
+            props: {
+              style: {
+                width: "90vw",
+              },
+
+              modal: true,
+            },
+
+            data: {
+             
+              action: "insert",
+              topic: "Site Data",
+              site_code: props.site_code,
+            },
+          });
+        },
+        reject: () => {
+          confirm.close();
         },
       });
     }
   });
 };
 const getRectifierData = () => {
-  let rectifierData = []; ////////array of input field names
-  let rectifier = {
-    "Rectifier Brand": null,
-  };
-  rectifierData.push(rectifier);
-  rectifier = {
-    "Module Capacity": null,
-  };
-  rectifierData.push(rectifier);
-  rectifier = {
-    "No. Module": null,
-  };
-  rectifierData.push(rectifier);
-  rectifier = {
-    "PLVD Value": null,
-  };
-  rectifierData.push(rectifier);
-  rectifier = {
-    "Net ECO": null,
-  };
-  rectifierData.push(rectifier);
-  rectifier = {
-    "Net ECO Activation": null,
-  };
-  rectifierData.push(rectifier);
-  Sites.getRectifierDetails(data.value)
+  Sites.getRectifierDetails({ site_code: props.site_code })
     .then((response) => {
-      if (response.data.data == "found data") {
-        let rectifierData = [];
-        let rectifier = {
-          "Rectifier Brand": response.data.rec_brand,
-        };
-        rectifierData.push(rectifier);
-        rectifier = {
-          "Module Capacity": response.data.module_capacity,
-        };
-        rectifierData.push(rectifier);
-        rectifier = {
-          "No. Module": response.data.no_module,
-        };
-        rectifierData.push(rectifier);
-        rectifier = {
-          "PLVD Value": response.data.pld_value,
-        };
-        rectifierData.push(rectifier);
-        rectifier = {
-          "Net ECO": response.data.net_eco,
-        };
-        rectifierData.push(rectifier);
-        rectifier = {
-          "Net ECO Activation": response.data.net_eco_activation,
-        };
-        rectifierData.push(rectifier);
-        dialog.open(EquipmentDetails, {
+      console.log(response);
+      if (response.data.instrument != null) {
+        dialog.open(RectifierDataUpdate, {
           props: {
             style: {
-              width: "75vw",
+              width: "50vw",
             },
             breakpoints: {
               "960px": "75vw",
               "640px": "90vw",
             },
-
             modal: true,
           },
 
           data: {
-            statestics: rectifierData,
-            id: response.data.id,
-            topic: "Rectifier Data",
-            rowData: response.data,
+            rowData: response.data.instrument,
             action: "Update",
-            site_code: siteCode.value,
+            topic: "Rectifier Data",
           },
         });
       } else {
-        this.$confirm.require({
+        confirm.require({
           group: "yesNo",
           header: "Confirmation",
           message: "There is no Rectifier data. Add new Data?",
@@ -1388,22 +1234,25 @@ const getRectifierData = () => {
 
           accept: () => {
             confirm.close();
-            dialog.open(EquipmentDetails, {
+            dialog.open(RectifierDataUpdate, {
               props: {
                 style: {
-                  width: "75vw",
+                  width: "50vw",
                 },
-
+                breakpoints: {
+                  "960px": "75vw",
+                  "640px": "90vw",
+                },
                 modal: true,
               },
 
               data: {
-                statestics: rectifierData,
-                id: null,
+                // statestics: rectifierData,
+                // id: null,
                 topic: "Rectifier Data",
-                rowData: null,
+                // rowData: null,
                 action: "Insert",
-                site_code: siteCode.value,
+                site_code: props.site_code,
               },
             });
           },
@@ -1418,48 +1267,15 @@ const getRectifierData = () => {
             });
           },
         });
-        // this.$dialog.open(EquipmentDetails, {
-        //   props: {
-        //     style: {
-        //       width: "75vw",
-        //     },
-
-        //     modal: true,
-        //   },
-
-        //   data: {
-        //     statestics: rectifierData,
-        //     id: null,
-        //     topic: "Rectifier Data",
-        //     rowData: null,
-        //     action: 'Insert',
-        //     site_code: this.siteCode
-
-        //   },
-        // });
       }
     })
     .catch((error) => {});
 };
 const getMWData = () => {
-  Sites.getSiteMWDetails(data.value)
+  Sites.getSiteMWDetails({ site_code: props.site_code })
     .then((response) => {
-      let MWData = [];
-      if (response.data.data == "found data") {
-        let MW = {
-          "No MW": response.data.no_mw,
-        };
-        MWData.push(MW);
-        MW = {
-          "MW Type": response.data.mw_type,
-        };
-        MWData.push(MW);
-        MW = {
-          Eband: response.data.eband,
-        };
-
-        MWData.push(MW);
-        dialog.open(EquipmentDetails, {
+      if (response.data.instrument != null) {
+        dialog.open(MWDataUpdate, {
           props: {
             style: {
               width: "50vw",
@@ -1468,23 +1284,20 @@ const getMWData = () => {
               "960px": "75vw",
               "640px": "90vw",
             },
-
             modal: true,
           },
 
           data: {
-            statestics: MWData,
-            id: response.data.id,
-            topic: "MW Data",
-            rowData: response.data,
+            rowData: response.data.instrument,
             action: "Update",
+            topic: "MW Data",
           },
         });
       } else {
         confirm.require({
           group: "yesNo",
           header: "Confirmation",
-          message: "There is no Microwave data. Add new Data?",
+          message: "There is no MW data. Add new Data?",
           icon: "pi pi-exclamation-triangle",
           rejectProps: {
             label: "No",
@@ -1501,22 +1314,25 @@ const getMWData = () => {
 
           accept: () => {
             confirm.close();
-            dialog.open(EquipmentDetails, {
+            dialog.open(MWDataUpdate, {
               props: {
                 style: {
-                  width: "75vw",
+                  width: "50vw",
                 },
-
+                breakpoints: {
+                  "960px": "75vw",
+                  "640px": "90vw",
+                },
                 modal: true,
               },
 
               data: {
-                statestics: MWData,
-                id: null,
+                // statestics: rectifierData,
+                // id: null,
                 topic: "MW Data",
-                rowData: null,
+                // rowData: null,
                 action: "Insert",
-                site_code: siteCode.value,
+                site_code: props.site_code,
               },
             });
           },
@@ -1536,32 +1352,12 @@ const getMWData = () => {
     .catch((error) => {});
 };
 const getBTSData = () => {
-  Sites.getSiteBTSDetails(data.value)
-    .then((response) => {
-      let BTSData = [];
-      if (response.data.data == "found data") {
-        let BTS = {
-          "No BTS": response.data.no_bts,
-        };
-        BTSData.push(BTS);
-        BTS = {
-          "MRFU 2G": response.data.mrfu_2G,
-        };
-        BTSData.push(BTS);
-        BTS = {
-          "MRFU 3G": response.data.mrfu_3G,
-        };
-        BTSData.push(BTS);
-        BTS = {
-          "MRFU 4G": response.data.mrfu_4G,
-        };
-        BTSData.push(BTS);
-        BTS = {
-          TDD: response.data.tdd,
-        };
+  Sites.getSiteBTSDetails({ site_code: props.site_code })
+   
 
-        BTSData.push(BTS);
-        dialog.open(EquipmentDetails, {
+    .then((response) => {
+      if (response.data.instrument != null) {
+        dialog.open(BTSDataUpdate, {
           props: {
             style: {
               width: "50vw",
@@ -1570,16 +1366,13 @@ const getBTSData = () => {
               "960px": "75vw",
               "640px": "90vw",
             },
-
             modal: true,
           },
 
           data: {
-            statestics: BTSData,
-            id: response.data.id,
-            topic: "BTS Data",
-            rowData: response.data,
+            rowData: response.data.instrument,
             action: "Update",
+            topic: "BTS Data",
           },
         });
       } else {
@@ -1603,22 +1396,25 @@ const getBTSData = () => {
 
           accept: () => {
             confirm.close();
-            dialog.open(EquipmentDetails, {
+            dialog.open(BTSDataUpdate, {
               props: {
                 style: {
-                  width: "75vw",
+                  width: "50vw",
                 },
-
+                breakpoints: {
+                  "960px": "75vw",
+                  "640px": "90vw",
+                },
                 modal: true,
               },
 
               data: {
-                statestics: BTSData,
-                id: null,
+                // statestics: rectifierData,
+                // id: null,
                 topic: "BTS Data",
-                rowData: null,
+                // rowData: null,
                 action: "Insert",
-                site_code: siteCode.value,
+                site_code: props.site_code,
               },
             });
           },
@@ -1638,62 +1434,33 @@ const getBTSData = () => {
     .catch((error) => {});
 };
 const getPowerData = () => {
-  Sites.getSitePowerDetails(data.value)
+  Sites.getSitePowerDetails({ site_code: props.site_code })
     .then((response) => {
-      let powerData = [];
-      if (response.data.data == "found data") {
-        let power = {
-          "Power Source": response.data.power_source,
-        };
-        powerData.push(power);
-        power = {
-          "PM Type": response.data.power_meter_type,
-        };
-        powerData.push(power);
-        power = {
-          "Gen Config.": response.data.gen_config,
-        };
-        powerData.push(power);
-        power = {
-          "Gen Serial": response.data.gen_serial,
-        };
-        powerData.push(power);
-        power = {
-          "Gen Capacity": response.data.gen_capacity,
-        };
-
-        powerData.push(power);
-        power = {
-          "Overhaul Power Consump": response.data.overhaul_power_consumption,
-        };
-
-        powerData.push(power);
-        dialog.open(EquipmentDetails, {
+      console.log(response);
+      if (response.data.instrument != null) {
+        dialog.open(PowerDataUpdate, {
           props: {
             style: {
-              width: "75vw",
+              width: "50vw",
             },
             breakpoints: {
               "960px": "75vw",
               "640px": "90vw",
             },
-
             modal: true,
           },
 
           data: {
-            statestics: powerData,
-            id: response.data.id,
-            topic: "Power Data",
-            rowData: response.data,
+            rowData: response.data.instrument,
             action: "Update",
+            topic: "Power Data",
           },
         });
       } else {
         confirm.require({
           group: "yesNo",
           header: "Confirmation",
-          message: "There is no BTS data. Add new Data?",
+          message: "There is no Power data. Add new Data?",
           icon: "pi pi-exclamation-triangle",
           rejectProps: {
             label: "No",
@@ -1710,22 +1477,25 @@ const getPowerData = () => {
 
           accept: () => {
             confirm.close();
-            dialog.open(EquipmentDetails, {
+            dialog.open(PowerDataUpdate, {
               props: {
                 style: {
-                  width: "75vw",
+                  width: "50vw",
                 },
-
+                breakpoints: {
+                  "960px": "75vw",
+                  "640px": "90vw",
+                },
                 modal: true,
               },
 
               data: {
-                statestics: powerData,
-                id: null,
+                // statestics: rectifierData,
+                // id: null,
                 topic: "Power Data",
-                rowData: null,
+                // rowData: null,
                 action: "Insert",
-                site_code: siteCode.value,
+                site_code: props.site_code,
               },
             });
           },
@@ -1741,6 +1511,8 @@ const getPowerData = () => {
           },
         });
       }
+
+    
     })
     .catch((error) => {});
 };
@@ -1778,9 +1550,62 @@ const insertNewBatteiesData = () => {
     data: {
       battery: null,
       action: "create",
-      site_code: siteCode.value,
+      site_code: props.site_code,
     },
   });
+};
+
+const showErrors = (errors) => {
+  if (errors.site_code) {
+    errors.reported.forEach((element) => {
+      toast.add({
+        severity: "error",
+        summary: "Failed",
+        detail: element,
+        life: 3000,
+      });
+    });
+  }
+};
+const viewMuxPlan = () => {
+  Sites.viewMuxPlan(props.site_code)
+    .then((response) => {
+      console.log(response);
+      if (response.data.message == "success") {
+        if (response.data.muxPlans.length > 0) {
+          dialog.open(SiteMuxPlanTable, {
+            props: {
+              style: {
+                width: "50vw",
+              },
+              breakpoints: {
+                "960px": "75vw",
+                "640px": "90vw",
+              },
+
+              modal: true,
+            },
+            data: {
+              muxPlans: response.data.muxPlans,
+            },
+          });
+        } else {
+          toast.add({
+            severity: "error",
+            detail: "No mux plan data",
+            life: 3000,
+            summary: "Failed",
+          });
+        }
+      }
+    })
+    .catch((error) => {
+      if (error.response.status == 422) {
+        let errors = error.response.data.errors;
+
+        showErrors(errors);
+      }
+    });
 };
 </script>
 
