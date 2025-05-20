@@ -475,6 +475,17 @@
                     class="block w-full"
                   />
                 </div>
+                <div class="shrink-0 w-40 my-3">
+                  <Button
+                    icon="pi pi-check-square"
+                    :badge="notices"
+                    label="Notices"
+                    @click="getSiteNotices"
+                    severity="contrast"
+                    raised
+                    class="block w-full"
+                  />
+                </div>
                 <!-- <div class="shrink-0 w-40 my-3">
                   <Button
                     label="Tx.issues"
@@ -643,6 +654,7 @@ const router = useRouter();
 const confirm = useConfirm();
 
 const props = defineProps(["site_code"]);
+const notices = ref("0");
 const siteName = ref(null);
 const siteCode = ref(null);
 const cell2G = ref(null);
@@ -816,6 +828,7 @@ const getSiteDetails = () => {
   // store.dispatch("displaySpinnerPage", false);
 
   Sites.getSiteDetails(props.site_code).then((response) => {
+    console.log(response);
     siteName.value = response.data.site.site_name;
     siteCode.value = response.data.site.site_code;
     type.value = response.data.site.type;
@@ -840,6 +853,7 @@ const getSiteDetails = () => {
     nodalCode.value = response.data.site.nodal_code;
     nodalName.value = response.data.site.nodal_name;
     id.value = response.data.site.id;
+    notices.value = `${response.data.site.notices.length}`;
     data.value = {
       site_code: siteCode.value,
     };
@@ -884,6 +898,10 @@ const goToSiteUpdate = () => {
 
 const goToUpdateCascadesPage = () => {
   router.push(`/sites/cascades/update/${siteCode.value}`);
+};
+
+const getSiteNotices = () => {
+  router.push({ path: `/site/notices/${props.site_code}` });
 };
 const getSitePowerAlarms = () => {
   // this.$store.dispatch("displaySpinnerPage", false);
@@ -1144,6 +1162,7 @@ const getSiteData = () => {
           action: "Update",
           topic: "Site Data",
         },
+      
       });
     } else {
       confirm.require({
@@ -1176,11 +1195,11 @@ const getSiteData = () => {
             },
 
             data: {
-             
               action: "insert",
               topic: "Site Data",
               site_code: props.site_code,
             },
+         
           });
         },
         reject: () => {
@@ -1353,7 +1372,6 @@ const getMWData = () => {
 };
 const getBTSData = () => {
   Sites.getSiteBTSDetails({ site_code: props.site_code })
-   
 
     .then((response) => {
       if (response.data.instrument != null) {
@@ -1511,8 +1529,6 @@ const getPowerData = () => {
           },
         });
       }
-
-    
     })
     .catch((error) => {});
 };

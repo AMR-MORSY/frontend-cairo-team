@@ -18,7 +18,7 @@
           >
         </a>
       </template>
-      <template #item="{ item, props, hasSubmenu, root }" class="md:ml-32">
+      <template #item="{ item, props, hasSubmenu, root }">
         <template v-if="item.to">
           <router-link class="text-font-main-color font-Signika" :to="item.to">
             <a v-ripple class="flex items-center" v-bind="props.action">
@@ -29,23 +29,15 @@
               >
               </span>
               <span>{{ item.label }}</span>
-           
 
-              <!-- <OverlayBadge
-                v-if="item.badge"
-                :value="item.badge"
-                size="small"
-                class="top-1 right-1"
-              >
-                <i class="pi pi-bell block mx-auto" style="font-size: 1.5rem" />
-              </OverlayBadge> -->
-            </a>
-            <OverlayBadge
+              <OverlayBadge
                 :value="item.badgeValue"
                 v-if="item.badge"
-                size="small" >
-                <i class="pi pi-bell" style="font-size: 1.5rem"/>
+                class="m-2"
+              >
+                <i class="pi pi-bell" style="font-size: 1.5rem" />
               </OverlayBadge>
+            </a>
           </router-link>
         </template>
 
@@ -70,7 +62,6 @@
             ></i>
           </a>
         </template>
-
       </template>
       <template #end>
         <form @submit.prevent="submitSearch">
@@ -91,10 +82,7 @@
             </InputGroup>
           </div>
         </form>
-        <!-- <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" /> -->
-     
       </template>
-     
     </Menubar>
   </div>
 </template>
@@ -228,6 +216,12 @@ const updateUserAbility = () => {
                             : []),
                         ]
                       : []),
+                    {
+                      label: "Notices",
+                      icon: "pi pi-server",
+                      shortcut: "⌘+B",
+                      to: "/sites/notices",
+                    },
                   ],
                 },
                 {
@@ -240,9 +234,9 @@ const updateUserAbility = () => {
                   // label: "Notifications",
                   // icon: "pi pi-bell",
 
-                  badge:5 ,
+                  badge: 5,
                   to: "/user/notifications",
-                  badgeValue:computed(()=>store.getters.notifications)
+                  badgeValue: computed(() => store.getters.notifications),
                 },
               ]
             : []),
@@ -311,8 +305,6 @@ const submitSearch = async () => {
     });
 };
 
-
-
 const SearchTxIssues = () => {
   dialog.open(SearchTxIssuesForm, {
     props: {
@@ -338,16 +330,16 @@ const logout = () => {
 </script>
 
 <style lang="scss" scoped>
-.display_none {
-  display: none;
-}
+// .display_none {
+//   display: none;
+// }
 
-.display {
-  display: block;
-}
+// .display {
+//   display: block;
+// }
 
-.p-inputtext {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
+// .p-inputtext {
+//   padding-top: 0.25rem;
+//   padding-bottom: 0.25rem;
+// }
 </style>

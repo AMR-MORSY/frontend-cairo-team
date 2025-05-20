@@ -43,15 +43,14 @@ function showUnAuthToast() {
  }
 
 function showUnauthintecatedToast() {
-  // const toastLiveExample = document.getElementById("liveToast");
-  // const toastBootstrap = new bootstrap.Toast(toastLiveExample);
+  
   sessionStorage.removeItem("User");
   store.dispatch("userData", null);
-  // store.dispatch("showUnauthToast", true);
-  router.push({ path: "/user/login" });
-  // toastBootstrap.show();
-  // store.dispatch('showNetworkError','Unauthenticated');
+
   store.dispatch('showDrawerNotification',{message:'You are not allowed to access this data, please login first......',icon:'pi pi-user'});
+  router.push({ path: "/user/login"});
+ 
+ 
 }
 
 Api.defaults.withCredentials = true;

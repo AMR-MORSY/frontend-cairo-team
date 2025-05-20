@@ -165,6 +165,7 @@ export default {
     },
     onRowSelect() {
       this.disableButton = false;
+    
 
 
     },
@@ -188,8 +189,10 @@ export default {
     },
     
     openDeleteBattRecordConfirmation() {
+      console.log('hello')
      
       this.$confirm.require({
+         group: "yesNo",
         message: "This will delete the Battery record",
         header: "Delete Record",
         icon: "pi pi-info-circle",

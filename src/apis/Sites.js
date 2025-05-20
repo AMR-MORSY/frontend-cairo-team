@@ -155,6 +155,27 @@ export default {
     viewMuxPlan(site_code)
     {
       return allInstances.Api.get(`/sites/muxPlans?site_code=${site_code}`)
+    },
+
+    siteNotices(site_code,page,per_page)
+    {
+      return allInstances.Api.get(`/site/notices?site_code=${site_code}&page=${page}&per_page=${per_page}`)
+    },
+    getNoticeTypes()
+    {
+      return allInstances.Api.get(`/site/noticeTypes`)
+    },
+    createSiteNotice(form)
+    {
+      return allInstances.Api.post('/site/notice/create',form)
+    },
+    updateSiteNotice(form)
+    {
+      return allInstances.Api.put('/site/notice/update',form)
+    },
+     allNotices()
+    {
+      return allInstances.Api.get('/site/notices/all')
     }
     
 };

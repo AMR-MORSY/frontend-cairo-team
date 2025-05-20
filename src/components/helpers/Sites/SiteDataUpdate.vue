@@ -335,13 +335,7 @@ const access_perm_options = ["Yes", "No"];
 const serve_comp_options = ["Yes", "No"];
 const stringReg = helpers.regex(/^[a-zA-Z0-9 \/]+$/);
 const booleanReg = helpers.regex(/^Yes|No$/);
-onBeforeRouteUpdate((to, from, next) => {
-  if (to.path == "/user/login") {
-    dialogRef.value.close();
-  }
-  // You can perform any action here before the route update
-  next(); // Don't forget to call next() to confirm the navigation
-});
+
 
 const rules = computed(() => ({
   topology: {
@@ -467,6 +461,11 @@ const mountData = () => {
   action.value = dialogRef.value.data.action;
 };
 
+const newForm=()=>{
+  form.last_pm_date=convertDate(form.last_pm_date);
+  form.on_air_date=convertDate(form.on_air_date);
+  return form;
+}
 const submitUpdateForm = async () => {
   confirm.require({
     group: "yesNo",
@@ -490,7 +489,9 @@ const submitUpdateForm = async () => {
       }
 
       if (action.value == "Update") {
-        Sites.updatesiteDeepDetails(form)
+         
+          
+        Sites.updatesiteDeepDetails(newForm())
           .then((response) => {
             if (response.data.message == "updated successfully") {
               toast.add({
@@ -500,8 +501,10 @@ const submitUpdateForm = async () => {
                 life: 3000,
               });
             }
+               dialogRef.value.close();
           })
           .catch((error) => {
+            console.log(error)
             if (error.response.status == 204) {
               toast.add({
                 severity: "info",
@@ -512,7 +515,8 @@ const submitUpdateForm = async () => {
             }
           });
       } else {
-        Sites.insertSiteDeepDetails(form)
+      
+        Sites.insertSiteDeepDetails(newForm())
           .then((response) => {
             if (response.data.message == "inserted successfully") {
               toast.add({
@@ -521,6 +525,7 @@ const submitUpdateForm = async () => {
                 detail: "inserted Successfully",
                 life: 3000,
               });
+                dialogRef.value.close();
             }
           })
           .catch((error) => {});
@@ -532,179 +537,6 @@ const submitUpdateForm = async () => {
   });
 };
 
-// export default {
-//   setup: () => ({ v$: useVuelidate() }),
-//   data() {
-//     return {
-//       form: {
-//         on_air_date: null,
-//         topology: null,
-//         structure: null,
-//         equip_room: null,
-//         ntra_cluster: null,
-//         care_ceo: null,
-//         axsees: null,
-//         serve_compound: null,
-//         universities: null,
-//         hot_spot: null,
-//         ac1_type: null,
-//         ac1_hp: null,
-//         ac2_type: null,
-//         ac2_hp: null,
-//         network_type: null,
-//         last_pm_date: null,
-//         need_access_permission: null,
-//         permission_type: null,
-//         id: null,
-//       },
-//       topic: null,
-//       action: null,
-//       access_perm_options: ["Yes", "No"],
-//       serve_comp_options: ["Yes", "No"],
-//     };
-//   },
-//   validations() {
-//     const stringReg = helpers.regex(/^[a-zA-Z0-9 \/]+$/);
-//     const booleanReg = helpers.regex(/^Yes|No$/);
-
-//     return {
-//       form: {
-//         topology: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("Alphbet characters only", stringReg),
-//         },
-//         structure: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("Alphbet characters only", stringReg),
-//         },
-//         equip_room: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("Alphbet characters only", stringReg),
-//         },
-//         ntra_cluster: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         care_ceo: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         axsees: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         serve_compound: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         universities: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         hot_spot: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         ac1_type: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-//         ac2_type: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-//         ac1_hp: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-//         ac2_hp: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-//         network_type: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-
-//         need_access_permission: {
-//           booleanReg: helpers.withMessage("alphanumeric only", booleanReg),
-//         },
-//         permission_type: {
-//           maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-//           stringReg: helpers.withMessage("alphanumeric only", stringReg),
-//         },
-//       },
-//     };
-//   },
-//   name: "SiteDataUpdate",
-//   inject: ["dialogRef"],
-
-//   mounted() {
-//     this.mountData();
-//   },
-//   watch: {
-//     $route(to, from) {
-//       if (to.path == "/user/login") {
-//         this.dialogRef.close();
-//       }
-//     },
-//   },
-//   components: {
-//     validationErrorMessage,
-//   },
-//   methods: {
-//     mountData() {
-//       if (this.dialogRef.data.action == "Update") {
-//         this.form.on_air_date = this.dialogRef.data.rowData.on_air_date;
-//         this.form.topology = this.dialogRef.data.rowData.topology;
-//         this.form.structure = this.dialogRef.data.rowData.structure;
-//         this.form.equip_room = this.dialogRef.data.rowData.equip_room;
-//         this.form.ntra_cluster = this.dialogRef.data.rowData.ntra_cluster;
-//         this.form.care_ceo = this.dialogRef.data.rowData.care_ceo;
-//         this.form.axsees = this.dialogRef.data.rowData.axsees;
-//         this.form.serve_compound = this.dialogRef.data.rowData.serve_compound;
-//         this.form.universities = this.dialogRef.data.rowData.universities;
-//         this.form.hot_spot = this.dialogRef.data.rowData.hot_spot;
-//         this.form.ac1_type = this.dialogRef.data.rowData.ac1_type;
-//         this.form.ac2_type = this.dialogRef.data.rowData.ac2_type;
-//         this.form.ac1_hp = this.dialogRef.data.rowData.ac1_hp;
-//         this.form.ac2_hp = this.dialogRef.data.rowData.ac2_hp;
-//         this.form.network_type = this.dialogRef.data.rowData.network_type;
-//         this.form.last_pm_date = this.dialogRef.data.rowData.last_pm_date;
-//         this.form.need_access_permission =
-//           this.dialogRef.data.rowData.need_access_permission;
-//         this.form.permission_type = this.dialogRef.data.rowData.permission_type;
-//         this.form.id = this.dialogRef.data.id;
-//       }
-
-//       this.topic = this.dialogRef.data.topic;
-//       this.action = this.dialogRef.data.action;
-//     },
-//     async submitUpdateForm() {
-//       const isFormCorrect = await this.v$.$validate();
-//       if (!isFormCorrect) return;
-//       if (this.action == "Update") {
-//         console.log(this.form);
-//         Sites.updatesiteDeepDetails(this.form)
-//           .then((response) => {
-//             if (response.data.message == "updated successfully") {
-//               this.$toast.add({
-//                 severity: "success",
-//                 summary: "Success Message",
-//                 detail: "Updated Successfully",
-//                 life: 3000,
-//               });
-//             }
-//           })
-//           .catch((error) => {
-//             if (error.response.status == 204) {
-//               this.$toast.add({
-//                 severity: "info",
-//                 summary: "Success Message",
-//                 detail: "site instrument not found",
-//                 life: 3000,
-//               });
-//             }
-//           });
-//       } else {
-//       }
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" scoped>

@@ -156,7 +156,6 @@ const toggle = (event, notification = null) => {
     selectedNotification.value = notification;
   }
 
-  // selectedNotification.value=event
   op.value.toggle(event);
 };
 
@@ -208,7 +207,7 @@ const getUserNotifications = () => {
       // Go to previous page
       page.value = currentPage.value - 1;
       first.value = (page.value - 1) * perPage.value; ////////this will point at the previous page
-      getUserNotifications(page.value);
+      getUserNotifications();
       store.dispatch("userNotifications", response.data.notifications.total);
       var user = JSON.parse(sessionStorage.getItem("User"));
       user.notifications = response.data.notifications.total;
@@ -235,9 +234,7 @@ const markAsRead = (notification) => {
     User.markNotificationAsRead(notification.id).then((response) => {
       console.log(response);
       if (response.data.message == "success") {
-        // formatNotificationsDateAndFillNotificationsArray(
-        //   response.data.notifications
-        // );
+      
         getUserNotifications();
       }
     });
@@ -247,9 +244,7 @@ const markAsRead = (notification) => {
 const markAllNotificationAsRead = () => {
   User.markAllNotificationAsRead().then((response) => {
     if (response.data.message == "success") {
-      // formatNotificationsDateAndFillNotificationsArray(
-      //   response.data.notifications
-      // );
+    
       getUserNotifications();
     }
   });
@@ -264,9 +259,7 @@ const clearNotification = (notification) => {
       sessionStorage.setItem("User", JSON.stringify(user));
       getUserNotifications();
 
-      // formatNotificationsDateAndFillNotificationsArray(
-      //   response.data.notifications
-      // );
+     
     }
   });
 };
@@ -274,14 +267,9 @@ const clearNotification = (notification) => {
 const clearAllNotifications = () => {
   User.clearAllNotifications().then((response) => {
     if (response.data.message == "success") {
-      // store.dispatch("userNotifications", response.data.notifications.total);
-      // var user = JSON.parse(sessionStorage.getItem("User"));
-      // user.notifications = response.data.notifications.total;
-      // sessionStorage.setItem("User", JSON.stringify(user));
+      
       getUserNotifications();
-      // formatNotificationsDateAndFillNotificationsArray(
-      //   response.data.notifications
-      // );
+     
     }
   });
 };

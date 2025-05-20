@@ -422,7 +422,7 @@ const project_options = ref([]);
 const status = ref("");
 
 const status_options = ref([]);
-const cw_date = ref("");
+const cw_date = ref(null);
 const d6_date = ref(null);
 
 const actions = ref([]);

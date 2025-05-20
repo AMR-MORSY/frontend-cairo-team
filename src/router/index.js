@@ -56,6 +56,8 @@ import Notifications from "../components/pages/User/Notifications.vue";
 import ModificationsWithoutPQ from "../components/pages/Modifications/ModificationsWithoutPQ.vue";
 import ViewNotification from "../components/pages/User/ViewNotification.vue";
 import UnreportedModifications from "../components/pages/Modifications/UnreportedModifications.vue";
+import SiteNotices from "../components/pages/sites/SiteNotices.vue";
+import Notices from "../components/pages/sites/Notices.vue";
 const routes = [
   {
     path: "/energy/sheet",
@@ -240,6 +242,14 @@ const routes = [
    
   },
   {
+    path: "/site/notices/:site_code",
+    component: SiteNotices,
+    meta: { requiresAuth: true},
+    props:true
+   
+   
+  },
+  {
     path: "/sites/update/:siteCode",
     component: siteUpdate,
     props: true,
@@ -259,6 +269,12 @@ const routes = [
     
     meta:{requiresAuth: true},
   
+  },
+   {
+    path: "/sites/notices",
+    component: Notices,
+    
+    meta: { requiresAuth: true },
   },
   
   { path: "/nur", component: NUR, meta: { requiresAuth: true } },
