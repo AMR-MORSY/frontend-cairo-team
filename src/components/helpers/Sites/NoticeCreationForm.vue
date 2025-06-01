@@ -116,7 +116,7 @@ const form = reactive({
   id: null,
   is_solved: null,
 });
-const stringReg = helpers.regex(/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/);
+const stringReg = helpers.regex(/^[a-zA-Z0-9\-_!@#$%^',:&*(),.?":{}\n\t|<> ]+$/);
 const action = ref();
 
 const mountData = async () => {

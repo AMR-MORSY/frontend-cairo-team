@@ -333,7 +333,9 @@ const topic = ref(null);
 const action = ref(null);
 const access_perm_options = ["Yes", "No"];
 const serve_comp_options = ["Yes", "No"];
-const stringReg = helpers.regex(/^[a-zA-Z0-9 \/]+$/);
+
+const stringReg = helpers.regex(/^[a-zA-Z0-9\-_!@#$%^',:&*(),.?":{}\n\t|<> ]+$/);
+const numbersDots=helpers.regex(/^[0-9.]+$/);
 const booleanReg = helpers.regex(/^Yes|No$/);
 
 
@@ -370,11 +372,11 @@ const rules = computed(() => ({
   },
   x_coordinate: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-    stringReg: helpers.withMessage("alphanumeric only", stringReg),
+    numbersDots: helpers.withMessage("invalid coordinates", numbersDots),
   },
   y_coordinate: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(50)),
-    stringReg: helpers.withMessage("alphanumeric only", stringReg),
+    stringReg: helpers.withMessage("invalid coordinates", numbersDots),
   },
   address: {
     maxLength: helpers.withMessage("max 50 characters", maxLength(1000)),
